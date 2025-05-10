@@ -1,0 +1,12 @@
+npm init -y
+
+npm i express mongoose dotenv
+// express for webframwork to build API and routing system
+// mongoose: interact with the database (mongoDB)
+// dotenv: Acces the environment variable
+
+
+in package.json add "type": "module", for modern js syntex 
+
+npm i nodemon -D
+// for dev devDependencies for instant refresh the code
