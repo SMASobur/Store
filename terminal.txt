@@ -18,6 +18,11 @@ npm create vite@latest .
 npm i 
 
 //Install Chakra ui dependencies
-npm i @chakra-ui/react @emotion/react
-//Add snippets
-npx @chakra-ui/cli snippet add
+//chakra vite version 2
+npm i @chakra-ui/react@2 @emotion/react @emotion/styled framer-motion
+// and import chakraProvider
+
+
+//Router Dom Install
+npm i react-router-dom
+// wrap <App />  with <BrowserRouter> and import it
