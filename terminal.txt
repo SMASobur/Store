@@ -10,3 +10,14 @@ in package.json add "type": "module", for modern js syntex
 
 npm i nodemon -D
 // for dev devDependencies for instant refresh the code
+
+
+cd. /frontend
+npm create vite@latest .
+// select React and JavaScript
+npm i 
+
+//Install Chakra ui dependencies
+npm i @chakra-ui/react @emotion/react
+//Add snippets
+npx @chakra-ui/cli snippet add
