@@ -26,3 +26,13 @@ npm i @chakra-ui/react@2 @emotion/react @emotion/styled framer-motion
 //Router Dom Install
 npm i react-router-dom
 // wrap <App />  with <BrowserRouter> and import it
+
+//Chakra icons
+npm i @chakra-ui/icons
+or 
+npm i react-icons
+
+
+
+// package zustand installation
+npm i zustand
