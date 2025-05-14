@@ -41,3 +41,8 @@ npm i zustand
 //for deployment 
 //https://www.youtube.com/watch?v=O3BUHwfHf84&t=7449s
 // 2:00:00 time 
+
+
+//when building and brinnging together frontend and backend
+npm uninstall express
+npm install express@4.18.2 path-to-regexp@6.2.1
