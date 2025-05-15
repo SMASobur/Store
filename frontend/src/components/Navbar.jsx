@@ -1,6 +1,6 @@
 import { Button, Container, Flex, HStack, Text, useColorMode } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-
+import { PiBooksDuotone } from "react-icons/pi";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
@@ -34,6 +34,11 @@ const Navbar = () => {
 					<Link to={"/create"}>
 						<Button>
 							<PlusSquareIcon fontSize={20} />
+						</Button>
+					</Link>
+					<Link to={"/books"}>
+						<Button>
+							<PiBooksDuotone fontSize={20} />
 						</Button>
 					</Link>
 					<Button onClick={toggleColorMode}>
