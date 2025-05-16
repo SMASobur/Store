@@ -1,4 +1,12 @@
-import { Container, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../store/product";
@@ -6,15 +14,10 @@ import ProductCard from "../components/ProductCard";
 import React from "react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
+import { BiCreditCardFront } from "react-icons/bi";
+import { PiBooksDuotone } from "react-icons/pi";
 
 const HomePage = () => {
-  const { fetchProducts, products } = useProductStore();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-  console.log("products", products);
-
   return (
     <Container maxW="container.xl" py={12}>
       <VStack spacing={8}>
@@ -22,54 +25,76 @@ const HomePage = () => {
           <Text
             fontSize={"30"}
             fontWeight={"bold"}
-            bgGradient={"linear(to-r, cyan.400, blue.500)"}
+            bgGradient={"linear(to-r, blue.400, blue.500)"}
             bgClip={"text"}
             textAlign={"center"}
           >
-            Current Products
+            View Port
           </Text>
-          <Link to={"/create"}>
-            <Button>
-              <PlusSquareIcon fontSize={20} />
-            </Button>
-          </Link>
         </div>
-
         <SimpleGrid
           columns={{
             base: 1,
             md: 2,
-            lg: 3,
+            lg: 2,
           }}
           spacing={10}
           w={"full"}
+          alignItems={"center"}
         >
-          {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </SimpleGrid>
-
-        {products.length === 0 && (
-          <Text
-            fontSize="xl"
-            textAlign={"center"}
-            fontWeight="bold"
-            color="gray.500"
+          <Box
+            shadow="lg"
+            rounded="lg"
+            overflow="hidden"
+            transition="all 0.3s"
+            _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
           >
-            No products found 😢{" "}
-            <Link to={"/create"}>
-              <Text
-                as="span"
-                color="blue.500"
-                _hover={{ textDecoration: "underline" }}
-              >
-                Create a product
-              </Text>
+            <Link to={"/cards"}>
+              <Flex alignItems={"center"}>
+                <Box p={4}>
+                  <BiCreditCardFront size="250" color="orange" />
+                </Box>
+                <Text
+                  fontWeight="bold"
+                  fontSize="xl"
+                  textAlign={"center"}
+                  mb={4}
+                  textColor="black"
+                >
+                  Cards View
+                </Text>
+              </Flex>
             </Link>
-          </Text>
-        )}
+          </Box>
+
+          <Box
+            shadow="lg"
+            rounded="lg"
+            overflow="hidden"
+            transition="all 0.3s"
+            _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
+          >
+            <Link to={"/books"}>
+              <Flex alignItems={"center"}>
+                <Box p={4}>
+                  <PiBooksDuotone size="250" color="orange" />
+                </Box>
+                <Text
+                  fontWeight="bold"
+                  fontSize="xl"
+                  textAlign={"center"}
+                  mb={4}
+                  textColor={"orange"}
+                >
+                  Cards View
+                </Text>
+              </Flex>
+            </Link>
+          </Box>
+        </SimpleGrid>
       </VStack>
     </Container>
   );
 };
+
 export default HomePage;

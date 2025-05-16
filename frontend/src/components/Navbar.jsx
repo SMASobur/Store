@@ -11,6 +11,7 @@ import { PiBooksDuotone } from "react-icons/pi";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
+import { BiCreditCardFront } from "react-icons/bi";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -41,6 +42,11 @@ const Navbar = () => {
           <Link to={"/create"}>
             <Button>
               <PlusSquareIcon fontSize={20} />
+            </Button>
+          </Link>
+          <Link to={"/cards"}>
+            <Button>
+              <BiCreditCardFront fontSize={20} />
             </Button>
           </Link>
           <Link to={"/books"}>
