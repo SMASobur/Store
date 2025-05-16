@@ -7,7 +7,7 @@ import React from "react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 
-const CardView = () => {
+const StoreCardView = () => {
   const { fetchProducts, products } = useProductStore();
 
   useEffect(() => {
@@ -72,4 +72,4 @@ const CardView = () => {
     </Container>
   );
 };
-export default CardView;
+export default StoreCardView;

@@ -61,7 +61,7 @@ const HomePage = () => {
                   mb={4}
                   textColor="black"
                 >
-                  Cards View
+                  Store (Cards View)
                 </Text>
               </Flex>
             </Link>
@@ -86,7 +86,7 @@ const HomePage = () => {
                   mb={4}
                   textColor={"orange"}
                 >
-                  Cards View
+                  Books (Table View)
                 </Text>
               </Flex>
             </Link>

@@ -4,7 +4,7 @@ import CreatePage from "./pages/CreatePage";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
 import BookPage from "./pages/BookPage";
-import CardView from "./pages/CardView";
+import StoreCardView from "./pages/StoreCardView";
 function App() {
   return (
     <>
@@ -14,7 +14,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/create" element={<CreatePage />} />
           <Route path="/books" element={<BookPage />} />
-          <Route path="/cards" element={<CardView />} />
+          <Route path="/cards" element={<StoreCardView />} />
         </Routes>
       </Box>
     </>
