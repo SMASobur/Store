@@ -4,7 +4,7 @@ import { BsInfoCircle } from "react-icons/bs";
 import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 import { useProductStore } from "../store/book";
 import { useEffect } from "react";
-
+import BookDetailsModal from ".././components/modals/BookDetailsModal";
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
 
@@ -45,15 +45,7 @@ const BooksTable = ({ books }) => {
             </td>
             <td className="border border-slate-700 rounded-md text-center">
               <div className="flex justify-center gap-x-4">
-                <Link to={`/books/details/${book._id}`}>
-                  <BsInfoCircle className="text-2xl text-green-800" />
-                </Link>
-                <Link to={`/books/edit/${book._id}`}>
-                  <AiOutlineEdit className="text-2xl text-yellow-600" />
-                </Link>
-                <Link to={`/books/delete/${book._id}`}>
-                  <MdOutlineDelete className="text-2xl text-red-600" />
-                </Link>
+                <BookDetailsModal book={book} />
               </div>
             </td>
           </tr>

@@ -10,14 +10,14 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { BsInfoCircle } from "react-icons/bs";
+import { TbViewfinder } from "react-icons/tb";
 
 const BookDetailsModal = ({ book }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <BsInfoCircle
+      <TbViewfinder
         onClick={onOpen}
         className="text-2xl text-green-800 cursor-pointer"
       />
