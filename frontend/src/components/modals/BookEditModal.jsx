@@ -1,0 +1,149 @@
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  useDisclosure,
+  Box,
+  Heading,
+  Text,
+  FormControl,
+  FormLabel,
+  Input,
+  ModalFooter,
+  Button,
+  useToast,
+} from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { FiEdit } from "react-icons/fi";
+import { useProductStore } from "../../store/book.js";
+
+const OverlayOne = () => (
+  <ModalOverlay
+    bg="blackAlpha.300"
+    backdropFilter="blur(10px) hue-rotate(90deg)"
+  />
+);
+
+const BookEditModal = ({ book }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = useState(<OverlayOne />);
+  const [formData, setFormData] = useState({
+    title: book.title,
+    author: book.author,
+    publishYear: book.publishYear,
+  });
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
+  const toast = useToast();
+  const { updateProduct } = useProductStore();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const result = await updateProduct(book._id, formData);
+
+      if (result.success) {
+        toast({
+          title: "Book updated",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        onClose();
+      } else {
+        toast({
+          title: "Update failed",
+          description: result.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  return (
+    <>
+      <FiEdit
+        onClick={() => {
+          setOverlay(<OverlayOne />);
+          onOpen();
+        }}
+        className="text-2xl text-green-800 cursor-pointer"
+      />
+
+      <Modal
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        size="md"
+      >
+        {overlay}
+        <ModalContent>
+          <Text fontSize="xl" mb={4} px={6} py={2}>
+            ID: {book._id}
+          </Text>
+          <ModalHeader>Book Name: {book.title}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Title</FormLabel>
+              <Input
+                ref={initialRef}
+                placeholder="Title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Author</FormLabel>
+              <Input
+                placeholder="Author"
+                name="author"
+                value={formData.author}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Publish Year</FormLabel>
+              <Input
+                placeholder="Publish Year"
+                name="publishYear"
+                value={formData.publishYear}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleUpdate}>
+              Update
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export default BookEditModal;
