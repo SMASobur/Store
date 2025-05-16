@@ -6,6 +6,7 @@ import { useProductStore } from "../store/book";
 import { useEffect } from "react";
 import BookDetailsModal from ".././components/modals/BookDetailsModal";
 import BookEditModal from ".././components/modals/BookEditModal";
+import BookDeleteModal from ".././components/modals/BookDeleteModal";
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
 
@@ -48,6 +49,7 @@ const BooksTable = ({ books }) => {
               <div className="flex justify-center gap-x-4">
                 <BookDetailsModal book={book} />
                 <BookEditModal book={book} />
+                <BookDeleteModal book={book} />
               </div>
             </td>
           </tr>

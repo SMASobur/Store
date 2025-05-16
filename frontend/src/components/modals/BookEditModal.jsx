@@ -84,7 +84,7 @@ const BookEditModal = ({ book }) => {
           setOverlay(<OverlayOne />);
           onOpen();
         }}
-        className="text-2xl text-green-800 cursor-pointer"
+        className="text-2xl text-blue-800 cursor-pointer"
       />
 
       <Modal
