@@ -5,6 +5,7 @@ import {
   Heading,
   SimpleGrid,
   Text,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -18,6 +19,7 @@ import { BiCreditCardFront } from "react-icons/bi";
 import { PiBooksDuotone } from "react-icons/pi";
 
 const HomePage = () => {
+  const textColor = useColorModeValue("orange.600", "gray.300");
   return (
     <Container maxW="container.xl" py={12}>
       <VStack spacing={8}>
@@ -59,7 +61,7 @@ const HomePage = () => {
                   fontSize="xl"
                   textAlign={"center"}
                   mb={4}
-                  textColor="black"
+                  color={textColor}
                 >
                   Store (Cards View)
                 </Text>
@@ -84,7 +86,7 @@ const HomePage = () => {
                   fontSize="xl"
                   textAlign={"center"}
                   mb={4}
-                  textColor={"orange"}
+                  color={textColor}
                 >
                   Books (Table View)
                 </Text>

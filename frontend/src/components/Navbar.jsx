@@ -8,7 +8,6 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
-import { PlusSquareIcon } from "@chakra-ui/icons";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
 import { BiCreditCardFront } from "react-icons/bi";
@@ -35,7 +34,7 @@ const Navbar = () => {
           bgGradient={"linear(to-r, orange.400, yellow.400)"}
           bgClip={"text"}
         >
-          <Link to={"/"}> Management</Link>
+          <Link to={"/"}> KnitNox</Link>
         </Text>
 
         <HStack spacing={2} alignItems={"center"}>
