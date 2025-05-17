@@ -73,7 +73,7 @@ const BookDeleteModal = ({ book }) => {
               </Text>
 
               <Text fontSize="xl" mb={4}>
-                Delte the book: <strong>{book.title}</strong>
+                Delete the book: <strong>{book.title}</strong>
               </Text>
             </Box>
           </ModalBody>
