@@ -1,14 +1,30 @@
-import { Container, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import {
+  Container,
+  SimpleGrid,
+  Text,
+  useColorModeValue,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../store/product";
 import ProductCard from "../components/ProductCard";
+import CreateProductModal from "../components/modals/CreateProductModal";
+
 import React from "react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 
 const StoreCardView = () => {
   const { fetchProducts, products } = useProductStore();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { createProduct } = useProductStore();
+
+  const handleCreateProduct = async (productData) => {
+    // This will call your store's createProduct action
+    return await createProduct(productData);
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -17,24 +33,31 @@ const StoreCardView = () => {
 
   return (
     <Container maxW="container.xl" py={12}>
-      <VStack spacing={8}>
+      <div className="p-4">
         <div className="flex justify-between items-center">
           <Text
             fontSize={"30"}
             fontWeight={"bold"}
-            bgGradient={"linear(to-r, cyan.400, blue.500)"}
+            bgColor="orange.400"
             bgClip={"text"}
-            textAlign={"center"}
+            textAlign={"left"}
           >
             Current Products
           </Text>
-          <Link to={"/create"}>
-            <Button>
-              <PlusSquareIcon fontSize={20} />
-            </Button>
-          </Link>
+          <Button
+            onClick={onOpen}
+            bg={useColorModeValue("green.200", "green.700")}
+          >
+            <PlusSquareIcon fontSize={20} />
+          </Button>
+          <CreateProductModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onCreate={handleCreateProduct}
+          />
         </div>
-
+      </div>
+      <VStack spacing={8}>
         <SimpleGrid
           columns={{
             base: 1,

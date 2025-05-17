@@ -19,9 +19,9 @@ const BookPage = () => {
   }, []);
   return (
     <Container maxW="container.xl">
-      <div className="p-4">
+      <div className="p-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl my-8 p-4"> Book List</h1>
+          <h1 className="text-3xl my-82 p-2"> Book List</h1>
           <Link to={"/create"}>
             <Button>
               <PlusSquareIcon fontSize={20} />

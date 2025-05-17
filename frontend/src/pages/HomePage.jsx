@@ -28,9 +28,8 @@ const HomePage = () => {
           <Text
             fontSize={"30"}
             fontWeight={"bold"}
-            bgGradient={"linear(to-r, blue.400, blue.500)"}
+            bgColor="orange.400"
             bgClip={"text"}
-            textAlign={"center"}
           >
             View Port
           </Text>
