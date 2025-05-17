@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import BookDetailsModal from ".././components/modals/BookDetailsModal";
 import BookEditModal from ".././components/modals/BookEditModal";
 import BookDeleteModal from ".././components/modals/BookDeleteModal";
-import { useColorModeValue } from "@chakra-ui/react";
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
 

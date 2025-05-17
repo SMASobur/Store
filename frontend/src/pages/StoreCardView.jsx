@@ -33,8 +33,8 @@ const StoreCardView = () => {
 
   return (
     <Container maxW="container.xl" py={12}>
-      <div className="p-4">
-        <div className="flex justify-between items-center">
+      <div className="py-4">
+        <div className="flex  justify-between items-center">
           <Text
             fontSize={"30"}
             fontWeight={"bold"}
@@ -46,7 +46,7 @@ const StoreCardView = () => {
           </Text>
           <Button
             onClick={onOpen}
-            bg={useColorModeValue("green.200", "green.700")}
+            bg={useColorModeValue("green.200", "green.400")}
           >
             <PlusSquareIcon fontSize={20} />
           </Button>

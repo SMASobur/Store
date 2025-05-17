@@ -3,57 +3,130 @@ import { create } from "zustand";
 export const useProductStore = create((set) => ({
   products: [],
   setProducts: (products) => set({ products }),
+
   createProduct: async (newProduct) => {
-    if (!newProduct.name || !newProduct.image || !newProduct.price) {
-      return { success: false, message: "Please fill in all fields." };
+    // Validate with correct field names
+    if (!newProduct.title || !newProduct.author || !newProduct.publishYear) {
+      return {
+        success: false,
+        message:
+          "Please fill in all required fields (title, author, publishYear).",
+      };
     }
-    const res = await fetch("/api/books", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProduct),
-    });
-    const data = await res.json();
-    set((state) => ({ products: [...state.products, data.data] }));
-    return { success: true, message: "Product created successfully" };
+
+    try {
+      const res = await fetch("/api/books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: newProduct.title,
+          author: newProduct.author,
+          publishYear: newProduct.publishYear,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        return {
+          success: false,
+          message: errorData.message || "Failed to create book",
+        };
+      }
+
+      const data = await res.json();
+      set((state) => ({ products: [...state.products, data.data] }));
+      return {
+        success: true,
+        message: "Book created successfully",
+        data: data.data,
+      };
+    } catch (error) {
+      console.error("Create product error:", error);
+      return {
+        success: false,
+        message: "Network error. Please try again.",
+      };
+    }
   },
+
   fetchProducts: async () => {
-    const res = await fetch("/api/books");
-    const data = await res.json();
-    set({ products: data.data });
+    try {
+      const res = await fetch("/api/books");
+      const data = await res.json();
+      set({ products: data.data });
+      return { success: true, data: data.data };
+    } catch (error) {
+      console.error("Fetch products error:", error);
+      return { success: false, message: "Failed to fetch books" };
+    }
   },
+
   deleteProduct: async (pid) => {
-    const res = await fetch(`/api/books/${pid}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
+    try {
+      const res = await fetch(`/api/books/${pid}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
 
-    // update the ui immediately, without needing a refresh
-    set((state) => ({
-      products: state.products.filter((product) => product._id !== pid),
-    }));
-    return { success: true, message: data.message };
+      if (!data.success) {
+        return { success: false, message: data.message };
+      }
+
+      set((state) => ({
+        products: state.products.filter((product) => product._id !== pid),
+      }));
+      return { success: true, message: data.message };
+    } catch (error) {
+      console.error("Delete product error:", error);
+      return { success: false, message: "Network error during deletion" };
+    }
   },
+
   updateProduct: async (pid, updatedProduct) => {
-    const res = await fetch(`/api/books/${pid}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedProduct),
-    });
-    const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
+    try {
+      // Validate with correct field names
+      if (
+        !updatedProduct.title ||
+        !updatedProduct.author ||
+        !updatedProduct.publishYear
+      ) {
+        return {
+          success: false,
+          message:
+            "Please fill in all required fields (title, author, publishYear).",
+        };
+      }
 
-    // update the ui immediately, without needing a refresh
-    set((state) => ({
-      products: state.products.map((product) =>
-        product._id === pid ? data.data : product
-      ),
-    }));
+      const res = await fetch(`/api/books/${pid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: updatedProduct.title,
+          author: updatedProduct.author,
+          publishYear: updatedProduct.publishYear,
+        }),
+      });
 
-    return { success: true, message: data.message };
+      const data = await res.json();
+
+      if (!data.success) {
+        return { success: false, message: data.message };
+      }
+
+      set((state) => ({
+        products: state.products.map((product) =>
+          product._id === pid ? data.data : product
+        ),
+      }));
+
+      return { success: true, message: data.message };
+    } catch (error) {
+      console.error("Update product error:", error);
+      return { success: false, message: "Network error during update" };
+    }
   },
 }));

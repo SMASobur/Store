@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
-import { Button, Container } from "@chakra-ui/react";
+import { Button, Container, Text } from "@chakra-ui/react";
 import BooksTable from "../components/BooksTable";
+import BookCreateModal from "../components/modals/BookCreateModal";
 
 const BookPage = () => {
   const [books, setBooks] = useState([]);
@@ -18,15 +19,23 @@ const BookPage = () => {
       });
   }, []);
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" py={12}>
       <div className="p-2">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl my-82 p-2"> Book List</h1>
-          <Link to={"/create"}>
-            <Button>
-              <PlusSquareIcon fontSize={20} />
-            </Button>
-          </Link>
+        <div className="flex justify-between px-4 items-center">
+          <h1 className="text-3xl my-82 p-2">
+            {" "}
+            <Text
+              fontSize={"30"}
+              fontWeight={"bold"}
+              bgColor="orange.400"
+              bgClip={"text"}
+              textAlign={"left"}
+            >
+              Book List
+            </Text>
+          </h1>
+
+          <BookCreateModal />
         </div>
         <BooksTable books={books} />
       </div>

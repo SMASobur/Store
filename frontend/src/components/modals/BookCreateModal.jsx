@@ -1,0 +1,153 @@
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  useDisclosure,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  ModalFooter,
+  Button,
+  useToast,
+  IconButton,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { PlusSquareIcon } from "@chakra-ui/icons";
+import { useProductStore } from "../../store/book";
+
+const OverlayOne = () => (
+  <ModalOverlay
+    bg="blackAlpha.300"
+    backdropFilter="blur(10px) hue-rotate(90deg)"
+  />
+);
+
+const BookCreateModal = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [formData, setFormData] = useState({
+    title: "",
+    author: "",
+    publishYear: "",
+  });
+  const initialRef = useRef(null);
+  const toast = useToast();
+  const { createProduct, fetchProducts } = useProductStore();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreate = async () => {
+    try {
+      // Ensure all fields are filled
+      if (!formData.title || !formData.author || !formData.publishYear) {
+        toast({
+          title: "Error",
+          description: "Please fill all fields",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      const result = await createProduct({
+        title: formData.title,
+        author: formData.author,
+        publishYear: formData.publishYear,
+      });
+
+      if (result.success) {
+        toast({
+          title: "Book created",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        await fetchProducts();
+        setFormData({ title: "", author: "", publishYear: "" });
+        onClose();
+      } else {
+        toast({
+          title: "Creation failed",
+          description: result.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  return (
+    <>
+      <Button onClick={onOpen} bg={useColorModeValue("green.200", "green.400")}>
+        <PlusSquareIcon fontSize={20} />
+      </Button>
+
+      <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={initialRef}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add New Book</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl isRequired>
+              <FormLabel>Title</FormLabel>
+              <Input
+                ref={initialRef}
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder="Enter book title"
+              />
+            </FormControl>
+
+            <FormControl isRequired mt={4}>
+              <FormLabel>Author</FormLabel>
+              <Input
+                name="author"
+                value={formData.author}
+                onChange={handleInputChange}
+                placeholder="Enter author name"
+              />
+            </FormControl>
+
+            <FormControl isRequired mt={4}>
+              <FormLabel>Publish Year</FormLabel>
+              <Input
+                name="publishYear"
+                value={formData.publishYear}
+                onChange={handleInputChange}
+                placeholder="Enter publish year"
+                type="number"
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleCreate}>
+              Create
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export default BookCreateModal;
