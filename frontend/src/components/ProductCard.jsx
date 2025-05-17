@@ -1,79 +1,65 @@
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
   Heading,
   HStack,
   IconButton,
   Image,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
   useColorModeValue,
   useDisclosure,
   useToast,
-  VStack,
 } from "@chakra-ui/react";
+import { useRef, useState } from "react";
 import { useProductStore } from "../store/product";
-import { useState } from "react";
+import StoreEditModal from "./modals/StoreEditModal";
+import StoreDeleteModal from "./modals/StoreDeleteModal";
 
 const ProductCard = ({ product }) => {
-  const [updatedProduct, setUpdatedProduct] = useState(product);
+  const editModalRef = useRef(null);
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure();
 
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+
+  const { deleteProduct, updateProduct } = useProductStore();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const toast = useToast();
   const textColor = useColorModeValue("gray.600", "gray.200");
   const bg = useColorModeValue("white", "gray.700");
 
-  const { deleteProduct, updateProduct } = useProductStore();
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const handleDeleteProduct = async (pid) => {
-    const { success, message } = await deleteProduct(pid);
-    if (!success) {
+    setIsDeleting(true);
+    try {
+      const { success, message } = await deleteProduct(pid);
       toast({
-        title: "Error",
+        title: success ? "Success" : "Error",
         description: message,
-        status: "error",
+        status: success ? "success" : "error",
         duration: 3000,
         isClosable: true,
       });
-    } else {
-      toast({
-        title: "Success",
-        description: message,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   const handleUpdateProduct = async (pid, updatedProduct) => {
     const { success, message } = await updateProduct(pid, updatedProduct);
-    onClose();
-    if (!success) {
-      toast({
-        title: "Error",
-        description: message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Product updated successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
+    toast({
+      title: success ? "Success" : "Error",
+      description: success ? "Product updated successfully" : message,
+      status: success ? "success" : "error",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
@@ -103,72 +89,38 @@ const ProductCard = ({ product }) => {
         </Text>
 
         <HStack spacing={2}>
-          <IconButton icon={<EditIcon />} onClick={onOpen} colorScheme="blue" />
+          <IconButton
+            icon={<EditIcon />}
+            onClick={onEditOpen}
+            colorScheme="blue"
+            aria-label="Edit product"
+          />
           <IconButton
             icon={<DeleteIcon />}
-            onClick={() => handleDeleteProduct(product._id)}
+            onClick={onDeleteOpen}
             colorScheme="red"
+            aria-label="Delete product"
           />
         </HStack>
       </Box>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
+      <StoreEditModal
+        isOpen={isEditOpen}
+        onClose={onEditClose}
+        product={product}
+        onUpdate={handleUpdateProduct}
+        initialRef={editModalRef}
+      />
 
-        <ModalContent>
-          <ModalHeader>Update Product</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack spacing={4}>
-              <Input
-                placeholder="Product Name"
-                name="name"
-                value={updatedProduct.name}
-                onChange={(e) =>
-                  setUpdatedProduct({ ...updatedProduct, name: e.target.value })
-                }
-              />
-              <Input
-                placeholder="Price"
-                name="price"
-                type="number"
-                value={updatedProduct.price}
-                onChange={(e) =>
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    price: e.target.value,
-                  })
-                }
-              />
-              <Input
-                placeholder="Image URL"
-                name="image"
-                value={updatedProduct.image}
-                onChange={(e) =>
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    image: e.target.value,
-                  })
-                }
-              />
-            </VStack>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={() => handleUpdateProduct(product._id, updatedProduct)}
-            >
-              Update
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <StoreDeleteModal
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
+        product={product}
+        onConfirm={handleDeleteProduct}
+        isLoading={isDeleting}
+      />
     </Box>
   );
 };
+
 export default ProductCard;
