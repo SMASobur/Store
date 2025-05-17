@@ -1,12 +1,9 @@
-import { Link } from "react-router-dom";
-import { AiOutlineEdit } from "react-icons/ai";
-import { BsInfoCircle } from "react-icons/bs";
-import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 import { useProductStore } from "../store/book";
 import { useEffect } from "react";
 import BookDetailsModal from ".././components/modals/BookDetailsModal";
 import BookEditModal from ".././components/modals/BookEditModal";
 import BookDeleteModal from ".././components/modals/BookDeleteModal";
+import { useColorModeValue } from "@chakra-ui/react";
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
 
@@ -16,24 +13,30 @@ const BooksTable = ({ books }) => {
   console.log("products", products);
 
   return (
-    <table className="w-full border-separate border-spacing-2">
+    <table className="w-full border-separate border-spacing-2 p-2">
       <thead>
         <tr>
-          <th className="border border-slate-600 rounded-md">No.</th>
-          <th className="border border-slate-600 rounded-md">Title</th>
-          <th className="border border-slate-600 rounded-md max-md:hidden">
+          <th className="border-2  border-slate-600 rounded-md outline outline-offset-1 outline-1">
+            No.
+          </th>
+          <th className="border-2 border-slate-600 rounded-md outline outline-offset-1 outline-1">
+            Title
+          </th>
+          <th className="border-2 border-slate-600 rounded-md max-md:hidden outline outline-offset-1 outline-1">
             Author
           </th>
-          <th className="border border-slate-600 rounded-md max-md:hidden">
+          <th className="border-2 border-slate-600 rounded-md max-md:hidden outline outline-offset-1 outline-1">
             Publish year
           </th>
-          <th className="border border-slate-600 rounded-md ">Operations</th>
+          <th className="border-2 border-slate-600 rounded-md outline outline-offset-1 outline-1">
+            Operations
+          </th>
         </tr>
       </thead>
       <tbody>
         {products.map((book, index) => (
           <tr key={book._id} product={book}>
-            <td className="border border-slate-700 rounded-md text-center">
+            <td className="border border-slate-700  rounded-md text-center">
               {index + 1}
             </td>
             <td className="border border-slate-700 rounded-md text-center">

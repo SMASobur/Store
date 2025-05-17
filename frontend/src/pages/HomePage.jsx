@@ -20,6 +20,7 @@ import { PiBooksDuotone } from "react-icons/pi";
 
 const HomePage = () => {
   const textColor = useColorModeValue("orange.600", "gray.300");
+  const bg = useColorModeValue("white", "gray.600");
   return (
     <Container maxW="container.xl" py={12}>
       <VStack spacing={8}>
@@ -50,6 +51,7 @@ const HomePage = () => {
             overflow="hidden"
             transition="all 0.3s"
             _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
+            bg={bg}
           >
             <Link to={"/cards"}>
               <Flex alignItems={"center"}>
@@ -75,6 +77,7 @@ const HomePage = () => {
             overflow="hidden"
             transition="all 0.3s"
             _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
+            bg={bg}
           >
             <Link to={"/books"}>
               <Flex alignItems={"center"}>

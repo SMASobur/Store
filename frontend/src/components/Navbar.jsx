@@ -5,6 +5,7 @@ import {
   HStack,
   Text,
   useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
@@ -14,11 +15,12 @@ import { BiCreditCardFront } from "react-icons/bi";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const bg = useColorModeValue("white", "gray.700");
 
   return (
-    <Container maxW={"1140px"} px={4}>
+    <Container maxW="container.xl" px={4} bg={bg}>
       <Flex
-        h={16}
+        h={20}
         alignItems={"center"}
         justifyContent={"space-between"}
         flexDir={{
