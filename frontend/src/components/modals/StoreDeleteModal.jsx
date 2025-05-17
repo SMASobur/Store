@@ -44,7 +44,6 @@ const StoreDeleteModal = ({
         <ModalBody>
           <Text>
             Are you sure you want to delete <strong>{product.name}</strong>?
-            This action cannot be undone.
           </Text>
         </ModalBody>
         <ModalFooter>
