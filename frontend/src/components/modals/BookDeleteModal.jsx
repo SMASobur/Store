@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineDelete } from "react-icons/md";
 import { useProductStore } from "../../store/book";
+import { motion } from "framer-motion";
 
 const BookDeleteModal = ({ book }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -54,16 +55,32 @@ const BookDeleteModal = ({ book }) => {
 
   return (
     <>
-      <MdOutlineDelete
-        onClick={onOpen}
-        className="text-2xl text-red-800 cursor-pointer"
-      />
+      <motion.div
+        whileHover={{ scale: 1.2, rotate: 10 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MdOutlineDelete
+          onClick={onOpen}
+          className="text-2xl text-red-500 cursor-pointer"
+        />
+      </motion.div>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader alignSelf="center">
-            <MdOutlineDelete className="text-8xl align-middle text-red-800 cursor-pointer" />
+            <motion.div
+              animate={{
+                y: [0, -10, 0], // up then down
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <MdOutlineDelete className="text-8xl text-red-600 cursor-pointer" />
+            </motion.div>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -79,8 +96,14 @@ const BookDeleteModal = ({ book }) => {
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="red" mr={3} onClick={handleDelete}>
-              Delete
+              <motion.div
+                whileHover={{ scale: 1.2, rotate: 10 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <MdOutlineDelete className="text-4xl cursor-pointer" />
+              </motion.div>
             </Button>
+
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>

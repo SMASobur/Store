@@ -19,6 +19,7 @@ import {
 import { useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { useProductStore } from "../../store/book.js";
+import { motion } from "framer-motion";
 
 const OverlayOne = () => (
   <ModalOverlay
@@ -79,13 +80,18 @@ const BookEditModal = ({ book }) => {
 
   return (
     <>
-      <FiEdit
-        onClick={() => {
-          setOverlay(<OverlayOne />);
-          onOpen();
-        }}
-        className="text-2xl text-blue-800 cursor-pointer"
-      />
+      <motion.div
+        whileHover={{ scale: 1.2, rotate: 10 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <FiEdit
+          onClick={() => {
+            setOverlay(<OverlayOne />);
+            onOpen();
+          }}
+          className="text-2xl text-blue-500 cursor-pointer"
+        />
+      </motion.div>
 
       <Modal
         initialFocusRef={initialRef}

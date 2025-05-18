@@ -19,6 +19,8 @@ import {
 import { useRef, useState } from "react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { useProductStore } from "../../store/book";
+import { motion } from "framer-motion";
+import { MdAddBox } from "react-icons/md";
 
 const OverlayOne = () => (
   <ModalOverlay
@@ -95,9 +97,15 @@ const BookCreateModal = () => {
 
   return (
     <>
-      <Button onClick={onOpen} bg={useColorModeValue("green.200", "green.400")}>
-        <PlusSquareIcon fontSize={20} />
-      </Button>
+      <motion.div
+        whileHover={{ scale: 1.2, rotate: 10 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MdAddBox
+          onClick={onOpen}
+          className="text-5xl text-orange-500 cursor-pointer"
+        />
+      </motion.div>
 
       <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={initialRef}>
         <ModalOverlay />

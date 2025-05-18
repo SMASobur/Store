@@ -10,7 +10,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { TbListDetails } from "react-icons/tb";
+import { motion } from "framer-motion";
+import { MdOutlineViewDay } from "react-icons/md";
 const OverlayOne = () => (
   <ModalOverlay
     bg="blackAlpha.300"
@@ -24,13 +25,18 @@ const BookDetailsModal = ({ book }) => {
 
   return (
     <>
-      <TbListDetails
-        onClick={() => {
-          setOverlay(<OverlayOne />);
-          onOpen();
-        }}
-        className="text-2xl text-green-800 cursor-pointer"
-      />
+      <motion.div
+        whileHover={{ scale: 1.2, rotate: 10 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MdOutlineViewDay
+          onClick={() => {
+            setOverlay(<OverlayOne />);
+            onOpen();
+          }}
+          className="text-2xl text-green-500 cursor-pointer"
+        />
+      </motion.div>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         {overlay}
