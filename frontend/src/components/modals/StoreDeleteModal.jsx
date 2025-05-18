@@ -10,7 +10,6 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { MdOutlineDelete } from "react-icons/md";
 
 const StoreDeleteModal = ({
   isOpen,
@@ -40,17 +39,11 @@ const StoreDeleteModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader alignSelf="center">
-          <MdOutlineDelete className="text-8xl align-middle text-red-800 cursor-pointer" />
-        </ModalHeader>
+        <ModalHeader>Confirm Deletion</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text fontSize="xl" mb={4}>
-            <strong>Are you sure?</strong>
-          </Text>
-
-          <Text fontSize="xl" mb={4}>
-            Delete the book: <strong>{product.name}</strong>
+          <Text>
+            Are you sure you want to delete <strong>{product.name}</strong>?
           </Text>
         </ModalBody>
         <ModalFooter>

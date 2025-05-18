@@ -5,6 +5,7 @@ import {
   HStack,
   IconButton,
   Image,
+  Link,
   Text,
   useColorModeValue,
   useDisclosure,
@@ -14,6 +15,7 @@ import { useRef, useState } from "react";
 import { useProductStore } from "../store/product";
 import StoreEditModal from "./modals/StoreEditModal";
 import StoreDeleteModal from "./modals/StoreDeleteModal";
+import ProductDetailsModal from "./modals/ProductDetailsModal";
 
 const ProductCard = ({ product }) => {
   const editModalRef = useRef(null);
@@ -27,6 +29,12 @@ const ProductCard = ({ product }) => {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isDetailsOpen,
+    onOpen: onDetailsOpen,
+    onClose: onDetailsClose,
   } = useDisclosure();
 
   const { deleteProduct, updateProduct } = useProductStore();
@@ -71,13 +79,15 @@ const ProductCard = ({ product }) => {
       _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
       bg={bg}
     >
-      <Image
-        src={product.image}
-        alt={product.name}
-        h={48}
-        w="full"
-        objectFit="cover"
-      />
+      <Link onClick={onDetailsOpen}>
+        <Image
+          src={product.image}
+          alt={product.name}
+          h={48}
+          w="full"
+          objectFit="cover"
+        />
+      </Link>
 
       <Box p={4}>
         <Heading as="h3" size="md" mb={2}>
@@ -103,6 +113,12 @@ const ProductCard = ({ product }) => {
           />
         </HStack>
       </Box>
+
+      <ProductDetailsModal
+        isOpen={isDetailsOpen}
+        onClose={onDetailsClose}
+        product={product}
+      />
 
       <StoreEditModal
         isOpen={isEditOpen}
