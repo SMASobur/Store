@@ -35,6 +35,7 @@ const BookEditModal = ({ book }) => {
     title: book.title,
     author: book.author,
     publishYear: book.publishYear,
+    price: book.price,
   });
   const initialRef = useRef(null);
   const finalRef = useRef(null);
@@ -135,6 +136,15 @@ const BookEditModal = ({ book }) => {
                 placeholder="Publish Year"
                 name="publishYear"
                 value={formData.publishYear}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Price</FormLabel>
+              <Input
+                placeholder="Price"
+                name="price"
+                value={formData.price}
                 onChange={handleInputChange}
               />
             </FormControl>

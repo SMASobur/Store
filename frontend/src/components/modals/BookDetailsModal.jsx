@@ -8,6 +8,8 @@ import {
   useDisclosure,
   Box,
   Text,
+  ModalFooter,
+  Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -54,10 +56,16 @@ const BookDetailsModal = ({ book }) => {
                 <strong>Publish Year:</strong> {book.publishYear}
               </Text>
               <Text fontSize="xl" mb={4}>
+                <strong>Price:</strong> {book.price}
+              </Text>
+              <Text fontSize="xl" mb={4}>
                 <strong>ID:</strong> {book._id}
               </Text>
             </Box>
           </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Close</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

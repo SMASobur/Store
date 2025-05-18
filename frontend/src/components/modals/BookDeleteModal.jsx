@@ -15,11 +15,21 @@ import {
 import { MdOutlineDelete } from "react-icons/md";
 import { useProductStore } from "../../store/book";
 import { motion } from "framer-motion";
+import { useState } from "react";
+
+const Overlay = () => (
+  <ModalOverlay
+    bg="blackAlpha.300"
+    backdropFilter="blur(10px) hue-rotate(90deg)"
+  />
+);
 
 const BookDeleteModal = ({ book }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { deleteProduct } = useProductStore();
   const toast = useToast();
+  const [overlay, setOverlay] = useState(<Overlay />);
+
   const handleDelete = async () => {
     try {
       const result = await deleteProduct(book._id);
@@ -60,13 +70,16 @@ const BookDeleteModal = ({ book }) => {
         whileTap={{ scale: 0.9 }}
       >
         <MdOutlineDelete
-          onClick={onOpen}
+          onClick={() => {
+            setOverlay(<Overlay />);
+            onOpen();
+          }}
           className="text-2xl text-red-500 cursor-pointer"
         />
       </motion.div>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md">
-        <ModalOverlay />
+        {overlay}
         <ModalContent>
           <ModalHeader alignSelf="center">
             <motion.div

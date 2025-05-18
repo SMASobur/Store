@@ -22,19 +22,13 @@ import { useProductStore } from "../../store/book";
 import { motion } from "framer-motion";
 import { MdAddBox } from "react-icons/md";
 
-const OverlayOne = () => (
-  <ModalOverlay
-    bg="blackAlpha.300"
-    backdropFilter="blur(10px) hue-rotate(90deg)"
-  />
-);
-
 const BookCreateModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [formData, setFormData] = useState({
     title: "",
     author: "",
     publishYear: "",
+    price: "",
   });
   const initialRef = useRef(null);
   const toast = useToast();
@@ -48,7 +42,7 @@ const BookCreateModal = () => {
   const handleCreate = async () => {
     try {
       // Ensure all fields are filled
-      if (!formData.title || !formData.author || !formData.publishYear) {
+      if (!formData.title || !formData.author || !formData.price) {
         toast({
           title: "Error",
           description: "Please fill all fields",
@@ -63,6 +57,7 @@ const BookCreateModal = () => {
         title: formData.title,
         author: formData.author,
         publishYear: formData.publishYear,
+        price: formData.price,
       });
 
       if (result.success) {
@@ -73,7 +68,7 @@ const BookCreateModal = () => {
           isClosable: true,
         });
         await fetchProducts();
-        setFormData({ title: "", author: "", publishYear: "" });
+        setFormData({ title: "", author: "", publishYear: "", price: "" });
         onClose();
       } else {
         toast({
@@ -134,13 +129,23 @@ const BookCreateModal = () => {
               />
             </FormControl>
 
-            <FormControl isRequired mt={4}>
+            <FormControl>
               <FormLabel>Publish Year</FormLabel>
               <Input
                 name="publishYear"
                 value={formData.publishYear}
                 onChange={handleInputChange}
                 placeholder="Enter publish year"
+                type="number"
+              />
+            </FormControl>
+            <FormControl isRequired mt={4}>
+              <FormLabel>Price</FormLabel>
+              <Input
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                placeholder="Enter price"
                 type="number"
               />
             </FormControl>

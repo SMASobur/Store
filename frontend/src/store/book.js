@@ -6,7 +6,7 @@ export const useProductStore = create((set) => ({
 
   createProduct: async (newProduct) => {
     // Validate with correct field names
-    if (!newProduct.title || !newProduct.author || !newProduct.publishYear) {
+    if (!newProduct.title || !newProduct.author || !newProduct.price) {
       return {
         success: false,
         message:
@@ -24,6 +24,7 @@ export const useProductStore = create((set) => ({
           title: newProduct.title,
           author: newProduct.author,
           publishYear: newProduct.publishYear,
+          price: newProduct.price,
         }),
       });
 
@@ -95,7 +96,7 @@ export const useProductStore = create((set) => ({
         return {
           success: false,
           message:
-            "Please fill in all required fields (title, author, publishYear).",
+            "Please fill in all required fields (title, author, publishYear ).",
         };
       }
 
@@ -108,6 +109,7 @@ export const useProductStore = create((set) => ({
           title: updatedProduct.title,
           author: updatedProduct.author,
           publishYear: updatedProduct.publishYear,
+          price: updatedProduct.price,
         }),
       });
 
