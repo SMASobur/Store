@@ -91,12 +91,12 @@ export const useProductStore = create((set) => ({
       if (
         !updatedProduct.title ||
         !updatedProduct.author ||
-        !updatedProduct.publishYear
+        !updatedProduct.price
       ) {
         return {
           success: false,
           message:
-            "Please fill in all required fields (title, author, publishYear ).",
+            "Please fill in all required fields (title, author, price. ).",
         };
       }
 

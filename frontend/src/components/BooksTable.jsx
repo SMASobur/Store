@@ -1,5 +1,5 @@
 import { useProductStore } from "../store/book";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import BookDetailsModal from ".././components/modals/BookDetailsModal";
 import BookEditModal from ".././components/modals/BookEditModal";
 import BookDeleteModal from ".././components/modals/BookDeleteModal";
@@ -8,7 +8,7 @@ import useIsMobile from "./hooks/useIsMobile";
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
   const total = products.reduce(
-    (sum, book) => sum + (Number(book.publishYear) || 0),
+    (sum, book) => sum + (Number(book.price) || 0),
     0
   );
 
@@ -77,8 +77,8 @@ const BooksTable = ({ books }) => {
           <tr>
             <td colSpan={colSpanValue}></td>
             <td className=" text-center ">
-              <p className="text-lg ">
-                Total: <span className="text-blue-600">{total}</span>
+              <p className="text-base font-semibold">
+                Total: <span className="font-medium">{total}</span>
               </p>
             </td>
           </tr>

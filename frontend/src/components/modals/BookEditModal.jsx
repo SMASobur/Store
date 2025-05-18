@@ -109,7 +109,7 @@ const BookEditModal = ({ book }) => {
           <ModalHeader>Book Name: {book.title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl>
+            <FormControl isRequired>
               <FormLabel>Title</FormLabel>
               <Input
                 ref={initialRef}
@@ -120,7 +120,7 @@ const BookEditModal = ({ book }) => {
               />
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel>Author</FormLabel>
               <Input
                 placeholder="Author"
@@ -139,7 +139,7 @@ const BookEditModal = ({ book }) => {
                 onChange={handleInputChange}
               />
             </FormControl>
-            <FormControl mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel>Price</FormLabel>
               <Input
                 placeholder="Price"
@@ -149,6 +149,9 @@ const BookEditModal = ({ book }) => {
               />
             </FormControl>
           </ModalBody>
+          <Text color={"red.500"} px={6}>
+            * Fields are mandatory.{" "}
+          </Text>
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleUpdate}>

@@ -99,7 +99,7 @@ export const updateProductBooks = async (req, res) => {
     }
 
     // Validate required fields
-    if (!title || !author || !publishYear) {
+    if (!title || !author || !price) {
       return res.status(400).json({
         success: false,
         message: "Fields (title, author, publishYear) are required.",

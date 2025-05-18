@@ -2,19 +2,13 @@ import {
   Box,
   Container,
   Flex,
-  Heading,
   SimpleGrid,
   Text,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useProductStore } from "../store/product";
-import ProductCard from "../components/ProductCard";
 import React from "react";
-import { PlusSquareIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
 import { BiCreditCardFront } from "react-icons/bi";
 import { PiBooksDuotone } from "react-icons/pi";
 
