@@ -15,6 +15,7 @@ import {
   useToast,
   IconButton,
   useColorModeValue,
+  Text,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
