@@ -13,7 +13,7 @@ const Footer = () => {
     <Box
       as="footer"
       py={4}
-      bg={useColorModeValue("gray.100", "gray.900")}
+      bg={useColorModeValue("gray.300", "gray.700")}
       color={useColorModeValue("gray.700", "gray.200")}
       mt={0}
       textAlign="center"

@@ -20,10 +20,10 @@ const Navbar = () => {
 
   return (
     <Box
-      bg={useColorModeValue("gray.300", "gray.900")}
+      bg={useColorModeValue("gray.300", "gray.700")}
       color={useColorModeValue("gray.700", "gray.200")}
     >
-      <Container maxW="fit" px={4}>
+      <Container maxW="fit" px={4} py={4}>
         <Flex
           h={20}
           alignItems={"center"}

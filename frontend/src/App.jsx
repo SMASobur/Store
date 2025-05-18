@@ -11,7 +11,7 @@ import Footer from "./components/Footer";
 function App() {
   return (
     <>
-      <Box minH={"100vh"} bg={useColorModeValue("gray.200", "gray.800")}>
+      <Box minH={"100vh"} bg={useColorModeValue("gray.200", "gray.500")}>
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
