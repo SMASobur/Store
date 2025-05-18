@@ -58,8 +58,30 @@ const BookDetailsModal = ({ book }) => {
               <Text fontSize="xl" mb={4}>
                 <strong>Price:</strong> {book.price}
               </Text>
+
               <Text fontSize="xl" mb={4}>
-                <strong>ID:</strong> {book._id}
+                Created at:{" "}
+                {new Date(book.createdAt).toLocaleString("en-SE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: false,
+                })}
+              </Text>
+              <Text fontSize="xl" mb={4}>
+                Updated at:{" "}
+                {new Date(book.updatedAt).toLocaleString("en-SE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: false,
+                })}
               </Text>
             </Box>
           </ModalBody>
