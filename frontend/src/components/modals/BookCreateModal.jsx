@@ -151,6 +151,9 @@ const BookCreateModal = () => {
               />
             </FormControl>
           </ModalBody>
+          <Text color={"red.500"} px={6}>
+            * Fields are mandatory.{" "}
+          </Text>
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleCreate}>
