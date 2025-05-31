@@ -48,14 +48,21 @@ const HomePage = () => {
             bg={bg}
           >
             <Link to={"/cards"}>
-              <Flex alignItems={"center"} p={"2"}>
+              <Flex
+                direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
+                alignItems="center"
+                justifyContent="center"
+                p="4"
+                textAlign="center"
+              >
                 <Box>
                   <BiCreditCardFront size="250" color="orange" />
                 </Box>
                 <Text
                   fontWeight="bold"
                   fontSize="xl"
-                  textAlign={"center"}
+                  mt={{ base: 1, md: 0 }} // Add top margin only on mobile
+                  ml={{ md: 4 }} // Add left margin only on desktop
                   color={textColor}
                 >
                   Store (Cards View)
@@ -73,15 +80,21 @@ const HomePage = () => {
             bg={bg}
           >
             <Link to={"/books"}>
-              <Flex alignItems={"center"}>
+              <Flex
+                direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
+                alignItems="center"
+                justifyContent="center"
+                p="4"
+                textAlign="center"
+              >
                 <Box>
                   <PiBooksDuotone size="250" color="orange" />
                 </Box>
                 <Text
                   fontWeight="bold"
                   fontSize="xl"
-                  textAlign={"center"}
-                  mb={4}
+                  mt={{ base: 1, md: 0 }} // Add top margin only on mobile
+                  ml={{ md: 4 }} // Add left margin only on desktop
                   color={textColor}
                 >
                   Books (Table View)
