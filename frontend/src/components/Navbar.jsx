@@ -7,7 +7,11 @@ import {
   Text,
   useColorMode,
   useColorModeValue,
+  Image,
+  Stack,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom"; // If using React Router
 import { Link } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
 import { IoMoon } from "react-icons/io5";
@@ -27,11 +31,15 @@ const Navbar = () => {
         <Flex
           h={20}
           alignItems={"center"}
-          justifyContent={"space-between"}
+          justifyContent={{
+            base: "center", // Center on mobile
+            sm: "space-between", // Space between on larger screens
+          }}
           flexDir={{
             base: "column",
             sm: "row",
           }}
+          gap={{ base: 4, sm: 0 }} // Add gap between logo and buttons on mobile
         >
           <Text
             fontSize={{ base: "22", sm: "38" }}
@@ -41,7 +49,24 @@ const Navbar = () => {
             bgGradient={"linear(to-r, orange.400, yellow.400)"}
             bgClip={"text"}
           >
-            <Link to={"/"}> KnitNox</Link>
+            <Flex direction="row" align="center">
+              <ChakraLink
+                as={RouterLink}
+                to="/"
+                display="flex"
+                alignItems="center"
+                justifyContent="center" // Ensure center alignment
+              >
+                <Image
+                  boxSize={{ base: "40px", sm: "50px" }} // Smaller on mobile
+                  objectFit="cover"
+                  src="/fav.png"
+                  alt="Logo"
+                  mx={2} // Adds margin on left & right
+                />
+                KnitNox
+              </ChakraLink>
+            </Flex>
           </Text>
 
           <HStack spacing={2} alignItems={"center"}>
