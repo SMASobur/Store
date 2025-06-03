@@ -1,5 +1,6 @@
-import { Box, Divider, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
+
 import CreatePage from "./pages/CreatePage";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
@@ -7,18 +8,41 @@ import BookPage from "./pages/BookPage";
 import StoreCardView from "./pages/StoreCardView";
 import AboutPage from "./pages/AboutPage";
 import Footer from "./components/Footer";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <>
-      <Box minH={"100vh"} bg={useColorModeValue("gray.200", "gray.500")}>
+      <Box minH="100vh" bg={useColorModeValue("gray.200", "gray.500")}>
         <Navbar />
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/create" element={<CreatePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          {/* <Route path="/about" element={<AboutPage />} /> */}
           <Route path="/books" element={<BookPage />} />
           <Route path="/cards" element={<StoreCardView />} />
-          <Route path="/about" element={<AboutPage />} />
+
+          {/* Private Routes */}
+          <Route
+            path="/create"
+            element={
+              <PrivateRoute>
+                <CreatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <PrivateRoute>
+                <AboutPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </Box>
       <Footer />

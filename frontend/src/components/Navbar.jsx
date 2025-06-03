@@ -8,19 +8,26 @@ import {
   useColorMode,
   useColorModeValue,
   Image,
-  Stack,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom"; // If using React Router
-import { Link } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
+import { CiLogout, CiLogin } from "react-icons/ci";
 import { BiCreditCardFront } from "react-icons/bi";
 import { MdOutlineDeveloperMode } from "react-icons/md";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { user, logout } = useAuth(); // ✅ Get user & logout
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <Box
@@ -32,16 +39,16 @@ const Navbar = () => {
           h={20}
           alignItems={"center"}
           justifyContent={{
-            base: "center", // Center on mobile
-            sm: "space-between", // Space between on larger screens
+            base: "center",
+            sm: "space-between",
           }}
           flexDir={{
             base: "column",
             sm: "row",
           }}
-          gap={{ base: 4, sm: 0 }} // Add gap between logo and buttons on mobile
+          gap={{ base: 4, sm: 0 }}
         >
-          <Text
+          <Box
             fontSize={{ base: "22", sm: "38" }}
             fontWeight={"bold"}
             textTransform={"uppercase"}
@@ -55,43 +62,61 @@ const Navbar = () => {
                 to="/"
                 display="flex"
                 alignItems="center"
-                justifyContent="center" // Ensure center alignment
+                justifyContent="center"
               >
                 <Image
-                  boxSize={{ base: "40px", sm: "50px" }} // Smaller on mobile
+                  boxSize={{ base: "40px", sm: "50px" }}
                   objectFit="cover"
                   src="/fav.png"
                   alt="Logo"
-                  mx={2} // Adds margin on left & right
+                  mx={2}
                 />
                 KnitNox
               </ChakraLink>
             </Flex>
-          </Text>
+          </Box>
 
           <HStack spacing={2} alignItems={"center"}>
-            <Link to={"/cards"}>
+            <RouterLink to="/cards">
               <Button>
                 <BiCreditCardFront fontSize={20} />
               </Button>
-            </Link>
-            <Link to={"/books"}>
+            </RouterLink>
+            <RouterLink to="/books">
               <Button>
                 <PiBooksDuotone fontSize={20} />
               </Button>
-            </Link>
-            <Link to={"/about"}>
+            </RouterLink>
+            <RouterLink to="/about">
               <Button>
                 <MdOutlineDeveloperMode size={30} />
               </Button>
-            </Link>
+            </RouterLink>
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
             </Button>
+
+            {user ? (
+              <>
+                <Text fontSize="sm">Hi, {user.name}</Text>
+                <Button size="sm" colorScheme="red" onClick={handleLogout}>
+                  <CiLogout />
+                </Button>
+              </>
+            ) : (
+              <>
+                <RouterLink to="/login">
+                  <Button size="sm" colorScheme="teal" variant="outline">
+                    <CiLogin />
+                  </Button>
+                </RouterLink>
+              </>
+            )}
           </HStack>
         </Flex>
       </Container>
     </Box>
   );
 };
+
 export default Navbar;
