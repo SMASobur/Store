@@ -1,0 +1,43 @@
+.
+├── backend
+│   ├── config
+│   │   └── db.js
+│   ├── controllers
+│   │   ├── book.controller.js
+│   │   └── product.controller.js
+│   ├── middleware
+│   ├── models
+│   │   ├── book.model.js
+│   │   └── product.model.js
+│   ├── routes
+│   │   ├── book.route.js
+│   │   └── product.route.js
+│   └── server.js
+├── frontend
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── public
+│   │   ├── fav.png
+│   │   └── vite.svg
+│   ├── README.md
+│   ├── src
+│   │   ├── App.jsx
+│   │   ├── components
+│   │   ├── context
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── pages
+│   │   ├── store
+│   │   └── theme.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
+├── package-lock.json
+├── package.json
+├── project-tree.txt
+├── structure.txt
+└── terminal.txt
+
+14 directories, 27 files

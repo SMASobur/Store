@@ -6,19 +6,15 @@ import {
   ModalCloseButton,
   ModalBody,
   useDisclosure,
-  Box,
   FormControl,
   FormLabel,
   Input,
   ModalFooter,
   Button,
   useToast,
-  IconButton,
-  useColorModeValue,
   Text,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
-import { PlusSquareIcon } from "@chakra-ui/icons";
 import { useProductStore } from "../../store/book";
 import { motion } from "framer-motion";
 import { MdAddBox } from "react-icons/md";
@@ -34,6 +30,7 @@ const BookCreateModal = () => {
   const initialRef = useRef(null);
   const toast = useToast();
   const { createProduct, fetchProducts } = useProductStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +38,9 @@ const BookCreateModal = () => {
   };
 
   const handleCreate = async () => {
+    if (isSubmitting) return;
     try {
+      setIsSubmitting(true);
       // Ensure all fields are filled
       if (!formData.title || !formData.author || !formData.price) {
         toast({
@@ -51,6 +50,7 @@ const BookCreateModal = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false); // reset before return
         return;
       }
 
@@ -62,6 +62,7 @@ const BookCreateModal = () => {
       });
 
       if (result.success) {
+        onClose();
         toast({
           title: "Book created",
           status: "success",
@@ -70,7 +71,6 @@ const BookCreateModal = () => {
         });
         await fetchProducts();
         setFormData({ title: "", author: "", publishYear: "", price: "" });
-        onClose();
       } else {
         toast({
           title: "Creation failed",
@@ -88,6 +88,8 @@ const BookCreateModal = () => {
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -155,11 +157,26 @@ const BookCreateModal = () => {
             * Fields are mandatory.{" "}
           </Text>
 
-          <ModalFooter>
+          {/* <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleCreate}>
               Create
             </Button>
             <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter> */}
+
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleCreate}
+              isLoading={isSubmitting}
+              loadingText="Creating..."
+            >
+              Create
+            </Button>
+            <Button onClick={onClose} isDisabled={isSubmitting}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
