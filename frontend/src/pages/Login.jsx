@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation, Link as RouterLink } from "react-router-dom";
+import { Button, Input, Box, Text, VStack } from "@chakra-ui/react";
+import { CiLogin } from "react-icons/ci";
 
 export default function Login() {
   const { login } = useAuth();
@@ -23,35 +24,62 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <Box maxW="md" mx="auto" p={6}>
       {message && (
-        <p style={{ color: "red", marginBottom: "1rem" }}>{message}</p>
+        <Text color="red.500" mb={4}>
+          {message}
+        </Text>
       )}
-      <form onSubmit={handleSubmit} className="p-4 max-w-md mx-auto">
-        <h2 className="text-2xl mb-4">Login</h2>
-        {err && <p className="text-red-500">{err}</p>}
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 my-2 border"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 my-2 border"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="bg-blue-500 text-white px-4 py-2 mt-2">Login</button>
+      <form onSubmit={handleSubmit}>
+        <VStack spacing={4} align="stretch">
+          <Text fontSize="2xl" fontWeight="bold">
+            Login
+          </Text>
+          {err && <Text color="red.500">{err}</Text>}
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            variant="filled"
+            focusBorderColor="blue.500"
+            fontSize="lg"
+            py={5}
+            borderRadius="md"
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="filled"
+            focusBorderColor="blue.500"
+            fontSize="lg"
+            py={5}
+            borderRadius="md"
+          />
+          <Button
+            colorScheme="blue"
+            type="submit"
+            leftIcon={<CiLogin size={20} />}
+          >
+            Login
+          </Button>
+        </VStack>
       </form>
-      <p className="mt-4 text-center">
-        Don't have an account?{" "}
-        <Link to="/register" className="text-blue-600 hover:underline">
-          Register here
-        </Link>
-      </p>
-    </div>
+      <Text mt={4} textAlign="center">
+        Don&apos;t have an account?{" "}
+        <RouterLink to="/register">
+          <Text
+            as="span"
+            color="blue.600"
+            textDecoration="underline"
+            cursor="pointer"
+          >
+            Register here
+          </Text>
+        </RouterLink>
+      </Text>
+    </Box>
   );
 }

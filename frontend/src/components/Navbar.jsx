@@ -21,7 +21,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { user, logout } = useAuth(); // ✅ Get user & logout
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -87,26 +87,27 @@ const Navbar = () => {
                 <PiBooksDuotone fontSize={20} />
               </Button>
             </RouterLink>
-            <RouterLink to="/about">
-              <Button>
-                <MdOutlineDeveloperMode size={30} />
-              </Button>
-            </RouterLink>
+
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
             </Button>
 
             {user ? (
               <>
+                <RouterLink to="/about">
+                  <Button>
+                    <MdOutlineDeveloperMode size={30} />
+                  </Button>
+                </RouterLink>
                 <Text fontSize="sm">Hi, {user.name}</Text>
-                <Button size="sm" colorScheme="red" onClick={handleLogout}>
+                <Button colorScheme="red" onClick={handleLogout}>
                   <CiLogout />
                 </Button>
               </>
             ) : (
               <>
                 <RouterLink to="/login">
-                  <Button size="sm" colorScheme="teal" variant="outline">
+                  <Button colorScheme="blue">
                     <CiLogin />
                   </Button>
                 </RouterLink>
