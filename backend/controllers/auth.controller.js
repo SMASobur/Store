@@ -5,9 +5,25 @@ import jwt from "jsonwebtoken";
 const SECRET = process.env.JWT_SECRET || "yoursecretkey";
 
 export const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, code } = req.body;
+  const REQUIRED_CODE = process.env.REGISTRATION_CODE;
+  // Debug logs to confirm values
+  // console.log("Received code:", code);
+  // console.log("Expected code:", REQUIRED_CODE);
+
+  if (code !== REQUIRED_CODE) {
+    return res.status(400).json({ message: "Invalid registration code." });
+  }
+
+  // Check the user already exists or not
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: "Email already registered." });
+  }
+
   const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({ name, email, password: hashed });
+
   res.status(201).json({ message: "User registered", user });
 };
 
