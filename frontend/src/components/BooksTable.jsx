@@ -4,9 +4,11 @@ import BookDetailsModal from ".././components/modals/BookDetailsModal";
 import BookEditModal from ".././components/modals/BookEditModal";
 import BookDeleteModal from ".././components/modals/BookDeleteModal";
 import useIsMobile from "./hooks/useIsMobile";
+import { useAuth } from "../context/AuthContext";
 
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
+  const { user } = useAuth();
   const total = products.reduce(
     (sum, book) => sum + (Number(book.price) || 0),
     0
@@ -41,6 +43,7 @@ const BooksTable = ({ books }) => {
             <th className="border-2 border-slate-400 rounded-md outline outline-offset-1 outline-1">
               Price
             </th>
+
             <th className="border-2 border-slate-400 rounded-md outline outline-offset-1 outline-1">
               Operations
             </th>
@@ -68,8 +71,12 @@ const BooksTable = ({ books }) => {
               <td className="border border-slate-400 rounded-md text-center">
                 <div className="flex justify-center gap-x-4">
                   <BookDetailsModal book={book} />
-                  <BookEditModal book={book} />
-                  <BookDeleteModal book={book} />
+                  {user && (
+                    <>
+                      <BookEditModal book={book} />
+                      <BookDeleteModal book={book} />
+                    </>
+                  )}
                 </div>
               </td>
             </tr>

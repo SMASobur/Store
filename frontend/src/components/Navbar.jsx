@@ -9,6 +9,7 @@ import {
   useColorModeValue,
   Image,
   Link as ChakraLink,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
@@ -87,6 +88,11 @@ const Navbar = () => {
                 <PiBooksDuotone fontSize={20} />
               </Button>
             </RouterLink>
+            <RouterLink to="/about">
+              <Button>
+                <MdOutlineDeveloperMode size={30} />
+              </Button>
+            </RouterLink>
 
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
@@ -94,22 +100,29 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <RouterLink to="/about">
-                  <Button>
-                    <MdOutlineDeveloperMode size={30} />
-                  </Button>
-                </RouterLink>
                 <Text fontSize="sm">Hi, {user.name}</Text>
-                <Button colorScheme="red" onClick={handleLogout}>
-                  <CiLogout />
-                </Button>
+                <Tooltip
+                  label="Logout"
+                  rounded="lg"
+                  fontSize={{ base: "15", sm: "18" }}
+                >
+                  <Button onClick={handleLogout}>
+                    <CiLogout />
+                  </Button>
+                </Tooltip>
               </>
             ) : (
               <>
                 <RouterLink to="/login">
-                  <Button colorScheme="blue">
-                    <CiLogin />
-                  </Button>
+                  <Tooltip
+                    label="Login"
+                    rounded="lg"
+                    fontSize={{ base: "15", sm: "18" }}
+                  >
+                    <Button>
+                      <CiLogin />
+                    </Button>
+                  </Tooltip>
                 </RouterLink>
               </>
             )}

@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation, Link as RouterLink } from "react-router-dom";
-import { Button, Input, Box, Text, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  Box,
+  Text,
+  VStack,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { CiLogin } from "react-icons/ci";
 
 export default function Login() {
@@ -31,7 +38,7 @@ export default function Login() {
         </Text>
       )}
       <form onSubmit={handleSubmit}>
-        <VStack spacing={4} align="stretch">
+        <VStack spacing={4}>
           <Text fontSize="2xl" fontWeight="bold">
             Login
           </Text>
@@ -59,7 +66,8 @@ export default function Login() {
             borderRadius="md"
           />
           <Button
-            colorScheme="blue"
+            bg={useColorModeValue("orange.300", "orange.400")}
+            _hover={{ bg: "green.300" }}
             type="submit"
             leftIcon={<CiLogin size={20} />}
           >

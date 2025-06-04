@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {
+  Input,
+  Button,
+  VStack,
+  Heading,
+  Text,
+  Box,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { CiLogin } from "react-icons/ci";
 
 export default function Register() {
   const { register } = useAuth();
@@ -23,43 +33,63 @@ export default function Register() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 max-w-md mx-auto">
-      <h2 className="text-2xl mb-4">Register</h2>
+    <Box maxW="md" mx="auto" mt={8} p={4}>
+      <Heading size="lg" mb={4}>
+        Register
+      </Heading>
 
-      {err && <p className="text-red-500">{err}</p>}
+      {err && <Text color="red.500">{err}</Text>}
       {success && (
-        <p className="text-green-500">
-          Registration successful! Redirecting...
-        </p>
+        <Text color="green.500">Registration successful! Redirecting...</Text>
       )}
 
-      <input
-        type="text"
-        placeholder="Name"
-        className="w-full p-2 my-2 border"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        className="w-full p-2 my-2 border"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        className="w-full p-2 my-2 border"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <button className="bg-green-600 text-white px-4 py-2 mt-2">
-        Register
-      </button>
-    </form>
+      <form onSubmit={handleSubmit}>
+        <VStack spacing={4}>
+          <Input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            variant="filled"
+            focusBorderColor="green.500"
+            fontSize="lg"
+            py={5}
+            borderRadius="md"
+          />
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            variant="filled"
+            focusBorderColor="green.500"
+            fontSize="lg"
+            py={5}
+            borderRadius="md"
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            variant="filled"
+            focusBorderColor="green.500"
+            fontSize="lg"
+            py={5}
+            borderRadius="md"
+          />
+          <Button
+            bg={useColorModeValue("orange.300", "orange.400")}
+            _hover={{ bg: "green.300" }}
+            leftIcon={<CiLogin />}
+          >
+            Register
+          </Button>
+        </VStack>
+      </form>
+    </Box>
   );
 }

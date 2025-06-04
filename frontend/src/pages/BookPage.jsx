@@ -6,8 +6,11 @@ import { Button, Container, Text } from "@chakra-ui/react";
 import BooksTable from "../components/BooksTable";
 import BookCreateModal from "../components/modals/BookCreateModal";
 
+import { useAuth } from "../context/AuthContext";
+
 const BookPage = () => {
   const [books, setBooks] = useState([]);
+  const { user } = useAuth();
   useEffect(() => {
     axios
       .get("http://localhost:5001/books")
@@ -34,8 +37,7 @@ const BookPage = () => {
               Book List
             </Text>
           </h1>
-
-          <BookCreateModal />
+          {user && <BookCreateModal />}
         </div>
         <BooksTable books={books} />
       </div>

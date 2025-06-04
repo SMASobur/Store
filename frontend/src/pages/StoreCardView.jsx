@@ -12,6 +12,8 @@ import { useProductStore } from "../store/product";
 import ProductCard from "../components/ProductCard";
 import CreateProductModal from "../components/modals/CreateProductModal";
 
+import { useAuth } from "../context/AuthContext";
+
 import React from "react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
@@ -20,9 +22,10 @@ const StoreCardView = () => {
   const { fetchProducts, products } = useProductStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { createProduct } = useProductStore();
+  const { user } = useAuth();
 
   const handleCreateProduct = async (productData) => {
-    // This will call your store's createProduct action
+    // This will call store's createProduct action
     return await createProduct(productData);
   };
 
@@ -44,12 +47,14 @@ const StoreCardView = () => {
           >
             Current Products
           </Text>
-          <Button
-            onClick={onOpen}
-            bg={useColorModeValue("green.200", "green.400")}
-          >
-            <PlusSquareIcon fontSize={20} />
-          </Button>
+          {user && (
+            <Button
+              onClick={onOpen}
+              bg={useColorModeValue("green.200", "green.400")}
+            >
+              <PlusSquareIcon fontSize={20} />
+            </Button>
+          )}
           <CreateProductModal
             isOpen={isOpen}
             onClose={onClose}

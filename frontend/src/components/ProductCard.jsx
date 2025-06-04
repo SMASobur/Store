@@ -17,8 +17,11 @@ import StoreEditModal from "./modals/StoreEditModal";
 import StoreDeleteModal from "./modals/StoreDeleteModal";
 import ProductDetailsModal from "./modals/ProductDetailsModal";
 
+import { useAuth } from "../context/AuthContext";
+
 const ProductCard = ({ product }) => {
   const editModalRef = useRef(null);
+  const { user } = useAuth();
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
@@ -97,21 +100,22 @@ const ProductCard = ({ product }) => {
         <Text fontWeight="bold" fontSize="xl" color={textColor} mb={4}>
           ${product.price}
         </Text>
-
-        <HStack spacing={2}>
-          <IconButton
-            icon={<EditIcon />}
-            onClick={onEditOpen}
-            colorScheme="blue"
-            aria-label="Edit product"
-          />
-          <IconButton
-            icon={<DeleteIcon />}
-            onClick={onDeleteOpen}
-            colorScheme="red"
-            aria-label="Delete product"
-          />
-        </HStack>
+        {user && (
+          <HStack spacing={2}>
+            <IconButton
+              icon={<EditIcon />}
+              onClick={onEditOpen}
+              colorScheme="blue"
+              aria-label="Edit product"
+            />
+            <IconButton
+              icon={<DeleteIcon />}
+              onClick={onDeleteOpen}
+              colorScheme="red"
+              aria-label="Delete product"
+            />
+          </HStack>
+        )}
       </Box>
 
       <ProductDetailsModal
