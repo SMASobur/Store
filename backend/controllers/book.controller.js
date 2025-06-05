@@ -22,17 +22,23 @@ export const getProductsBooks = async (req, res) => {
 // Route to save a new book
 export const createProductBooks = async (req, res) => {
   try {
-    const { title, author, publishYear, price } = req.body;
+    const { title, author, publishYear, price, createdBy } = req.body;
 
     // Validate required fields
     if (!title || !author || !price) {
       return res
         .status(400)
-        .json({ message: "Please fill in all required fields.1" });
+        .json({ message: "Please fill in all required fields." });
     }
 
     // Create and save the book
-    const book = await Book.create({ title, author, publishYear, price });
+    const book = await Book.create({
+      title,
+      author,
+      publishYear,
+      price,
+      createdBy,
+    });
 
     return res.status(201).json({
       success: true,

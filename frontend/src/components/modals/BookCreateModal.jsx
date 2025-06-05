@@ -18,14 +18,18 @@ import { useRef, useState } from "react";
 import { useProductStore } from "../../store/book";
 import { motion } from "framer-motion";
 import { MdAddBox } from "react-icons/md";
+import { useAuth } from "../../context/AuthContext";
 
 const BookCreateModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     author: "",
     publishYear: "",
     price: "",
+    createdBy: user.name,
   });
   const initialRef = useRef(null);
   const toast = useToast();
@@ -59,6 +63,10 @@ const BookCreateModal = () => {
         author: formData.author,
         publishYear: formData.publishYear,
         price: formData.price,
+        createdBy: {
+          id: user._id,
+          name: user.name,
+        },
       });
 
       if (result.success) {
@@ -70,7 +78,13 @@ const BookCreateModal = () => {
           isClosable: true,
         });
         await fetchProducts();
-        setFormData({ title: "", author: "", publishYear: "", price: "" });
+        setFormData({
+          title: "",
+          author: "",
+          publishYear: "",
+          price: "",
+          createdBy: user.name,
+        });
       } else {
         toast({
           title: "Creation failed",
@@ -151,6 +165,17 @@ const BookCreateModal = () => {
                 placeholder="Enter price"
                 type="number"
               />
+            </FormControl>
+            <FormControl isRequired mt={4}>
+              <Text
+                px={3}
+                py={2}
+                bg="gray.200"
+                border="1px solid #E2E8F0"
+                borderRadius="md"
+              >
+                Creating by: {user?.name || "Unknown User"}
+              </Text>
             </FormControl>
           </ModalBody>
           <Text color={"red.500"} px={6}>

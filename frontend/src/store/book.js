@@ -25,6 +25,7 @@ export const useProductStore = create((set) => ({
           author: newProduct.author,
           publishYear: newProduct.publishYear,
           price: newProduct.price,
+          createdBy: newProduct.createdBy,
         }),
       });
 

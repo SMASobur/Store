@@ -4,19 +4,30 @@ const bookSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      require: true,
+      required: true,
     },
     author: {
       type: String,
-      require: true,
+      required: true,
     },
     publishYear: {
       type: Number,
-      require: false,
+      required: false,
     },
     price: {
       type: Number,
-      require: true,
+      required: true,
+    },
+    createdBy: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
     },
   },
   {
