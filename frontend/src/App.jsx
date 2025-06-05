@@ -22,7 +22,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* <Route path="/about" element={<AboutPage />} /> */}
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/books" element={<BookPage />} />
           <Route path="/cards" element={<StoreCardView />} />
 
@@ -35,14 +35,14 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/about"
             element={
               <PrivateRoute>
                 <AboutPage />
               </PrivateRoute>
             }
-          />
+          /> */}
         </Routes>
       </Box>
       <Footer />

@@ -1,14 +1,7 @@
-import {
-  AddIcon,
-  AtSignIcon,
-  EmailIcon,
-  PhoneIcon,
-  SearchIcon,
-} from "@chakra-ui/icons";
+import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
 import {
   AbsoluteCenter,
   Box,
-  Button,
   Container,
   Divider,
   Heading,

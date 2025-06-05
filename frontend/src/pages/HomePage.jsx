@@ -1,5 +1,8 @@
 import {
   Box,
+  Card,
+  CardBody,
+  CardHeader,
   Container,
   Flex,
   SimpleGrid,
@@ -11,12 +14,44 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { BiCreditCardFront } from "react-icons/bi";
 import { PiBooksDuotone } from "react-icons/pi";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage = () => {
   const textColor = useColorModeValue("orange.600", "gray.300");
   const bg = useColorModeValue("white", "gray.600");
+  const { user } = useAuth();
   return (
     <Container maxW="container.xl" py={12}>
+      {!user && (
+        <Card
+          maxW="md"
+          mx="auto"
+          my={6}
+          boxShadow="lg"
+          borderRadius="xl"
+          bg={useColorModeValue("orange.100", "orange.400")}
+        >
+          <CardHeader fontSize="xl" fontWeight="bold" textAlign="center">
+            Test Login Credentials
+          </CardHeader>
+          <CardBody>
+            <Box mb={2}>
+              <Text>
+                To test the functionality of this web application, please use
+                the following credentials:
+              </Text>
+            </Box>
+            <Box mt={2}>
+              <Text>
+                <strong>Email:</strong> tester@knitnox.com
+              </Text>
+              <Text>
+                <strong>Password:</strong> Tester123456
+              </Text>
+            </Box>
+          </CardBody>
+        </Card>
+      )}
       <VStack spacing={8}>
         <div className="flex justify-between ">
           <Text
