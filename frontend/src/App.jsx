@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
+import UserBooks from "./pages/UserBooks";
 
 function App() {
   return (
@@ -35,14 +36,14 @@ function App() {
               </PrivateRoute>
             }
           />
-          {/* <Route
-            path="/about"
+          <Route
+            path="/my-books"
             element={
               <PrivateRoute>
-                <AboutPage />
+                <UserBooks />
               </PrivateRoute>
             }
-          /> */}
+          />
         </Routes>
       </Box>
       <Footer />

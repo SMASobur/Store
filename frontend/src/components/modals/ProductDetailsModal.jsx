@@ -14,6 +14,7 @@ import {
   IconButton,
   Tooltip,
   Box,
+  Button,
 } from "@chakra-ui/react";
 import { FiInfo } from "react-icons/fi";
 
@@ -63,12 +64,11 @@ const ProductDetailsModal = ({ isOpen, onClose, product }) => {
                     day: "2-digit",
                     hour: "2-digit",
                     minute: "2-digit",
-                    second: "2-digit",
                     hour12: false,
                   })}{" "}
                   <br />
-                  <strong>Updated by:</strong>
-                  {product.updatedBy?.name || "Unknown update"} <br />
+                  <strong>Updated by:</strong>{" "}
+                  {product.updatedBy?.name || " Not updated yet"} <br />
                   <strong>User ID:</strong> {product.updatedBy?.id || "Unknown"}{" "}
                   <br />
                   <strong>Updated at:</strong>{" "}
@@ -78,7 +78,7 @@ const ProductDetailsModal = ({ isOpen, onClose, product }) => {
                     day: "2-digit",
                     hour: "2-digit",
                     minute: "2-digit",
-                    second: "2-digit",
+
                     hour12: false,
                   })}{" "}
                 </>
@@ -89,14 +89,16 @@ const ProductDetailsModal = ({ isOpen, onClose, product }) => {
                 label={showDetails ? "Hide details" : "More details"}
                 hasArrow
               >
-                <IconButton
-                  aria-label="Toggle more details"
-                  icon={<FiInfo />}
-                  size="sm"
-                  mt={2}
-                  variant="ghost"
+                <Button
                   onClick={handleToggle}
-                />
+                  rightIcon={<FiInfo />}
+                  size="sm"
+                  variant="ghost"
+                  mt={2}
+                  aria-label="Toggle more details"
+                >
+                  {showDetails ? "Hide details" : "More details"}
+                </Button>
               </Tooltip>
             </Box>
           </Box>

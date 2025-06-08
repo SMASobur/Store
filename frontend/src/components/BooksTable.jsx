@@ -5,6 +5,7 @@ import BookEditModal from ".././components/modals/BookEditModal";
 import BookDeleteModal from ".././components/modals/BookDeleteModal";
 import useIsMobile from "./hooks/useIsMobile";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
@@ -13,9 +14,10 @@ const BooksTable = ({ books }) => {
     (sum, book) => sum + (Number(book.price) || 0),
     0
   );
+  const userBooks = products.filter((book) => book.createdBy?.id === user?._id);
 
   const isMobile = useIsMobile(); // < 768px is mobile
-  const colSpanValue = isMobile ? 2 : 4;
+  const colSpanValue = isMobile ? 1 : 4;
 
   useEffect(() => {
     fetchProducts();
@@ -24,7 +26,7 @@ const BooksTable = ({ books }) => {
 
   return (
     <>
-      <table className="w-full border-separate border-spacing-2 p-2'">
+      <table className="w-full border-separate border-spacing-2 p-2 table-auto">
         <thead>
           <tr>
             <th className="border-2  border-slate-400 rounded-md outline outline-offset-1 outline-1">
@@ -40,7 +42,7 @@ const BooksTable = ({ books }) => {
             <th className="border-2 border-slate-400 rounded-md max-md:hidden outline outline-offset-1 outline-1">
               Publish year
             </th>
-            <th className="border-2 border-slate-400 rounded-md outline outline-offset-1 outline-1">
+            <th className="border-2 border-slate-400 rounded-md max-md:hidden outline outline-offset-1 outline-1">
               Price
             </th>
 
@@ -65,16 +67,18 @@ const BooksTable = ({ books }) => {
               <td className="border border-slate-400 rounded-md text-center max-md:hidden">
                 {book.publishYear}
               </td>
-              <td className="border border-slate-400 rounded-md text-center">
+              <td className="border border-slate-400 rounded-md text-center max-md:hidden">
                 {book.price}
               </td>
               <td className="border border-slate-400 rounded-md text-center">
-                <div className="flex justify-center gap-x-4">
+                <div className="flex justify-start gap-x-4 pl-2">
                   <BookDetailsModal book={book} />
                   {user && (
                     <>
                       <BookEditModal book={book} />
-                      <BookDeleteModal book={book} />
+                      {book.createdBy?.id === user._id && (
+                        <BookDeleteModal book={book} />
+                      )}
                     </>
                   )}
                 </div>
@@ -85,13 +89,23 @@ const BooksTable = ({ books }) => {
             <td colSpan={colSpanValue}></td>
             <td className=" text-center ">
               <p className="text-base font-semibold">
-                Total: <span className="font-medium">{total}</span>
+                Total value: <span className="font-medium">{total}/=</span>
               </p>
             </td>
           </tr>
         </tbody>
         <tfoot></tfoot>
       </table>
+      {user && (
+        <div className="text-left mt-4 px-4">
+          <Link
+            to="/my-books"
+            className="text-blue-600 underline hover:text-blue-800"
+          >
+            View your created books
+          </Link>
+        </div>
+      )}
     </>
   );
 };

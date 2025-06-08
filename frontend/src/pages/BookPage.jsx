@@ -23,6 +23,16 @@ const BookPage = () => {
   }, []);
   return (
     <Container maxW="container.xl" py={12}>
+      {user && (
+        <div className="text-left mt-4 px-4">
+          <Link
+            to="/my-books"
+            className="text-blue-600 underline hover:text-blue-800"
+          >
+            View your created books
+          </Link>
+        </div>
+      )}
       <div className="p-2">
         <div className="flex justify-between px-4 items-center">
           <h1 className="text-3xl my-82 p-2">
@@ -39,6 +49,7 @@ const BookPage = () => {
           </h1>
           {user && <BookCreateModal />}
         </div>
+
         <BooksTable books={books} />
       </div>
     </Container>

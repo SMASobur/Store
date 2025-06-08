@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MdOutlineViewDay } from "react-icons/md";
+import { PiSlideshowDuotone } from "react-icons/pi";
 const OverlayOne = () => (
   <ModalOverlay
     bg="blackAlpha.300"
@@ -31,7 +31,7 @@ const BookDetailsModal = ({ book }) => {
         whileHover={{ scale: 1.2, rotate: 10 }}
         whileTap={{ scale: 0.9 }}
       >
-        <MdOutlineViewDay
+        <PiSlideshowDuotone
           onClick={() => {
             setOverlay(<OverlayOne />);
             onOpen();
@@ -64,7 +64,7 @@ const BookDetailsModal = ({ book }) => {
               </Text>
               <Text fontSize="xl" mb={4}>
                 <strong>Updated by:</strong>{" "}
-                {book.updatedBy?.name || "Unknown user"}
+                {book.updatedBy?.name || "Not updated yet"}
               </Text>
 
               <Text fontSize="xl" mb={4}>

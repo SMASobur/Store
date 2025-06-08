@@ -29,7 +29,6 @@ const BookCreateModal = () => {
     author: "",
     publishYear: "",
     price: "",
-    createdBy: user.name,
   });
   const initialRef = useRef(null);
   const toast = useToast();
@@ -41,11 +40,21 @@ const BookCreateModal = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleOpenModal = () => {
+    setFormData({
+      title: "",
+      author: "",
+      publishYear: "",
+      price: "",
+    });
+    onOpen();
+  };
+
   const handleCreate = async () => {
     if (isSubmitting) return;
     try {
       setIsSubmitting(true);
-      // Ensure all fields are filled
+
       if (!formData.title || !formData.author || !formData.price) {
         toast({
           title: "Error",
@@ -54,15 +63,12 @@ const BookCreateModal = () => {
           duration: 3000,
           isClosable: true,
         });
-        setIsSubmitting(false); // reset before return
+        setIsSubmitting(false);
         return;
       }
 
       const result = await createProduct({
-        title: formData.title,
-        author: formData.author,
-        publishYear: formData.publishYear,
-        price: formData.price,
+        ...formData,
         createdBy: {
           id: user._id,
           name: user.name,
@@ -71,6 +77,12 @@ const BookCreateModal = () => {
 
       if (result.success) {
         onClose();
+        setFormData({
+          title: "",
+          author: "",
+          publishYear: "",
+          price: "",
+        });
         toast({
           title: "Book created",
           status: "success",
@@ -78,13 +90,6 @@ const BookCreateModal = () => {
           isClosable: true,
         });
         await fetchProducts();
-        setFormData({
-          title: "",
-          author: "",
-          publishYear: "",
-          price: "",
-          createdBy: user.name,
-        });
       } else {
         toast({
           title: "Creation failed",
@@ -114,12 +119,17 @@ const BookCreateModal = () => {
         whileTap={{ scale: 0.9 }}
       >
         <MdAddBox
-          onClick={onOpen}
+          onClick={handleOpenModal}
           className="text-5xl text-orange-500 cursor-pointer"
         />
       </motion.div>
 
-      <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={initialRef}>
+      <Modal
+        key={isOpen ? "open" : "closed"}
+        isOpen={isOpen}
+        onClose={onClose}
+        initialFocusRef={initialRef}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add New Book</ModalHeader>

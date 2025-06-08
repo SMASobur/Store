@@ -49,6 +49,23 @@ const BookEditModal = ({ book }) => {
   };
 
   const handleUpdate = async () => {
+    const isChanged =
+      formData.title !== book.title ||
+      formData.author !== book.author ||
+      formData.publishYear !== book.publishYear ||
+      formData.price !== book.price;
+
+    if (!isChanged) {
+      toast({
+        title: "No changes detected",
+        description: "You haven't modified any fields.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     try {
       const updatedData = {
         ...formData,

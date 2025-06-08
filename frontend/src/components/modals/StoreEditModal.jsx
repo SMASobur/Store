@@ -21,6 +21,22 @@ const StoreEditModal = ({ isOpen, onClose, product, onUpdate, initialRef }) => {
   const toast = useToast();
 
   const handleSubmit = async () => {
+    const isChanged =
+      updatedProduct.name !== product.name ||
+      updatedProduct.price !== product.price ||
+      updatedProduct.image !== product.image;
+
+    if (!isChanged) {
+      toast({
+        title: "No changes detected",
+        description: "You haven't modified any fields.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     try {
       const productWithEditor = {
         ...updatedProduct,
