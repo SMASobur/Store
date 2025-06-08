@@ -20,7 +20,7 @@ import { useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { useProductStore } from "../../store/book.js";
 import { motion } from "framer-motion";
-
+import { useAuth } from "../../context/AuthContext";
 const OverlayOne = () => (
   <ModalOverlay
     bg="blackAlpha.300"
@@ -29,6 +29,7 @@ const OverlayOne = () => (
 );
 
 const BookEditModal = ({ book }) => {
+  const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [overlay, setOverlay] = useState(<OverlayOne />);
   const [formData, setFormData] = useState({
@@ -49,7 +50,15 @@ const BookEditModal = ({ book }) => {
 
   const handleUpdate = async () => {
     try {
-      const result = await updateProduct(book._id, formData);
+      const updatedData = {
+        ...formData,
+        updatedBy: {
+          id: user?._id || "unknown",
+          name: user?.name || "Unknown User",
+        },
+      };
+
+      const result = await updateProduct(book._id, updatedData);
 
       if (result.success) {
         toast({
@@ -151,6 +160,17 @@ const BookEditModal = ({ book }) => {
                 value={formData.price}
                 onChange={handleInputChange}
               />
+            </FormControl>
+            <FormControl isRequired mt={4}>
+              <Text
+                px={3}
+                py={2}
+                bg="gray.200"
+                border="1px solid #E2E8F0"
+                borderRadius="md"
+              >
+                Updateing by: {user?.name || "Unknown User"}
+              </Text>
             </FormControl>
           </ModalBody>
           <Text color={"red.500"} px={6}>

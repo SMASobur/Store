@@ -111,6 +111,7 @@ export const useProductStore = create((set) => ({
           author: updatedProduct.author,
           publishYear: updatedProduct.publishYear,
           price: updatedProduct.price,
+          updatedBy: updatedProduct.updatedBy,
         }),
       });
 

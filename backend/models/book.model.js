@@ -29,6 +29,17 @@ const bookSchema = new mongoose.Schema(
         required: true,
       },
     },
+    updatedBy: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: false,
+      },
+      name: {
+        type: String,
+        required: false,
+      },
+    },
   },
   {
     timestamps: true,

@@ -62,6 +62,10 @@ const BookDetailsModal = ({ book }) => {
                 <strong>Created by:</strong>{" "}
                 {book.createdBy?.name || "Unknown user"}
               </Text>
+              <Text fontSize="xl" mb={4}>
+                <strong>Updated by:</strong>{" "}
+                {book.updatedBy?.name || "Unknown user"}
+              </Text>
 
               <Text fontSize="xl" mb={4}>
                 Created at:{" "}

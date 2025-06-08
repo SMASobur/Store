@@ -94,7 +94,7 @@ export const getSingleProductsBooks = async (req, res) => {
 export const updateProductBooks = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, author, publishYear, price } = req.body;
+    const { title, author, publishYear, price, updatedBy } = req.body;
 
     // Validate MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -114,7 +114,7 @@ export const updateProductBooks = async (req, res) => {
 
     const updatedBook = await Book.findByIdAndUpdate(
       id,
-      { title, author, publishYear, price },
+      { title, author, publishYear, price, updatedBy },
       { new: true }
     );
 
