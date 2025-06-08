@@ -8,8 +8,13 @@ import {
   Text,
   VStack,
   useColorModeValue,
+  Card,
+  CardHeader,
+  CardBody,
 } from "@chakra-ui/react";
 import { CiLogin } from "react-icons/ci";
+import { FiCopy } from "react-icons/fi";
+import { IconButton, useToast, Flex } from "@chakra-ui/react";
 
 export default function Login() {
   const { login } = useAuth();
@@ -19,6 +24,17 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const message = location.state?.message;
+  const toast = useToast();
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied to clipboard",
+      status: "success",
+      duration: 1500,
+      isClosable: true,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,6 +104,49 @@ export default function Login() {
           </Text>
         </RouterLink>
       </Text>
+
+      <Card
+        maxW="md"
+        mx="auto"
+        my={6}
+        boxShadow="lg"
+        borderRadius="xl"
+        bg={useColorModeValue("orange.100", "orange.400")}
+      >
+        <CardHeader fontSize="xl" fontWeight="bold" textAlign="center">
+          Test Login Credentials
+        </CardHeader>
+        <CardBody>
+          <Box mb={2}>
+            <Text>
+              To test the functionality of this web application, please use the
+              following credentials:
+            </Text>
+          </Box>
+          <Box mt={2}>
+            <Flex align="center" gap={2}>
+              <Text fontWeight="semibold">Email:</Text>
+              <Text>tester@knitnox.com</Text>
+              <IconButton
+                aria-label="Copy email"
+                icon={<FiCopy />}
+                size="sm"
+                onClick={() => handleCopy("tester@knitnox.com")}
+              />
+            </Flex>
+            <Flex align="center" gap={2} mt={2}>
+              <Text fontWeight="semibold">Password:</Text>
+              <Text>Tester123456</Text>
+              <IconButton
+                aria-label="Copy password"
+                icon={<FiCopy />}
+                size="sm"
+                onClick={() => handleCopy("Tester123456")}
+              />
+            </Flex>
+          </Box>
+        </CardBody>
+      </Card>
     </Box>
   );
 }

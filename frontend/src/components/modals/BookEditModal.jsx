@@ -104,7 +104,7 @@ const BookEditModal = ({ book }) => {
         {overlay}
         <ModalContent>
           <Text fontSize="md" mb={2} px={6} py={1}>
-            Regiserd by: {book.createdBy?.name || "Unknown user"} ( ID:
+            Created by: {book.createdBy?.name || "Unknown user"} ( ID:
             {book.createdBy?.id || "Unknown"})
           </Text>
           <Text fontSize="xl" mb={4} px={6} py={2}>

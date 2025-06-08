@@ -10,16 +10,27 @@ import {
   Input,
   VStack,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const StoreEditModal = ({ isOpen, onClose, product, onUpdate, initialRef }) => {
+  const { user } = useAuth();
   const [updatedProduct, setUpdatedProduct] = useState(product);
   const toast = useToast();
 
   const handleSubmit = async () => {
     try {
-      await onUpdate(product._id, updatedProduct);
+      const productWithEditor = {
+        ...updatedProduct,
+        updatedBy: {
+          id: user?._id || "unknown",
+          name: user?.name || "Unknown User",
+        },
+      };
+
+      await onUpdate(product._id, productWithEditor);
       onClose();
     } catch (error) {
       toast({
@@ -72,6 +83,15 @@ const StoreEditModal = ({ isOpen, onClose, product, onUpdate, initialRef }) => {
                 })
               }
             />
+            <Text
+              px={3}
+              py={2}
+              bg="gray.200"
+              border="1px solid #E2E8F0"
+              borderRadius="md"
+            >
+              Updateing by: {user?.name || "Unknown User"}
+            </Text>
           </VStack>
         </ModalBody>
 

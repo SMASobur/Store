@@ -12,16 +12,20 @@ import {
   FormControl,
   FormLabel,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const CreateProductModal = ({ isOpen, onClose, onCreate }) => {
+  const { user } = useAuth();
   const initialRef = useRef(null);
   const toast = useToast();
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
     image: "",
+    createdBy: "",
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,7 +48,16 @@ const CreateProductModal = ({ isOpen, onClose, onCreate }) => {
 
     setIsLoading(true);
     try {
-      await onCreate(newProduct);
+      const productWithCreator = {
+        ...newProduct,
+        createdBy: {
+          id: user?._id,
+          name: user?.name,
+        },
+      };
+
+      await onCreate(productWithCreator);
+
       setNewProduct({ name: "", price: "", image: "" });
       onClose();
     } catch (error) {
@@ -56,6 +69,13 @@ const CreateProductModal = ({ isOpen, onClose, onCreate }) => {
         isClosable: true,
       });
     } finally {
+      toast({
+        title: "Success",
+        description: "Created successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       setIsLoading(false);
     }
   };
@@ -96,6 +116,17 @@ const CreateProductModal = ({ isOpen, onClose, onCreate }) => {
                 onChange={handleChange}
                 placeholder="Enter image URL"
               />
+            </FormControl>
+            <FormControl isRequired mt={7}>
+              <Text
+                px={3}
+                py={2}
+                bg="gray.200"
+                border="1px solid #E2E8F0"
+                borderRadius="md"
+              >
+                Creating by: {user?.name || "Unknown User"}
+              </Text>
             </FormControl>
           </VStack>
         </ModalBody>

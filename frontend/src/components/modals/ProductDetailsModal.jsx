@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -10,11 +11,16 @@ import {
   Image,
   Flex,
   useColorModeValue,
+  IconButton,
+  Tooltip,
+  Box,
 } from "@chakra-ui/react";
+import { FiInfo } from "react-icons/fi";
 
 const ProductDetailsModal = ({ isOpen, onClose, product }) => {
   const textColor = useColorModeValue("gray.600", "gray.200");
-
+  const [showDetails, setShowDetails] = useState(false);
+  const handleToggle = () => setShowDetails((prev) => !prev);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -41,6 +47,59 @@ const ProductDetailsModal = ({ isOpen, onClose, product }) => {
           >
             {product.price} :-
           </Text>
+          <Box textAlign="center" mb={4}>
+            <Text fontWeight="bold" fontSize="xl" color={textColor}>
+              {showDetails && (
+                <>
+                  <strong>Added by: </strong>{" "}
+                  {product.createdBy?.name || "Unknown user"}
+                  <br />
+                  <strong>User ID:</strong> {product.createdBy?.id || "Unknown"}{" "}
+                  <br />
+                  <strong>Created at:</strong>{" "}
+                  {new Date(product.createdAt).toLocaleString("en-SE", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                  })}{" "}
+                  <br />
+                  <strong>Updated by:</strong>
+                  {product.updatedBy?.name || "Unknown update"} <br />
+                  <strong>User ID:</strong> {product.updatedBy?.id || "Unknown"}{" "}
+                  <br />
+                  <strong>Updated at:</strong>{" "}
+                  {new Date(product.updatedAt).toLocaleString("en-SE", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                  })}{" "}
+                </>
+              )}
+            </Text>
+            <Box>
+              <Tooltip
+                label={showDetails ? "Hide details" : "More details"}
+                hasArrow
+              >
+                <IconButton
+                  aria-label="Toggle more details"
+                  icon={<FiInfo />}
+                  size="sm"
+                  mt={2}
+                  variant="ghost"
+                  onClick={handleToggle}
+                />
+              </Tooltip>
+            </Box>
+          </Box>
           <Flex
             align="center"
             justify="center"
