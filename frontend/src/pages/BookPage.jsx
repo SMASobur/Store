@@ -29,7 +29,9 @@ const BookPage = () => {
             to="/my-books"
             className="text-blue-600 underline hover:text-blue-800"
           >
-            View your created books
+            <Button colorScheme="orange" variant="outline">
+              View your created book list
+            </Button>
           </Link>
         </div>
       )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation, Link as RouterLink } from "react-router-dom";
 import {
@@ -17,7 +17,7 @@ import { FiCopy } from "react-icons/fi";
 import { IconButton, useToast, Flex } from "@chakra-ui/react";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
@@ -25,6 +25,11 @@ export default function Login() {
   const location = useLocation();
   const message = location.state?.message;
   const toast = useToast();
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
