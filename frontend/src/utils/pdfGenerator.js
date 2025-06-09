@@ -27,7 +27,7 @@ export function generateBooksPDF(userName, books) {
   doc.setFontSize(24);
   doc.setTextColor(255, 165, 0); // Orange color
   doc.text(
-    "Knitnox",
+    "KnitNox",
     pageWidth - margin - 30, // Right-aligned with margin
     25,
     { align: "right" }
@@ -89,28 +89,6 @@ export function generateBooksPDF(userName, books) {
     },
     alternateRowStyles: {
       fillColor: [245, 245, 245],
-    },
-    didDrawPage: function (data) {
-      // Add logo to footer on each page
-      if (typeof window !== "undefined") {
-        const favicon =
-          document.querySelector('link[rel="icon"]')?.href ||
-          document.querySelector('link[rel="shortcut icon"]')?.href;
-
-        if (favicon) {
-          const imgWidth = 15;
-          const imgHeight = 15;
-
-          doc.addImage(
-            favicon,
-            "PNG",
-            (pageWidth - imgWidth) / 2,
-            doc.internal.pageSize.getHeight() - 20,
-            imgWidth,
-            imgHeight
-          );
-        }
-      }
     },
   });
 

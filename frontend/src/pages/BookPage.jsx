@@ -24,13 +24,13 @@ const BookPage = () => {
   return (
     <Container maxW="container.xl" py={12}>
       {user && (
-        <div className="text-left mt-4 px-4">
+        <div className="text-right m-2 mt-4 px-4">
           <Link
             to="/my-books"
             className="text-blue-600 underline hover:text-blue-800"
           >
             <Button colorScheme="orange" variant="outline">
-              View your created book list
+              View your own book list
             </Button>
           </Link>
         </div>
