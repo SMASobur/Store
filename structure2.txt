@@ -38,13 +38,16 @@
 │   │   ├── index.css
 │   │   ├── main.jsx
 │   │   ├── pages
-│   │   └── store
+│   │   ├── store
+│   │   └── utils
 │   ├── tailwind.config.js
 │   └── vite.config.js
 ├── package-lock.json
 ├── package.json
 ├── project-tree.txt
+├── README.md
 ├── structure.txt
+├── structure2.txt
 └── terminal.txt
 
-16 directories, 32 files
+17 directories, 34 files
