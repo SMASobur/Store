@@ -16,6 +16,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { useProductStore } from "../../store/book";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const Overlay = () => (
   <ModalOverlay
@@ -25,6 +26,7 @@ const Overlay = () => (
 );
 
 const BookDeleteModal = ({ book }) => {
+  const { token } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { deleteProduct } = useProductStore();
   const toast = useToast();
@@ -32,7 +34,7 @@ const BookDeleteModal = ({ book }) => {
 
   const handleDelete = async () => {
     try {
-      const result = await deleteProduct(book._id);
+      const result = await deleteProduct(book._id, token);
 
       if (result.success) {
         toast({

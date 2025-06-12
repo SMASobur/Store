@@ -49,7 +49,7 @@ const BookPage = () => {
               Book List
             </Text>
           </h1>
-          {user && <BookCreateModal />}
+          {user?.role === "admin" && <BookCreateModal />}
         </div>
 
         <BooksTable books={books} />

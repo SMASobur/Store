@@ -73,14 +73,18 @@ const BooksTable = ({ books }) => {
               <td className="border border-slate-400 rounded-md text-center">
                 <div className="flex justify-start gap-x-4 pl-2">
                   <BookDetailsModal book={book} />
-                  {user && (
-                    <>
-                      <BookEditModal book={book} />
-                      {book.createdBy?.id === user._id && (
+                  {user &&
+                    (user.role === "admin" ||
+                      book.createdBy?.id === user._id) && (
+                      <>
+                        <BookEditModal book={book} />
                         <BookDeleteModal book={book} />
-                      )}
-                    </>
-                  )}
+                      </>
+                    )}
+
+                  {/* {user?.role === "admin" && (
+                    <span className="text-xs text-green-600 ml-1">(Admin)</span>
+                  )} */}
                 </div>
               </td>
             </tr>

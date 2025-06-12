@@ -7,12 +7,16 @@ import {
   updateProductBooks,
 } from "../controllers/book.controller.js";
 
+import authMiddleware, { requireRole } from "../middleware/auth.middleware.js";
+
 const router = express.Router();
 
 router.get("/", getProductsBooks);
 router.get("/:id", getSingleProductsBooks);
-router.post("/", createProductBooks);
-router.put("/:id", updateProductBooks);
-router.delete("/:id", deleteProductBooks);
+
+// Protected (admin-only)
+router.post("/", authMiddleware, createProductBooks);
+router.put("/:id", authMiddleware, updateProductBooks);
+router.delete("/:id", authMiddleware, requireRole("admin"), deleteProductBooks);
 
 export default router;

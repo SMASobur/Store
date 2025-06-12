@@ -6,23 +6,24 @@ const SECRET = process.env.JWT_SECRET || "yoursecretkey";
 
 export const register = async (req, res) => {
   const { name, email, password, code } = req.body;
-  const REQUIRED_CODE = process.env.REGISTRATION_CODE;
-  // Debug logs to confirm values
-  // console.log("Received code:", code);
-  // console.log("Expected code:", REQUIRED_CODE);
+  const USER_CODE = process.env.REGISTRATION_CODE;
+  const ADMIN_CODE = process.env.ADMIN_REGISTRATION_CODE;
 
-  if (code !== REQUIRED_CODE) {
+  let role = "user";
+
+  if (code === ADMIN_CODE) {
+    role = "admin";
+  } else if (code !== USER_CODE) {
     return res.status(400).json({ message: "Invalid registration code." });
   }
 
-  // Check the user already exists or not
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return res.status(400).json({ message: "Email already registered." });
   }
 
   const hashed = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hashed });
+  const user = await User.create({ name, email, password: hashed, role });
 
   res.status(201).json({ message: "User registered", user });
 };
@@ -34,7 +35,9 @@ export const login = async (req, res) => {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id, role: user.role }, SECRET, {
+    expiresIn: "1h",
+  });
   res.json({ token });
 };
 

@@ -6,8 +6,6 @@ import {
   ModalCloseButton,
   ModalBody,
   useDisclosure,
-  Box,
-  Heading,
   Text,
   FormControl,
   FormLabel,
@@ -29,7 +27,7 @@ const OverlayOne = () => (
 );
 
 const BookEditModal = ({ book }) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [overlay, setOverlay] = useState(<OverlayOne />);
   const [formData, setFormData] = useState({
@@ -75,7 +73,7 @@ const BookEditModal = ({ book }) => {
         },
       };
 
-      const result = await updateProduct(book._id, updatedData);
+      const result = await updateProduct(book._id, updatedData, token);
 
       if (result.success) {
         toast({

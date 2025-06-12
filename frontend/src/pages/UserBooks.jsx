@@ -95,8 +95,12 @@ const UserBooks = () => {
                 <td className="border border-slate-400 text-center">
                   <div className="flex justify-center gap-x-2">
                     <BookDetailsModal book={book} />
-                    <BookEditModal book={book} />
-                    <BookDeleteModal book={book} />
+                    {["admin", "user"].includes(user?.role) && (
+                      <>
+                        <BookEditModal book={book} />
+                        <BookDeleteModal book={book} />
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>

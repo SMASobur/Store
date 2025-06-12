@@ -53,9 +53,9 @@ export const AuthProvider = ({ children }) => {
 
     if (res.ok) {
       const data = await res.json();
-      setUser(data);
+      setUser({ ...data, token: jwt });
     } else {
-      logout(); // Token invalid or expired
+      logout();
     }
   };
 
@@ -63,8 +63,12 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  const isAdmin = () => user?.role === "admin";
+
   return (
-    <AuthContext.Provider value={{ token, user, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ token, user, login, register, logout, isAdmin }}
+    >
       {children}
     </AuthContext.Provider>
   );

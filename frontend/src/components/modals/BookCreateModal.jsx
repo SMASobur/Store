@@ -23,7 +23,8 @@ import { useAuth } from "../../context/AuthContext";
 const BookCreateModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  console.log(user);
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -67,13 +68,16 @@ const BookCreateModal = () => {
         return;
       }
 
-      const result = await createProduct({
-        ...formData,
-        createdBy: {
-          id: user._id,
-          name: user.name,
+      const result = await createProduct(
+        {
+          ...formData,
+          createdBy: {
+            id: user._id,
+            name: user.name,
+          },
         },
-      });
+        token
+      );
 
       if (result.success) {
         onClose();

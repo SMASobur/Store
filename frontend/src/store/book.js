@@ -1,11 +1,15 @@
 import { create } from "zustand";
 
+const authHeaders = (token) => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+});
+
 export const useProductStore = create((set) => ({
   products: [],
   setProducts: (products) => set({ products }),
 
-  createProduct: async (newProduct) => {
-    // Validate with correct field names
+  createProduct: async (newProduct, token) => {
     if (!newProduct.title || !newProduct.author || !newProduct.price) {
       return {
         success: false,
@@ -17,9 +21,7 @@ export const useProductStore = create((set) => ({
     try {
       const res = await fetch("/api/books", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: authHeaders(token),
         body: JSON.stringify({
           title: newProduct.title,
           author: newProduct.author,
@@ -65,10 +67,11 @@ export const useProductStore = create((set) => ({
     }
   },
 
-  deleteProduct: async (pid) => {
+  deleteProduct: async (pid, token) => {
     try {
       const res = await fetch(`/api/books/${pid}`, {
         method: "DELETE",
+        headers: authHeaders(token),
       });
       const data = await res.json();
 
@@ -86,26 +89,22 @@ export const useProductStore = create((set) => ({
     }
   },
 
-  updateProduct: async (pid, updatedProduct) => {
-    try {
-      // Validate with correct field names
-      if (
-        !updatedProduct.title ||
-        !updatedProduct.author ||
-        !updatedProduct.price
-      ) {
-        return {
-          success: false,
-          message:
-            "Please fill in all required fields (title, author, price. ).",
-        };
-      }
+  updateProduct: async (pid, updatedProduct, token) => {
+    if (
+      !updatedProduct.title ||
+      !updatedProduct.author ||
+      !updatedProduct.price
+    ) {
+      return {
+        success: false,
+        message: "Please fill in all required fields (title, author, price. )",
+      };
+    }
 
+    try {
       const res = await fetch(`/api/books/${pid}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: authHeaders(token),
         body: JSON.stringify({
           title: updatedProduct.title,
           author: updatedProduct.author,
