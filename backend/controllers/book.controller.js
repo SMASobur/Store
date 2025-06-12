@@ -111,6 +111,25 @@ export const updateProductBooks = async (req, res) => {
         message: "Fields (title, author, publishYear) are required.",
       });
     }
+    // First find the book to check ownership
+    const book = await Book.findById(id);
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found.",
+      });
+    }
+
+    // Check permissions: admin/superadmin OR original creator
+    const isAdmin = req.user.role === "admin" || req.user.role === "superadmin";
+    const isOwner = book.createdBy?.id?.toString() === req.user.id;
+
+    if (!isAdmin && !isOwner) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to update this book.",
+      });
+    }
 
     const updatedBook = await Book.findByIdAndUpdate(
       id,
@@ -164,7 +183,7 @@ export const deleteProductBooks = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Book deleted successfully.",
-      data: deletedBook, // optional: useful for confirming what was deleted
+      data: deletedBook,
     });
   } catch (error) {
     console.error("Error deleting book:", error.message);

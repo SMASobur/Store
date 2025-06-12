@@ -17,6 +17,8 @@ router.get("/:id", getSingleProductsBooks);
 // Protected (admin-only)
 router.post("/", authMiddleware, createProductBooks);
 router.put("/:id", authMiddleware, updateProductBooks);
-router.delete("/:id", authMiddleware, requireRole("admin"), deleteProductBooks);
+router.delete("/:id", authMiddleware, deleteProductBooks);
+//role base actjion controll
+// router.delete("/:id", authMiddleware, requireRole("admin"), deleteProductBooks);
 
 export default router;
