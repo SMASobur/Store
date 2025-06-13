@@ -39,9 +39,15 @@ const UserBooks = () => {
           </h1>
           <div className="flex gap-2">{user && <BookCreateModal />}</div>
         </div>
-        <h2 className="text-2xl font-bold text-center mb-4">
-          You created this book list ({userBooks.length})
-        </h2>
+        {userBooks.length > 0 ? (
+          <h2 className="text-2xl font-bold text-center mb-4">
+            You have {userBooks.length} book{userBooks.length !== 1 ? "s" : ""}.
+          </h2>
+        ) : (
+          <h2 className="text-2xl font-bold text-center mb-4 text-gray-500">
+            You haven't added any books yet.
+          </h2>
+        )}
         <div className="flex justify-center md:justify-end mt-4">
           <Button
             onClick={() => generateBooksPDF(user.name, userBooks)}
@@ -71,7 +77,9 @@ const UserBooks = () => {
               <th className="border-2 border-slate-400 rounded-md max-md:hidden">
                 Price
               </th>
-              <th className="border-2 border-slate-400 rounded-md">Actions</th>
+              <th className="border-2 border-slate-400 rounded-md">
+                Operations
+              </th>
             </tr>
           </thead>
           <tbody>
