@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import { Button, Container, Text } from "@chakra-ui/react";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import BooksTable from "../components/BooksTable";
 import BookCreateModal from "../components/modals/BookCreateModal";
 
@@ -24,13 +24,16 @@ const BookPage = () => {
   return (
     <Container maxW="container.xl" py={12}>
       {user && (
-        <div className="text-right m-2 mt-4 px-4">
-          <Link
-            to="/my-books"
-            className="text-blue-600 underline hover:text-blue-800"
-          >
-            <Button colorScheme="orange" variant="outline">
-              View your own book list
+        <div className="text-right mt-6 px-4">
+          <Link to="/my-books" className="inline-block">
+            <Button
+              colorScheme="blue"
+              variant="outline"
+              size="md"
+              rightIcon={<ArrowForwardIcon />}
+              className="hover:shadow-md transition-all duration-200"
+            >
+              View Your Collection
             </Button>
           </Link>
         </div>
@@ -46,10 +49,10 @@ const BookPage = () => {
               bgClip={"text"}
               textAlign={"left"}
             >
-              Book List
+              All List
             </Text>
           </h1>
-          {user?.role === "admin" && <BookCreateModal />}
+          {user && <BookCreateModal />}
         </div>
 
         <BooksTable books={books} />
