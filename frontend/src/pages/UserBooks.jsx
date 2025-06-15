@@ -14,7 +14,9 @@ const UserBooks = () => {
   const { fetchProducts, products } = useProductStore();
   const { userId } = useParams();
   const { user, token } = useAuth();
-  const [targetUser, setTargetUser] = useState(user);
+  // const [targetUser, setTargetUser] = useState(user);
+  const [targetUser, setTargetUser] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [booksPerPage, setBooksPerPage] = useState(25);
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,6 +67,13 @@ const UserBooks = () => {
       setCurrentPage(page);
     }
   };
+  if (!targetUser) {
+    return (
+      <div className="text-center mt-10 text-gray-500 text-lg">
+        Loading user books...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-2">
@@ -76,8 +85,9 @@ const UserBooks = () => {
             bgColor="orange.400"
             bgClip="text"
           >
-            {user.name}'s {userBooks.length <= 1 ? "Book" : "Books"} List
+            {targetUser?.name}'s {userBooks.length <= 1 ? "Book" : "Books"} List
           </Text>
+
           {user && <BookCreateModal />}
         </div>
 

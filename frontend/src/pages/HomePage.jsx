@@ -19,6 +19,8 @@ import { useAuth } from "../context/AuthContext";
 const HomePage = () => {
   const textColor = useColorModeValue("orange.600", "gray.300");
   const bg = useColorModeValue("white", "gray.600");
+  const cardBg = useColorModeValue("orange.100", "orange.400");
+
   const { user } = useAuth();
   return (
     <Container maxW="container.xl" py={12}>
@@ -29,7 +31,7 @@ const HomePage = () => {
           my={6}
           boxShadow="lg"
           borderRadius="xl"
-          bg={useColorModeValue("orange.100", "orange.400")}
+          bg={cardBg}
         >
           <CardHeader fontSize="xl" fontWeight="bold" textAlign="center">
             Test Login Credentials
@@ -82,7 +84,7 @@ const HomePage = () => {
             _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
             bg={bg}
           >
-            <Link to={"/books"}>
+            <Link to={"/books"} aria-label="Navigate to books table view">
               <Flex
                 direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
                 alignItems="center"

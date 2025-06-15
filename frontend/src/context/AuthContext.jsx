@@ -62,6 +62,25 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     fetchUser();
   }, []);
+  useEffect(() => {
+    if (!user || !user.token) return;
+
+    const decoded = JSON.parse(atob(user.token.split(".")[1])); // decode JWT
+    const exp = decoded.exp * 1000; // convert to ms
+
+    const now = Date.now();
+    const timeUntilExpiry = exp - now;
+
+    if (timeUntilExpiry <= 0) {
+      logout(); // Token already expired
+    } else {
+      const timeout = setTimeout(() => {
+        logout(); // Auto logout when token expires
+      }, timeUntilExpiry);
+
+      return () => clearTimeout(timeout); // Clear on unmount or user change
+    }
+  }, [user, logout]);
 
   const isAdmin = () => user?.role === "admin";
 

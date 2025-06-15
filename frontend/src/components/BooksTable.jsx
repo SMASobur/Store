@@ -144,15 +144,26 @@ const BooksTable = ({ books }) => {
               </td>
             </tr>
           ))}
+          {currentBooks.length > 0 && (
+            <tr>
+              <td colSpan={colSpanValue}></td>
+              <td className="text-center">
+                <p className="text-base font-semibold">
+                  Total value:{" "}
+                  <span className="font-medium">{total.toFixed(2)}</span>
+                </p>
+              </td>
+            </tr>
+          )}
+        </tbody>
+        {filteredBooks.length === 0 && (
           <tr>
-            <td colSpan={colSpanValue}></td>
-            <td className=" text-center ">
-              <p className="text-base font-semibold">
-                Total value: <span className="font-medium">{total}/=</span>
-              </p>
+            <td colSpan="6" className="text-center text-gray-500 py-4">
+              No books found.
             </td>
           </tr>
-        </tbody>
+        )}
+
         <tfoot></tfoot>
       </table>
       {(totalPages > 1 || products.length > 0) && (

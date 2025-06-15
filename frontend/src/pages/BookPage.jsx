@@ -11,16 +11,22 @@ import { useAuth } from "../context/AuthContext";
 const BookPage = () => {
   const [books, setBooks] = useState([]);
   const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    axios
-      .get("http://localhost:5001/books")
-      .then((res) => {
+    const fetchBooks = async () => {
+      try {
+        const res = await axios.get("http://localhost:5001/books");
         setBooks(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      } catch (error) {
+        console.error("Failed to fetch books:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBooks();
   }, []);
+
   return (
     <Container maxW="container.xl" py={2}>
       {user && (
@@ -55,7 +61,7 @@ const BookPage = () => {
           {user && <BookCreateModal />}
         </div>
 
-        <BooksTable books={books} />
+        {loading ? <Text>Loading...</Text> : <BooksTable books={books} />}
       </div>
     </Container>
   );
