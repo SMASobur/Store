@@ -6,40 +6,54 @@ import BookDetailsModal from "../components/modals/BookDetailsModal";
 import BookEditModal from "../components/modals/BookEditModal";
 import BookDeleteModal from "../components/modals/BookDeleteModal";
 import BookCreateModal from "../components/modals/BookCreateModal";
-import { Button, Text } from "@chakra-ui/react";
+import { Button, Text, Spinner } from "@chakra-ui/react";
 import { generateBooksPDF } from "../utils/pdfGenerator";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const UserBooks = () => {
   const { fetchProducts, products } = useProductStore();
   const { userId } = useParams();
   const { user, token } = useAuth();
-  // const [targetUser, setTargetUser] = useState(user);
   const [targetUser, setTargetUser] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [booksPerPage, setBooksPerPage] = useState(25);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (userId && user?.role === "admin") {
-        const res = await axios.get(`/api/admin/users`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const found = res.data.find((u) => u._id === userId);
-        if (found) setTargetUser(found);
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        await fetchProducts();
+
+        // If no userId provided, show current user's books
+        if (!userId) {
+          setTargetUser(user);
+        }
+        // If userId provided and current user is admin, fetch that user
+        else if (user?.role === "admin") {
+          const res = await axios.get(`/api/admin/users`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const found = res.data.find((u) => u._id === userId);
+          setTargetUser(found || user);
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchUser();
-  }, [userId, user, token]);
 
-  const userBooks = products.filter(
-    (book) => book.createdBy?.id === targetUser?._id
-  );
+    loadData();
+  }, [fetchProducts, userId, user, token]);
+
+  const userBooks = isLoading
+    ? []
+    : products.filter(
+        (book) => book.createdBy?.id === (userId ? targetUser?._id : user?._id)
+      );
 
   const filteredBooks = userBooks.filter((book) => {
     const term = searchTerm.toLowerCase();
@@ -67,13 +81,24 @@ const UserBooks = () => {
       setCurrentPage(page);
     }
   };
-  if (!targetUser) {
+
+  if (isLoading) {
     return (
-      <div className="text-center mt-10 text-gray-500 text-lg">
-        Loading user books...
+      <div className="flex justify-center items-center h-64">
+        <Spinner size="xl" />
       </div>
     );
   }
+
+  if (!targetUser && userId) {
+    return (
+      <div className="text-center mt-10 text-gray-500 text-lg">
+        User not found
+      </div>
+    );
+  }
+
+  const displayUser = targetUser || user;
 
   return (
     <div className="w-full max-w-7xl mx-auto px-2">
@@ -85,18 +110,19 @@ const UserBooks = () => {
             bgColor="orange.400"
             bgClip="text"
           >
-            {targetUser?.name}'s {userBooks.length <= 1 ? "Book" : "Books"} List
+            {displayUser?.name}'s {userBooks.length <= 1 ? "Book" : "Books"}{" "}
+            List
           </Text>
-
           {user && <BookCreateModal />}
         </div>
 
         {userBooks.length > 0 ? (
           <>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 px-4 gap-4">
-              {/* Books per page selector - now on left in desktop */}
-              <div className="flex items-center">
-                <label className="mr-2 font-medium">Books per page:</label>
+              <div className="flex items-center w-full md:w-auto">
+                <label className="mr-2 font-medium whitespace-nowrap">
+                  Books per page:
+                </label>
                 <select
                   value={booksPerPage}
                   onChange={(e) => {
@@ -111,8 +137,7 @@ const UserBooks = () => {
                 </select>
               </div>
 
-              {/* Search input - now on right in desktop */}
-              <div className="flex-1 md:flex-none md:w-64">
+              <div className="w-full md:w-64">
                 <input
                   type="text"
                   value={searchTerm}
@@ -193,7 +218,7 @@ const UserBooks = () => {
                         <Button
                           onClick={() =>
                             generateBooksPDF(
-                              targetUser?.name || "User",
+                              displayUser?.name || "User",
                               userBooks
                             )
                           }
@@ -226,6 +251,7 @@ const UserBooks = () => {
                 </tfoot>
               </table>
             </div>
+
             <div className="md:hidden flex justify-center gap-2 mt-4 mb-4">
               <button
                 onClick={() => goToPage(currentPage - 1)}
@@ -247,7 +273,6 @@ const UserBooks = () => {
             </div>
 
             <div className="hidden md:flex flex-row items-center justify-between gap-4 mt-6 mb-4 px-4">
-              {/* Pagination Controls (left-aligned on desktop) */}
               <div className="flex items-center justify-center gap-2">
                 {totalPages > 3 && (
                   <button
@@ -286,11 +311,10 @@ const UserBooks = () => {
                 )}
               </div>
 
-              {/* Export Button (right-aligned on desktop) */}
               <div className="flex justify-center md:justify-end">
                 <Button
                   onClick={() =>
-                    generateBooksPDF(targetUser?.name || "User", userBooks)
+                    generateBooksPDF(displayUser?.name || "User", userBooks)
                   }
                   colorScheme="orange"
                   variant="outline"
@@ -303,9 +327,17 @@ const UserBooks = () => {
             </div>
           </>
         ) : (
-          <p className="text-center text-gray-500 mt-4">
-            No books created yet.
-          </p>
+          <div className="text-center mt-4">
+            <p className="text-gray-500">No books created yet.</p>
+            {userId && user?.role === "admin" && (
+              <Link
+                to="/my-books"
+                className="text-blue-600 underline hover:text-blue-800 mt-2 inline-block"
+              >
+                View your own books
+              </Link>
+            )}
+          </div>
         )}
       </div>
     </div>
