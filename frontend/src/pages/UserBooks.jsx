@@ -6,7 +6,7 @@ import BookDetailsModal from "../components/modals/BookDetailsModal";
 import BookEditModal from "../components/modals/BookEditModal";
 import BookDeleteModal from "../components/modals/BookDeleteModal";
 import BookCreateModal from "../components/modals/BookCreateModal";
-import { Button, Text, Spinner } from "@chakra-ui/react";
+import { Button, Text, Spinner, useColorModeValue } from "@chakra-ui/react";
 import { generateBooksPDF } from "../utils/pdfGenerator";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -328,11 +328,13 @@ const UserBooks = () => {
           </>
         ) : (
           <div className="text-center mt-4">
-            <p className="text-gray-500">No books created yet.</p>
+            <p text={useColorModeValue("gray.300", "gray.700")}>
+              No books created yet.
+            </p>
             {userId && user?.role === "admin" && (
               <Link
                 to="/my-books"
-                className="text-blue-600 underline hover:text-blue-800 mt-2 inline-block"
+                className="text-blue-400 underline hover:text-blue-800 mt-2 inline-block"
               >
                 View your own books
               </Link>

@@ -8,6 +8,32 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      setLoading(true);
+      await axios.put(
+        `/api/admin/users/${userId}/role`,
+        { role: newRole },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Refresh users
+      const res = await axios.get("/api/admin/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(res.data);
+      setFilteredUsers(res.data);
+    } catch (err) {
+      console.error("Failed to update role", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -49,7 +75,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-4 max-w-6xl mx-auto w-full">
-      <h1 className="text-3xl font-bold text-center mb-6 text-orange-600">
+      <h1 className="text-3xl font-bold text-center mb-6 text-orange-400">
         Admin Dashboard
       </h1>
       <div className="flex justify-center md:justify-end mb-4">
@@ -91,12 +117,20 @@ const AdminDashboard = () => {
                     {u.email}
                   </td>
                   <td className="border border-gray-300 text-center">
-                    {u.role}
+                    <select
+                      value={u.role}
+                      onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                      className="border px-2 py-1 rounded"
+                      disabled={loading}
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
                   </td>
                   <td className="border border-gray-300 text-center">
                     <Link
                       to={`/user-books/${u._id}`}
-                      className="text-blue-600 hover:underline"
+                      className="text-orange-400 hover:underline"
                     >
                       View
                     </Link>
