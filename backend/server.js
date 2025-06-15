@@ -8,6 +8,7 @@ import { connectDB } from "./config/db.js";
 import productRoutes from "./routes/product.route.js";
 import bookRoutes from "./routes/book.route.js";
 import authRoutes from "./routes/auth.route.js";
+import adminRoutes from "./routes/admin.route.js";
 
 connectDB();
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.json()); // allows us to accept JSON data in the req.body
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

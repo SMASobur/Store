@@ -10,6 +10,7 @@ import {
   Image,
   Link as ChakraLink,
   Tooltip,
+  Link,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
@@ -78,14 +79,14 @@ const Navbar = () => {
           </Box>
 
           <HStack spacing={2} alignItems={"center"}>
-            <RouterLink to="/cards">
-              <Button>
-                <BiCreditCardFront fontSize={20} />
-              </Button>
-            </RouterLink>
             <RouterLink to="/books">
               <Button>
                 <PiBooksDuotone fontSize={20} />
+              </Button>
+            </RouterLink>
+            <RouterLink to="/cards">
+              <Button>
+                <BiCreditCardFront fontSize={20} />
               </Button>
             </RouterLink>
             <RouterLink to="/about">
@@ -97,10 +98,20 @@ const Navbar = () => {
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
             </Button>
+            {user?.role === "admin" && (
+              <RouterLink to="/admin">
+                <Tooltip
+                  label="Admin Dashboard"
+                  rounded="lg"
+                  fontSize={{ base: "15", sm: "18" }}
+                >
+                  <Button>🛠️</Button>
+                </Tooltip>
+              </RouterLink>
+            )}
 
             {user ? (
               <>
-                <Text fontSize="sm">Hi, {user.name}</Text>
                 <Tooltip
                   label="Logout"
                   rounded="lg"

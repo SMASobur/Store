@@ -22,7 +22,7 @@ const BookPage = () => {
       });
   }, []);
   return (
-    <Container maxW="container.xl" py={12}>
+    <Container maxW="container.xl" py={2}>
       {user && (
         <div className="text-right mt-6 px-4">
           <Link to="/my-books" className="inline-block">
@@ -49,7 +49,7 @@ const BookPage = () => {
               bgClip={"text"}
               textAlign={"left"}
             >
-              All List
+              All books list
             </Text>
           </h1>
           {user && <BookCreateModal />}

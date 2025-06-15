@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import UserBooks from "./pages/UserBooks";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/books" element={<BookPage />} />
           <Route path="/cards" element={<StoreCardView />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/user-books/:userId" element={<UserBooks />} />
 
           {/* Private Routes */}
           <Route

@@ -15,41 +15,72 @@ const BooksTable = ({ books }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [booksPerPage, setBooksPerPage] = useState(25);
+  const [searchTerm, setSearchTerm] = useState("");
 
   //const userBooks = products.filter((book) => book.createdBy?.id === user?._id);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  const filteredBooks = products.filter((book) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      book.title.toLowerCase().includes(term) ||
+      book.author.toLowerCase().includes(term) ||
+      String(book.publishYear).includes(term) ||
+      String(book.price).includes(term)
+    );
+  });
+
   //console.log("products", products);
-  const total = products.reduce(
+  const total = filteredBooks.reduce(
     (sum, book) => sum + (Number(book.price) || 0),
     0
   );
 
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
-  const currentBooks = products.slice(indexOfFirstBook, indexOfLastBook);
-
-  const totalPages = Math.ceil(products.length / booksPerPage);
+  const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
   return (
     <>
-      <div className="flex justify-end mb-4 px-4">
-        <label className="mr-2 font-medium">Books per page:</label>
-        <select
-          value={booksPerPage}
-          onChange={(e) => {
-            setBooksPerPage(Number(e.target.value));
-            setCurrentPage(1);
-          }}
-          className="appearance-none border border-gray-300 rounded px-2 py-1"
-        >
-          <option value={10}>10</option>
-          <option value={25}>25</option>
-          <option value={50}>50</option>
-        </select>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 px-4 gap-4">
+        {/* Books per page - left aligned */}
+        <div className="flex items-center w-full md:w-auto">
+          <label className="mr-2 font-medium whitespace-nowrap">
+            Books per page:
+          </label>
+          <select
+            value={booksPerPage}
+            onChange={(e) => {
+              setBooksPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+            className="appearance-none border border-gray-300 rounded px-2 py-1"
+          >
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+
+        {/* Search - right aligned */}
+        <div className="w-full md:w-64">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder="Search by title, author, year or price"
+            className="border border-gray-300 px-3 py-1 rounded w-full"
+          />
+        </div>
       </div>
+
       <table className="w-full border-separate border-spacing-2 p-2 table-auto">
         <thead>
           <tr>
