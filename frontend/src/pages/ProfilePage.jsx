@@ -160,6 +160,7 @@ const ProfilePage = () => {
         description: "Please enter your password",
         status: "error",
         duration: 3000,
+        isClosable: true,
       });
       return;
     }
@@ -176,9 +177,8 @@ const ProfilePage = () => {
         body: JSON.stringify({ password: passwords.confirmDelete }),
       });
 
-      // Check if the response is ok (status 200-299)
       if (res.ok) {
-        // Clear all user data from client-side storage
+        // Clear all user data from client-side
         localStorage.removeItem("token");
 
         // Show success message
@@ -190,14 +190,12 @@ const ProfilePage = () => {
           isClosable: true,
         });
 
-        // Redirect to login page after a short delay
-        setTimeout(() => {
-          navigate("/login", { replace: true });
-        }, 1500); // 1.5 second delay for user to see the success message
+        // Force a hard redirect to ensure complete logout
+        window.location.href = "/login";
         return;
       }
 
-      // Handle non-ok responses
+      // Handle error responses
       const data = await res.json();
       throw new Error(data.message || "Failed to delete account");
     } catch (error) {
@@ -224,7 +222,7 @@ const ProfilePage = () => {
 
   return (
     <Box
-      maxW="lg"
+      maxW="xl"
       mx="auto"
       mt={10}
       p={6}
