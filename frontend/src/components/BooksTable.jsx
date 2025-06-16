@@ -130,6 +130,7 @@ const BooksTable = ({ books }) => {
                   <BookDetailsModal book={book} />
                   {user &&
                     (user.role === "admin" ||
+                      user.role === "superadmin" ||
                       book.createdBy?.id === user._id) && (
                       <>
                         <BookEditModal book={book} />

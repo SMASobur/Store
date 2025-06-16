@@ -31,8 +31,8 @@ const UserBooks = () => {
         if (!userId) {
           setTargetUser(user);
         }
-        // If userId provided and current user is admin, fetch that user
-        else if (user?.role === "admin") {
+        // If userId provided and current user is admin or superadmin, fetch that user
+        else if (user?.role === "admin" || user?.role === "superadmin") {
           const res = await axios.get(`/api/admin/users`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -196,7 +196,9 @@ const UserBooks = () => {
                       <td className="border border-slate-400 text-center">
                         <div className="flex justify-center gap-x-2">
                           <BookDetailsModal book={book} />
-                          {["admin", "user"].includes(user?.role) && (
+                          {["admin", "user", "superadmin"].includes(
+                            user?.role
+                          ) && (
                             <>
                               <BookEditModal book={book} />
                               <BookDeleteModal book={book} />
@@ -331,7 +333,7 @@ const UserBooks = () => {
             <p text={useColorModeValue("gray.300", "gray.700")}>
               No books created yet.
             </p>
-            {userId && user?.role === "admin" && (
+            {userId && (user?.role === "admin" || user.role === "superadmin") && (
               <Link
                 to="/my-books"
                 className="text-blue-400 underline hover:text-blue-800 mt-2 inline-block"

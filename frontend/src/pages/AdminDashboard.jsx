@@ -129,7 +129,9 @@ const AdminDashboard = () => {
                 </th>
                 <th className="border border-gray-300 p-2 rounded">Role</th>
                 <th className="border border-gray-300 p-2 rounded">Books</th>
-                <th className="border border-gray-300 p-2 rounded">🗑️</th>
+                {user.role === "superadmin" && (
+                  <th className="border border-gray-300 p-2 rounded">🗑️</th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -169,11 +171,8 @@ const AdminDashboard = () => {
                       View
                     </Link>
                   </td>
-                  <td className="border border-gray-300 text-center">
-                    {(user.role === "superadmin" ||
-                      (user.role === "admin" &&
-                        u.role !== "admin" &&
-                        u.role !== "superadmin")) && (
+                  {user.role === "superadmin" && (
+                    <td className="border border-gray-300 text-center">
                       <button
                         onClick={() => handleDeleteUser(u._id)}
                         disabled={loading}
@@ -181,8 +180,8 @@ const AdminDashboard = () => {
                       >
                         <DeleteIcon />
                       </button>
-                    )}
-                  </td>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
