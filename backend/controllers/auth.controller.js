@@ -75,3 +75,34 @@ export const changePassword = async (req, res) => {
 
   res.json({ message: "Password changed successfully" });
 };
+
+export const deleteAccount = async (req, res) => {
+  try {
+    // Get the authenticated user's ID from the request
+    const userId = req.user.id;
+
+    // Delete the user from database
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Optionally: Delete all associated data (books, etc.)
+    // await Book.deleteMany({ owner: userId });
+
+    res.status(200).json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete account",
+    });
+  }
+};
