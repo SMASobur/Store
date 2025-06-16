@@ -17,6 +17,15 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+export const isSuperAdmin = (req, res, next) => {
+  if (req.user?.role !== "superadmin") {
+    return res
+      .status(403)
+      .json({ message: "Access denied: Super Admins only" });
+  }
+  next();
+};
+
 // Role-based authorization middleware
 export const requireRole = (role) => {
   return (req, res, next) => {

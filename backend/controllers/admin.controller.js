@@ -30,3 +30,26 @@ export const updateUserRole = async (req, res) => {
 
   res.json({ message: "User role updated", user });
 };
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const userToDelete = await User.findById(id);
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Prevent deleting other Super Admins
+    if (userToDelete.role === "superadmin") {
+      return res.status(403).json({ message: "Cannot delete a Super Admin" });
+    }
+
+    await userToDelete.deleteOne();
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+};

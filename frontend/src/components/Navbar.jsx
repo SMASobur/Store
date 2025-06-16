@@ -109,7 +109,7 @@ const Navbar = () => {
                   <MenuItem as={RouterLink} to="/about">
                     👨‍💻 Developer
                   </MenuItem>
-                  {user.role === "admin" && (
+                  {(user.role === "admin" || user.role === "superadmin") && (
                     <MenuItem as={RouterLink} to="/admin">
                       🛠 Admin Panel
                     </MenuItem>

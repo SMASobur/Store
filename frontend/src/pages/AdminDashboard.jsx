@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const AdminDashboard = () => {
   const { user, token } = useAuth();
@@ -9,6 +10,7 @@ const AdminDashboard = () => {
   const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const handleRoleChange = async (userId, newRole) => {
     try {
       setLoading(true);
@@ -35,6 +37,30 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      setLoading(true);
+      await axios.delete(`/api/admin/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Refresh list
+      const res = await axios.get("/api/admin/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(res.data);
+      setFilteredUsers(res.data);
+    } catch (err) {
+      console.error("Failed to delete user", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -50,7 +76,7 @@ const AdminDashboard = () => {
       }
     };
 
-    if (user?.role === "admin") {
+    if (user?.role === "admin" || user?.role === "superadmin") {
       fetchUsers();
     }
   }, [user, token]);
@@ -65,7 +91,8 @@ const AdminDashboard = () => {
     setFilteredUsers(results);
   }, [search, users]);
 
-  if (user?.role !== "admin") {
+  // Check for admin/superadmin access
+  if (!(user?.role === "admin" || user?.role === "superadmin")) {
     return (
       <div className="text-center mt-10 text-red-500 text-lg font-semibold">
         Access Denied: Admins only.
@@ -102,6 +129,7 @@ const AdminDashboard = () => {
                 </th>
                 <th className="border border-gray-300 p-2 rounded">Role</th>
                 <th className="border border-gray-300 p-2 rounded">Books</th>
+                <th className="border border-gray-300 p-2 rounded">🗑️</th>
               </tr>
             </thead>
             <tbody>
@@ -121,10 +149,16 @@ const AdminDashboard = () => {
                       value={u.role}
                       onChange={(e) => handleRoleChange(u._id, e.target.value)}
                       className="border px-2 py-1 rounded"
-                      disabled={loading}
+                      disabled={
+                        loading ||
+                        (user.role === "admin" && u.role === "superadmin")
+                      }
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
+                      {user.role === "superadmin" && (
+                        <option value="superadmin">Superadmin</option>
+                      )}
                     </select>
                   </td>
                   <td className="border border-gray-300 text-center">
@@ -134,6 +168,20 @@ const AdminDashboard = () => {
                     >
                       View
                     </Link>
+                  </td>
+                  <td className="border border-gray-300 text-center">
+                    {(user.role === "superadmin" ||
+                      (user.role === "admin" &&
+                        u.role !== "admin" &&
+                        u.role !== "superadmin")) && (
+                      <button
+                        onClick={() => handleDeleteUser(u._id)}
+                        disabled={loading}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <DeleteIcon />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

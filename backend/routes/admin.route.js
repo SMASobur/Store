@@ -2,8 +2,12 @@ import express from "express";
 import {
   getAllUsers,
   updateUserRole,
+  deleteUser,
 } from "../controllers/admin.controller.js";
-import authMiddleware, { requireRole } from "../middleware/auth.middleware.js";
+import authMiddleware, {
+  isSuperAdmin,
+  requireRole,
+} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -15,5 +19,7 @@ router.put(
   requireRole("admin"),
   updateUserRole
 );
+// DELETE /api/admin/users/:id
+router.delete("/users/:id", authMiddleware, isSuperAdmin, deleteUser);
 
 export default router;
