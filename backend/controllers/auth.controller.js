@@ -45,3 +45,33 @@ export const getMe = async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   res.json(user);
 };
+// Update name/email
+export const updateProfile = async (req, res) => {
+  const { name } = req.body;
+  const user = await User.findById(req.user.id);
+
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  user.name = name || user.name;
+  await user.save();
+
+  res.json({
+    message: "Profile updated",
+    user: { name: user.name, email: user.email },
+  });
+};
+
+// Change password
+export const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const user = await User.findById(req.user.id);
+
+  if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+    return res.status(400).json({ message: "Current password incorrect" });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  res.json({ message: "Password changed successfully" });
+};

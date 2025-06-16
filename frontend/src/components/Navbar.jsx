@@ -11,6 +11,11 @@ import {
   Link as ChakraLink,
   Tooltip,
   Link,
+  Menu,
+  MenuButton,
+  Avatar,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
@@ -77,65 +82,58 @@ const Navbar = () => {
               </ChakraLink>
             </Flex>
           </Box>
-
           <HStack spacing={2} alignItems={"center"}>
+            {/* Always visible links */}
             <RouterLink to="/books">
-              <Button>
-                <PiBooksDuotone fontSize={20} />
-              </Button>
+              <Button leftIcon={<PiBooksDuotone fontSize={20} />}>Books</Button>
             </RouterLink>
             <RouterLink to="/cards">
-              <Button>
-                <BiCreditCardFront fontSize={20} />
+              <Button leftIcon={<BiCreditCardFront fontSize={20} />}>
+                Cards
               </Button>
             </RouterLink>
-            <RouterLink to="/about">
-              <Button>
-                <MdOutlineDeveloperMode size={30} />
-              </Button>
-            </RouterLink>
-
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
             </Button>
-            {user?.role === "admin" && (
-              <RouterLink to="/admin">
-                <Tooltip
-                  label="Admin Dashboard"
-                  rounded="lg"
-                  fontSize={{ base: "15", sm: "18" }}
-                >
-                  <Button>🛠️</Button>
-                </Tooltip>
-              </RouterLink>
-            )}
 
+            {/* Authenticated user menu */}
             {user ? (
-              <>
-                <Tooltip
-                  label="Logout"
-                  rounded="lg"
-                  fontSize={{ base: "15", sm: "18" }}
-                >
-                  <Button onClick={handleLogout}>
-                    <CiLogout />
+              <Menu>
+                <MenuButton>
+                  <Avatar name={user.name} size="sm" />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem as={RouterLink} to="/profile">
+                    👤 Profile
+                  </MenuItem>
+                  <MenuItem as={RouterLink} to="/about">
+                    👨‍💻 Developer
+                  </MenuItem>
+                  {user.role === "admin" && (
+                    <MenuItem as={RouterLink} to="/admin">
+                      🛠 Admin Panel
+                    </MenuItem>
+                  )}
+                  <MenuItem onClick={toggleColorMode}>
+                    <Flex align="center" gap={2}>
+                      {colorMode === "light" ? <IoMoon /> : <LuSun />}
+                      <Text>
+                        {colorMode === "light" ? "Dark Mode" : "Light Mode"}
+                      </Text>
+                    </Flex>
+                  </MenuItem>
+
+                  <MenuItem onClick={handleLogout}> 🚪 Logout</MenuItem>
+                </MenuList>
+              </Menu>
+            ) : (
+              <RouterLink to="/login">
+                <Tooltip label="Login">
+                  <Button>
+                    <CiLogin />
                   </Button>
                 </Tooltip>
-              </>
-            ) : (
-              <>
-                <RouterLink to="/login">
-                  <Tooltip
-                    label="Login"
-                    rounded="lg"
-                    fontSize={{ base: "15", sm: "18" }}
-                  >
-                    <Button>
-                      <CiLogin />
-                    </Button>
-                  </Tooltip>
-                </RouterLink>
-              </>
+              </RouterLink>
             )}
           </HStack>
         </Flex>

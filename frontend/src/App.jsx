@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import UserBooks from "./pages/UserBooks";
 import AdminDashboard from "./pages/AdminDashboard";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/cards" element={<StoreCardView />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user-books/:userId" element={<UserBooks />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* Private Routes */}
           <Route
