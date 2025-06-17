@@ -142,6 +142,16 @@ const AdminDashboard = () => {
                   </td>
                   <td className="border border-gray-300 text-center break-words">
                     {u.name}
+                    {u.role === "superadmin" && (
+                      <span className="ml-2 text-xs bg-red-500 text-white px-2 py-0.5 rounded">
+                        SUPER
+                      </span>
+                    )}
+                    {u.role === "admin" && (
+                      <span className="ml-2 text-xs bg-orange-500 text-white px-2 py-0.5 rounded">
+                        ADMIN
+                      </span>
+                    )}
                   </td>
                   <td className="border border-gray-300 text-center hidden md:table-cell break-words">
                     {u.email}

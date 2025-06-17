@@ -11,6 +11,8 @@ import { generateBooksPDF } from "../utils/pdfGenerator";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+import { ArrowForwardIcon } from "@chakra-ui/icons";
+
 const UserBooks = () => {
   const { fetchProducts, products } = useProductStore();
   const { userId } = useParams();
@@ -103,6 +105,21 @@ const UserBooks = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-2">
       <div className="p-2">
+        {user && (
+          <div className="text-center mt-6 px-4">
+            <Link to="/books" className="inline-block">
+              <Button
+                colorScheme="blue"
+                variant="outline"
+                size="md"
+                rightIcon={<ArrowForwardIcon />}
+                className="hover:shadow-md transition-all duration-200"
+              >
+                View the List from all users
+              </Button>
+            </Link>
+          </div>
+        )}
         <div className="flex justify-between px-4 items-center mb-4">
           <Text
             fontSize="30"

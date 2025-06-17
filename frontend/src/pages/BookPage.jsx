@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button, Container, Text } from "@chakra-ui/react";
+import { Button, Container, Text, Spinner } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import BooksTable from "../components/BooksTable";
 import BookCreateModal from "../components/modals/BookCreateModal";
-
 import { useAuth } from "../context/AuthContext";
+import { generateBooksPDF } from "../utils/pdfGenerator"; // ✅ Import here
 
 const BookPage = () => {
   const [books, setBooks] = useState([]);
@@ -27,6 +27,7 @@ const BookPage = () => {
     fetchBooks();
   }, []);
 
+  console.log("Books being exported:", books);
   return (
     <Container maxW="container.xl" py={2}>
       {user && (
@@ -44,24 +45,40 @@ const BookPage = () => {
           </Link>
         </div>
       )}
+
       <div className="p-2">
-        <div className="flex justify-between px-4 items-center">
-          <h1 className="text-3xl my-82 p-2">
-            {" "}
-            <Text
-              fontSize={"30"}
-              fontWeight={"bold"}
-              bgColor="orange.400"
-              bgClip={"text"}
-              textAlign={"left"}
+        <div className="flex justify-between px-4 items-center mb-4">
+          <Text
+            fontSize={"30"}
+            fontWeight={"bold"}
+            bgColor="orange.400"
+            bgClip={"text"}
+            textAlign={"left"}
+          >
+            All books list
+          </Text>
+
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => generateBooksPDF("All Books", books)}
+              colorScheme="orange"
+              variant="outline"
+              size="sm"
+              isDisabled={books.length === 0}
             >
-              All books list
-            </Text>
-          </h1>
-          {user && <BookCreateModal />}
+              Export to PDF
+            </Button>
+            {user && <BookCreateModal />}
+          </div>
         </div>
 
-        {loading ? <Text>Loading...</Text> : <BooksTable books={books} />}
+        {loading ? (
+          <div className="flex justify-center items-center h-32">
+            <Spinner size="lg" />
+          </div>
+        ) : (
+          <BooksTable books={books} />
+        )}
       </div>
     </Container>
   );

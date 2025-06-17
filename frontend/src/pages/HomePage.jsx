@@ -84,9 +84,12 @@ const HomePage = () => {
             _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
             bg={bg}
           >
-            <Link to={"/books"} aria-label="Navigate to books table view">
+            <Link
+              to={user ? "/my-books" : "/books"}
+              aria-label={user ? "Navigate to my books" : "Navigate to books"}
+            >
               <Flex
-                direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
+                direction={{ base: "column", md: "row" }}
                 alignItems="center"
                 justifyContent="center"
                 p="4"
@@ -98,11 +101,11 @@ const HomePage = () => {
                 <Text
                   fontWeight="bold"
                   fontSize="xl"
-                  mt={{ base: 1, md: 0 }} // Add top margin only on mobile
-                  ml={{ md: 4 }} // Add left margin only on desktop
+                  mt={{ base: 1, md: 0 }}
+                  ml={{ md: 4 }}
                   color={textColor}
                 >
-                  Books (Table View)
+                  {user ? "My Books (Table View)" : "Books (Table View)"}
                 </Text>
               </Flex>
             </Link>
