@@ -234,21 +234,6 @@ const UserBooks = () => {
                         <span className="font-bold">
                           Total: ৳ {totalPrice.toFixed(2)}
                         </span>
-                        <Button
-                          onClick={() =>
-                            generateBooksPDF(
-                              displayUser?.name || "User",
-                              userBooks
-                            )
-                          }
-                          colorScheme="orange"
-                          variant="outline"
-                          isDisabled={userBooks.length === 0}
-                          size="sm"
-                          className="ml-2"
-                        >
-                          Export PDF
-                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -340,7 +325,7 @@ const UserBooks = () => {
                   isDisabled={userBooks.length === 0}
                   size="sm"
                 >
-                  Export to PDF
+                  📥 Export to PDF
                 </Button>
               </div>
             </div>

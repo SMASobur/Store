@@ -72,7 +72,7 @@ const HomePage = () => {
             lg: 2,
           }}
           spacing={10}
-          w={"full"}
+          w={"fit"}
           alignItems={"center"}
           p="2"
         >
@@ -81,7 +81,7 @@ const HomePage = () => {
             rounded="lg"
             overflow="hidden"
             transition="all 0.3s"
-            _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
+            _hover={{ transform: "translateY(-15px)", shadow: "xl" }}
             bg={bg}
           >
             <Link
@@ -95,9 +95,12 @@ const HomePage = () => {
                 p="4"
                 textAlign="center"
               >
-                <Box>
-                  <PiBooksDuotone size="250" color="orange" />
+                <Box fontSize="150px" color="orange.400">
+                  📚
                 </Box>
+                {/* <Box>
+                  <PiBooksDuotone size="250" color="orange" />
+                </Box> */}
                 <Text
                   fontWeight="bold"
                   fontSize="xl"
@@ -115,7 +118,7 @@ const HomePage = () => {
             rounded="lg"
             overflow="hidden"
             transition="all 0.3s"
-            _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
+            _hover={{ transform: "translateY(-15px)", shadow: "xl" }}
             bg={bg}
           >
             <Link to={"/cards"}>
@@ -126,9 +129,12 @@ const HomePage = () => {
                 p="4"
                 textAlign="center"
               >
-                <Box>
-                  <BiCreditCardFront size="250" color="orange" />
+                <Box fontSize="150px" color="orange.400">
+                  🗂️
                 </Box>
+
+                {/* <BiCreditCardFront size="250" color="orange" /> */}
+
                 <Text
                   fontWeight="bold"
                   fontSize="xl"

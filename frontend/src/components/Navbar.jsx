@@ -103,12 +103,18 @@ const Navbar = () => {
           </Box>
           <HStack spacing={2} alignItems={"center"}>
             {/* Always visible links */}
-            <RouterLink to="/books">
-              <Button>📚 Books</Button>
+            <RouterLink to={user ? "/my-books" : "/books"}>
+              <Button
+              // leftIcon={<PiBooksDuotone fontSize={20} />}
+              >
+                📚 Books
+              </Button>
             </RouterLink>
             <RouterLink to="/cards">
-              <Button leftIcon={<BiCreditCardFront fontSize={20} />}>
-                Cards
+              <Button
+              // leftIcon={<BiCreditCardFront fontSize={20} />}
+              >
+                🗂️ Cards
               </Button>
             </RouterLink>
             <Button onClick={toggleColorMode}>
@@ -123,7 +129,7 @@ const Navbar = () => {
                 </MenuButton>
                 <MenuList>
                   <MenuItem as={RouterLink} to="/profile">
-                    👤 Profile
+                    👨‍🔧 Profile
                   </MenuItem>
                   <MenuItem as={RouterLink} to="/about">
                     👨‍💻 Developer

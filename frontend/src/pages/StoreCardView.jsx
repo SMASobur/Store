@@ -5,6 +5,8 @@ import {
   useColorModeValue,
   useDisclosure,
   VStack,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -19,7 +21,7 @@ import { PlusSquareIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 
 const StoreCardView = () => {
-  const { fetchProducts, products } = useProductStore();
+  const { fetchProducts, products, isLoading } = useProductStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { createProduct } = useProductStore();
   const { user } = useAuth();
@@ -62,41 +64,53 @@ const StoreCardView = () => {
           />
         </div>
       </div>
-      <VStack spacing={8}>
-        <SimpleGrid
-          columns={{
-            base: 1,
-            md: 2,
-            lg: 3,
-          }}
-          spacing={10}
-          w={"full"}
-        >
-          {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </SimpleGrid>
-
-        {products.length === 0 && (
-          <Text
-            fontSize="xl"
-            textAlign={"center"}
-            fontWeight="bold"
-            color="gray.500"
+      {isLoading ? (
+        <Center h="300px">
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="orange.400"
+            size="xl"
+          />
+        </Center>
+      ) : (
+        <VStack spacing={8}>
+          <SimpleGrid
+            columns={{
+              base: 1,
+              md: 2,
+              lg: 3,
+            }}
+            spacing={10}
+            w={"full"}
           >
-            No products found 😢{" "}
-            <Link to={"/create"}>
-              <Text
-                as="span"
-                color="blue.500"
-                _hover={{ textDecoration: "underline" }}
-              >
-                Create a product
-              </Text>
-            </Link>
-          </Text>
-        )}
-      </VStack>
+            {products.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </SimpleGrid>
+
+          {products.length === 0 && (
+            <Text
+              fontSize="xl"
+              textAlign={"center"}
+              fontWeight="bold"
+              color="gray.500"
+            >
+              No products found 😢{" "}
+              <Link to={"/create"}>
+                <Text
+                  as="span"
+                  color="blue.500"
+                  _hover={{ textDecoration: "underline" }}
+                >
+                  Create a product
+                </Text>
+              </Link>
+            </Text>
+          )}
+        </VStack>
+      )}
     </Container>
   );
 };

@@ -58,7 +58,7 @@ const BooksTable = ({ books }) => {
             size="sm"
             isDisabled={filteredBooks.length === 0}
           >
-            Export all to PDF
+            📥 Export all to PDF
           </Button>
         )}
         {/* Books per page - left aligned */}
