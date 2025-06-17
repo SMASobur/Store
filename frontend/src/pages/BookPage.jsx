@@ -6,7 +6,6 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import BooksTable from "../components/BooksTable";
 import BookCreateModal from "../components/modals/BookCreateModal";
 import { useAuth } from "../context/AuthContext";
-import { generateBooksPDF } from "../utils/pdfGenerator"; // ✅ Import here
 
 const BookPage = () => {
   const [books, setBooks] = useState([]);
@@ -59,15 +58,6 @@ const BookPage = () => {
           </Text>
 
           <div className="flex items-center gap-2">
-            <Button
-              onClick={() => generateBooksPDF("All Books", books)}
-              colorScheme="orange"
-              variant="outline"
-              size="sm"
-              isDisabled={books.length === 0}
-            >
-              Export to PDF
-            </Button>
             {user && <BookCreateModal />}
           </div>
         </div>

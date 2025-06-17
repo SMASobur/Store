@@ -6,6 +6,9 @@ import BookDeleteModal from ".././components/modals/BookDeleteModal";
 import useIsMobile from "./hooks/useIsMobile";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import { Button } from "@chakra-ui/react";
+
+import { generateBooksPDF } from "../utils/pdfGenerator";
 
 const BooksTable = ({ books }) => {
   const { fetchProducts, products } = useProductStore();
@@ -47,6 +50,17 @@ const BooksTable = ({ books }) => {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 px-4 gap-4">
+        {user && (
+          <Button
+            onClick={() => generateBooksPDF("All Books", filteredBooks)}
+            colorScheme="orange"
+            variant="outline"
+            size="sm"
+            isDisabled={filteredBooks.length === 0}
+          >
+            Export all to PDF
+          </Button>
+        )}
         {/* Books per page - left aligned */}
         <div className="flex items-center w-full md:w-auto">
           <label className="mr-2 font-medium whitespace-nowrap">

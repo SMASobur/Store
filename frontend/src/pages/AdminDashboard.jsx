@@ -168,9 +168,8 @@ const AdminDashboard = () => {
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
-                      {user.role === "superadmin" && (
-                        <option value="superadmin">Superadmin</option>
-                      )}
+
+                      <option value="superadmin">Superadmin</option>
                     </select>
                   </td>
                   <td className="border border-gray-300 text-center">
