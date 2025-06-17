@@ -16,6 +16,7 @@ import {
   Avatar,
   MenuList,
   MenuItem,
+  Badge,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PiBooksDuotone } from "react-icons/pi";
@@ -79,13 +80,31 @@ const Navbar = () => {
                   mx={2}
                 />
                 KnitNox
+                {/* Admin/Superadmin badge */}
+                {user?.role === "admin" && (
+                  <span className="ml-2 text-xs bg-orange-500 text-white px-2 py-0.5 rounded">
+                    ADMIN
+                  </span>
+                )}
+                {user?.role === "superadmin" && (
+                  <Badge
+                    ml={2}
+                    colorScheme="red"
+                    fontSize="0.6em"
+                    px={2}
+                    py={0.5}
+                    borderRadius="md"
+                  >
+                    SUPER
+                  </Badge>
+                )}
               </ChakraLink>
             </Flex>
           </Box>
           <HStack spacing={2} alignItems={"center"}>
             {/* Always visible links */}
             <RouterLink to="/books">
-              <Button leftIcon={<PiBooksDuotone fontSize={20} />}>Books</Button>
+              <Button>📚 Books</Button>
             </RouterLink>
             <RouterLink to="/cards">
               <Button leftIcon={<BiCreditCardFront fontSize={20} />}>

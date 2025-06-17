@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { useToast } from "@chakra-ui/react";
 
 const AdminDashboard = () => {
   const { user, token } = useAuth();
@@ -10,6 +11,7 @@ const AdminDashboard = () => {
   const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const handleRoleChange = async (userId, newRole) => {
     try {
@@ -30,16 +32,28 @@ const AdminDashboard = () => {
       });
       setUsers(res.data);
       setFilteredUsers(res.data);
+
+      toast({
+        title: "Role updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (err) {
       console.error("Failed to update role", err);
+      toast({
+        title: "Error updating role",
+        description: err.response?.data?.message || "An error occurred",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-
     try {
       setLoading(true);
       await axios.delete(`/api/admin/users/${userId}`, {
@@ -54,11 +68,55 @@ const AdminDashboard = () => {
       });
       setUsers(res.data);
       setFilteredUsers(res.data);
+
+      toast({
+        title: "User deleted successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (err) {
       console.error("Failed to delete user", err);
+      toast({
+        title: "Error deleting user",
+        description: err.response?.data?.message || "An error occurred",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const confirmDelete = (userId) => {
+    toast({
+      position: "top",
+      duration: null, // Persistent until closed
+      render: () => (
+        <div className="bg-white p-4 rounded-lg shadow-lg">
+          <p className="font-bold mb-2">Confirm Deletion</p>
+          <p>Are you sure you want to delete this user?</p>
+          <div className="flex justify-end mt-4 space-x-2">
+            <button
+              onClick={() => {
+                toast.closeAll();
+                handleDeleteUser(userId);
+              }}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => toast.closeAll()}
+              className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+    });
   };
 
   useEffect(() => {
@@ -73,13 +131,20 @@ const AdminDashboard = () => {
         setFilteredUsers(res.data);
       } catch (err) {
         console.error("Failed to fetch users", err);
+        toast({
+          title: "Error loading users",
+          description: err.response?.data?.message || "An error occurred",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       }
     };
 
     if (user?.role === "admin" || user?.role === "superadmin") {
       fetchUsers();
     }
-  }, [user, token]);
+  }, [user, token, toast]);
 
   useEffect(() => {
     const query = search.toLowerCase();
@@ -91,7 +156,6 @@ const AdminDashboard = () => {
     setFilteredUsers(results);
   }, [search, users]);
 
-  // Check for admin/superadmin access
   if (!(user?.role === "admin" || user?.role === "superadmin")) {
     return (
       <div className="text-center mt-10 text-red-500 text-lg font-semibold">
@@ -168,7 +232,6 @@ const AdminDashboard = () => {
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
-
                       <option value="superadmin">Superadmin</option>
                     </select>
                   </td>
@@ -183,7 +246,7 @@ const AdminDashboard = () => {
                   {user.role === "superadmin" && (
                     <td className="border border-gray-300 text-center">
                       <button
-                        onClick={() => handleDeleteUser(u._id)}
+                        onClick={() => confirmDelete(u._id)}
                         disabled={loading}
                         className="text-red-500 hover:text-red-700"
                       >
