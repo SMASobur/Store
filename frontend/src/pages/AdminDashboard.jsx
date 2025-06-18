@@ -3,19 +3,19 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { useToast } from "@chakra-ui/react";
+import { useToast, Spinner } from "@chakra-ui/react";
 
 const AdminDashboard = () => {
   const { user, token } = useAuth();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       await axios.put(
         `/api/admin/users/${userId}/role`,
         { role: newRole },
@@ -49,13 +49,13 @@ const AdminDashboard = () => {
         isClosable: true,
       });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleDeleteUser = async (userId) => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       await axios.delete(`/api/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ const AdminDashboard = () => {
         isClosable: true,
       });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -145,6 +145,17 @@ const AdminDashboard = () => {
       fetchUsers();
     }
   }, [user, token, toast]);
+  if (isLoading) {
+    return (
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="orange.400"
+        size="xl"
+      />
+    );
+  }
 
   useEffect(() => {
     const query = search.toLowerCase();
@@ -226,7 +237,7 @@ const AdminDashboard = () => {
                       onChange={(e) => handleRoleChange(u._id, e.target.value)}
                       className="border px-2 py-1 rounded"
                       disabled={
-                        loading ||
+                        isLoading ||
                         (user.role === "admin" && u.role === "superadmin")
                       }
                     >
@@ -247,7 +258,7 @@ const AdminDashboard = () => {
                     <td className="border border-gray-300 text-center">
                       <button
                         onClick={() => confirmDelete(u._id)}
-                        disabled={loading}
+                        disabled={isLoading}
                         className="text-red-500 hover:text-red-700"
                       >
                         <DeleteIcon />

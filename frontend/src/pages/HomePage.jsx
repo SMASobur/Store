@@ -147,6 +147,40 @@ const HomePage = () => {
               </Flex>
             </Link>
           </Box>
+          <Box
+            shadow="lg"
+            rounded="lg"
+            overflow="hidden"
+            transition="all 0.3s"
+            _hover={{ transform: "translateY(-15px)", shadow: "xl" }}
+            bg={bg}
+          >
+            <Link to={"/notes"}>
+              <Flex
+                direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
+                alignItems="center"
+                justifyContent="center"
+                p="4"
+                textAlign="center"
+              >
+                <Box fontSize="150px" color="orange.400">
+                  📒
+                </Box>
+
+                {/* <BiCreditCardFront size="250" color="orange" /> */}
+
+                <Text
+                  fontWeight="bold"
+                  fontSize="xl"
+                  mt={{ base: 1, md: 0 }} // Add top margin only on mobile
+                  ml={{ md: 4 }} // Add left margin only on desktop
+                  color={textColor}
+                >
+                  Note (List View)
+                </Text>
+              </Flex>
+            </Link>
+          </Box>
         </SimpleGrid>
       </VStack>
     </Container>

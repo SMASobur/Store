@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import UserBooks from "./pages/UserBooks";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePage from "./pages/ProfilePage";
+import NotesPage from "./pages/NotesPage";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user-books/:userId" element={<UserBooks />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/notes" element={<NotesPage />} />
 
           {/* Private Routes */}
           <Route
