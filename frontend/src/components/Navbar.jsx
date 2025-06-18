@@ -117,7 +117,14 @@ const Navbar = () => {
                 🗂️ Cards
               </Button>
             </RouterLink>
-            <Button onClick={toggleColorMode}>
+            <RouterLink to="/notes">
+              <Button>📒 Notes</Button>
+            </RouterLink>
+            <Button
+              onClick={toggleColorMode}
+              display={{ base: "none", md: "flex" }}
+              aria-label="Toggle color mode"
+            >
               {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
             </Button>
 

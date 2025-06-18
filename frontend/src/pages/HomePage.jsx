@@ -69,10 +69,10 @@ const HomePage = () => {
           columns={{
             base: 1,
             md: 2,
-            lg: 2,
+            lg: 3,
           }}
           spacing={10}
-          w={"fit"}
+          w={"full"}
           alignItems={"center"}
           p="2"
         >
