@@ -155,6 +155,38 @@ const HomePage = () => {
             _hover={{ transform: "translateY(-15px)", shadow: "xl" }}
             bg={bg}
           >
+            <Link to={"/school"}>
+              <Flex
+                direction={{ base: "column", md: "row" }}
+                alignItems="center"
+                justifyContent="center"
+                p="4"
+                textAlign="center"
+              >
+                <Box fontSize="150px" color="orange.400">
+                  🏫
+                </Box>
+
+                <Text
+                  fontWeight="bold"
+                  fontSize="xl"
+                  mt={{ base: 1, md: 0 }}
+                  ml={{ md: 4 }}
+                  color={textColor}
+                >
+                  School (Accountance)
+                </Text>
+              </Flex>
+            </Link>
+          </Box>
+          <Box
+            shadow="lg"
+            rounded="lg"
+            overflow="hidden"
+            transition="all 0.3s"
+            _hover={{ transform: "translateY(-15px)", shadow: "xl" }}
+            bg={bg}
+          >
             <Link to={"/notes"}>
               <Flex
                 direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop

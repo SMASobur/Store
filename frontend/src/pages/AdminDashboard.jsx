@@ -12,10 +12,11 @@ const AdminDashboard = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdatingRole, setIsUpdatingRole] = useState(null);
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      setIsLoading(true);
+      setIsUpdatingRole(userId);
       await axios.put(
         `/api/admin/users/${userId}/role`,
         { role: newRole },
@@ -26,7 +27,6 @@ const AdminDashboard = () => {
         }
       );
 
-      // Refresh users
       const res = await axios.get("/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -48,8 +48,14 @@ const AdminDashboard = () => {
         duration: 3000,
         isClosable: true,
       });
+
+      const res = await axios.get("/api/admin/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(res.data);
+      setFilteredUsers(res.data);
     } finally {
-      setIsLoading(false);
+      setIsUpdatingRole(null);
     }
   };
 
@@ -145,6 +151,7 @@ const AdminDashboard = () => {
       fetchUsers();
     }
   }, [user, token, toast]);
+
   if (isLoading) {
     return (
       <Spinner
@@ -205,7 +212,7 @@ const AdminDashboard = () => {
                 <th className="border border-gray-300 p-2 rounded">Role</th>
                 <th className="border border-gray-300 p-2 rounded">Books</th>
                 {user.role === "superadmin" && (
-                  <th className="border border-gray-300 p-2 rounded">🗑️</th>
+                  <th className="border border-gray-300 p-2 rounded">✂️</th>
                 )}
               </tr>
             </thead>
@@ -216,7 +223,12 @@ const AdminDashboard = () => {
                     {index + 1}
                   </td>
                   <td className="border border-gray-300 text-center break-words">
-                    {u.name}
+                    <Link
+                      to={`/user-books/${u._id}`}
+                      className=" hover:underline"
+                    >
+                      {u.name}
+                    </Link>
                     {u.role === "superadmin" && (
                       <span className="ml-2 text-xs bg-red-500 text-white px-2 py-0.5 rounded">
                         SUPER
@@ -237,13 +249,15 @@ const AdminDashboard = () => {
                       onChange={(e) => handleRoleChange(u._id, e.target.value)}
                       className="border px-2 py-1 rounded"
                       disabled={
-                        isLoading ||
+                        isUpdatingRole === u._id ||
                         (user.role === "admin" && u.role === "superadmin")
                       }
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
-                      <option value="superadmin">Superadmin</option>
+                      {user.role === "superadmin" && (
+                        <option value="superadmin">Superadmin</option>
+                      )}
                     </select>
                   </td>
                   <td className="border border-gray-300 text-center">
@@ -254,7 +268,7 @@ const AdminDashboard = () => {
                       View
                     </Link>
                   </td>
-                  {user.role === "superadmin" && (
+                  {user.role === "superadmin" && u._id !== user._id && (
                     <td className="border border-gray-300 text-center">
                       <button
                         onClick={() => confirmDelete(u._id)}

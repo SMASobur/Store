@@ -15,6 +15,7 @@ import UserBooks from "./pages/UserBooks";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePage from "./pages/ProfilePage";
 import NotesPage from "./pages/NotesPage";
+import SchoolPage from "./pages/SchoolPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/user-books/:userId" element={<UserBooks />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/notes" element={<NotesPage />} />
+          <Route path="/school" element={<SchoolPage />} />
 
           {/* Private Routes */}
           <Route
