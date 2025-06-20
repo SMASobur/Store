@@ -1,0 +1,142 @@
+import { create } from "zustand";
+
+const authHeaders = (token) => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+});
+
+export const useSchoolStore = create((set) => ({
+  donors: [],
+  donations: [],
+  expenses: [],
+
+  setDonors: (donors) => set({ donors }),
+  setDonations: (donations) => set({ donations }),
+  setExpenses: (expenses) => set({ expenses }),
+
+  fetchAllSchoolData: async () => {
+    try {
+      const res = await fetch("/api/school");
+      const data = await res.json();
+
+      set({
+        donors: (data.donors || []).map((d) => ({
+          ...d,
+          id: d._id || d.id,
+        })),
+        donations: (data.donations || []).map((d) => ({
+          ...d,
+          id: d._id || d.id,
+        })),
+        expenses: (data.expenses || []).map((e) => ({
+          ...e,
+          id: e._id || e.id,
+        })),
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error("Failed to fetch school data:", error);
+      return { success: false, message: "Error loading data" };
+    }
+  },
+
+  createDonor: async (name, token) => {
+    try {
+      const res = await fetch("/api/school/donors", {
+        method: "POST",
+        headers: authHeaders(token),
+        body: JSON.stringify({ name }),
+      });
+
+      const data = await res.json();
+      console.log("API Response:", data); // Add this for debugging
+
+      if (!res.ok) {
+        console.error("API Error:", data);
+        return {
+          success: false,
+          message: data.message || "Error creating donor",
+        };
+      }
+
+      // Ensure the response contains data.data with _id
+      const donor = {
+        ...data.data,
+        id: data.data._id || data.data.id,
+      };
+
+      set((state) => ({ donors: [...state.donors, donor] }));
+      return { success: true, data: donor };
+    } catch (error) {
+      console.error("Network Error:", error);
+      return { success: false, message: "Network error creating donor" };
+    }
+  },
+
+  createDonation: async (donation, token) => {
+    try {
+      const res = await fetch("/api/school/donations", {
+        method: "POST",
+        headers: authHeaders(token),
+        body: JSON.stringify(donation),
+      });
+
+      const data = await res.json();
+      console.log("Donation Response:", data); // Debugging
+
+      if (!res.ok) {
+        return {
+          success: false,
+          message: data.message || "Error creating donation",
+        };
+      }
+
+      // Handle response more safely
+      const newDonation = {
+        ...data.data,
+        id: data.data?.id || data.data?._id, // Safe property access
+      };
+
+      if (!newDonation.id) {
+        throw new Error("Donation ID missing in response");
+      }
+
+      set((state) => ({
+        donations: [...state.donations, newDonation],
+      }));
+
+      return { success: true, data: newDonation };
+    } catch (error) {
+      console.error("Error creating donation:", error);
+      return {
+        success: false,
+        message: error.message || "Error creating donation",
+      };
+    }
+  },
+
+  createExpense: async (expense, token) => {
+    try {
+      const res = await fetch("/api/school/expenses", {
+        method: "POST",
+        headers: authHeaders(token),
+        body: JSON.stringify(expense),
+      });
+
+      const data = await res.json();
+      if (!res.ok) return { success: false, message: data.message };
+
+      const newExpense = { ...data.data, id: data.data._id || data.data.id };
+
+      set((state) => ({
+        expenses: [...state.expenses, newExpense],
+      }));
+
+      return { success: true, data: newExpense };
+    } catch (error) {
+      console.error("Error creating expense:", error);
+      return { success: false, message: "Error creating expense" };
+    }
+  },
+}));

@@ -3,19 +3,24 @@
 │   ├── config
 │   │   └── db.js
 │   ├── controllers
+│   │   ├── admin.controller.js
 │   │   ├── auth.controller.js
 │   │   ├── book.controller.js
-│   │   └── product.controller.js
+│   │   ├── product.controller.js
+│   │   └── school
 │   ├── middleware
 │   │   └── auth.middleware.js
 │   ├── models
 │   │   ├── book.model.js
 │   │   ├── product.model.js
+│   │   ├── school
 │   │   └── user.model.js
 │   ├── routes
+│   │   ├── admin.route.js
 │   │   ├── auth.route.js
 │   │   ├── book.route.js
-│   │   └── product.route.js
+│   │   ├── product.route.js
+│   │   └── school
 │   └── server.js
 ├── frontend
 │   ├── dist
@@ -44,10 +49,8 @@
 │   └── vite.config.js
 ├── package-lock.json
 ├── package.json
-├── project-tree.txt
 ├── README.md
 ├── structure.txt
-├── structure2.txt
 └── terminal.txt
 
-17 directories, 34 files
+20 directories, 34 files

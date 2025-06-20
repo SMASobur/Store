@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useSchoolStore } from "../store/school";
 import {
+  Box,
+  Heading,
   Text,
   Table,
   Thead,
@@ -7,15 +10,13 @@ import {
   Tr,
   Th,
   Td,
-  Box,
-  Heading,
-  SimpleGrid,
-  useBreakpointValue,
   Input,
   Button,
   Select,
   FormControl,
   FormLabel,
+  SimpleGrid,
+  useBreakpointValue,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -25,128 +26,119 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useAuth } from "../context/AuthContext";
 
 const SchoolPage = () => {
-  // State for donors and donations
-  const [donors, setDonors] = useState([]);
-  const [donations, setDonations] = useState([]);
-  const [expenses, setExpenses] = useState([]);
+  const {
+    donors,
+    donations,
+    expenses,
+    fetchAllSchoolData,
+    createDonor,
+    createDonation,
+  } = useSchoolStore();
 
-  // Form states
+  const { user, token } = useAuth();
   const [newDonorName, setNewDonorName] = useState("");
   const [selectedDonorId, setSelectedDonorId] = useState("");
+  const [DonorMedium, setDonorMedium] = useState("");
   const [donationAmount, setDonationAmount] = useState("");
   const [donationDate, setDonationDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [expenseDesc, setExpenseDesc] = useState("");
+  const [expenseAmount, setExpenseAmount] = useState("");
+  const [expenseDate, setExpenseDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
-  // Modal controls
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Load sample data
   useEffect(() => {
-    // Sample initial donors
-    const initialDonors = [
-      { id: 1, name: "John Doe Miah" },
-      { id: 2, name: "Jane Smith" },
-      { id: 3, name: "Acme Corp" },
-    ];
-
-    // Sample initial donations
-    const initialDonations = [
-      { id: 1, donorId: 1, amount: 500, date: "2023-05-15" },
-      { id: 2, donorId: 2, amount: 300, date: "2023-06-20" },
-      { id: 3, donorId: 1, amount: 200, date: "2023-07-10" },
-      { id: 4, donorId: 3, amount: 1000, date: "2023-08-05" },
-    ];
-
-    // Sample expenses
-    const initialExpenses = [
-      {
-        id: 1,
-        description: "School Supplies",
-        amount: 200,
-        date: "2023-05-18",
-      },
-      {
-        id: 2,
-        description: "Building Maintenance",
-        amount: 450,
-        date: "2023-06-25",
-      },
-    ];
-
-    setDonors(initialDonors);
-    setDonations(initialDonations);
-    setExpenses(initialExpenses);
+    fetchAllSchoolData();
   }, []);
 
-  // Calculate totals
-  const totalDonations = donations.reduce(
-    (sum, donation) => sum + donation.amount,
-    0
-  );
-  const totalExpenses = expenses.reduce(
-    (sum, expense) => sum + expense.amount,
-    0
-  );
-  const balance = totalDonations - totalExpenses;
+  const addNewDonor = async () => {
+    if (!newDonorName.trim()) return;
 
-  // Get donations grouped by donor
+    const result = await createDonor(newDonorName, token);
+    console.log("Create Donor Result:", result); // Add this
+
+    if (result.success) {
+      setSelectedDonorId(result.data.id); // Use the returned ID
+      setNewDonorName("");
+      onClose();
+    } else {
+      alert(result.message || "Failed to create donor.");
+    }
+  };
+  const addDonation = async () => {
+    if (!selectedDonorId || !donationAmount) return;
+
+    try {
+      const result = await createDonation(
+        {
+          donorId: selectedDonorId,
+          amount: parseFloat(donationAmount),
+          medium: DonorMedium,
+          date: donationDate,
+        },
+        token
+      );
+
+      console.log("Donation result:", result); // Debugging
+
+      if (result.success) {
+        setDonationAmount("");
+        setDonorMedium("");
+        setDonationDate(new Date().toISOString().split("T")[0]);
+        // Optional: Refetch data to ensure consistency
+        await fetchAllSchoolData();
+      } else {
+        alert(result.message || "Failed to add donation.");
+      }
+    } catch (error) {
+      console.error("Donation error:", error);
+      alert("An unexpected error occurred");
+    }
+  };
+
   const getDonationsByDonor = () => {
     return donors.map((donor) => {
       const donorDonations = donations.filter((d) => d.donorId === donor.id);
       const total = donorDonations.reduce((sum, d) => sum + d.amount, 0);
-
-      return {
-        donor,
-        donations: donorDonations,
-        total,
-      };
+      return { donor, donations: donorDonations, total };
     });
   };
+  const addExpense = async () => {
+    if (!expenseDesc || !expenseAmount) return;
 
-  // Add new donor
-  const addNewDonor = () => {
-    if (newDonorName.trim() === "") return;
+    const result = await createExpense(
+      {
+        description: expenseDesc,
+        amount: parseFloat(expenseAmount),
+        date: expenseDate,
+      },
+      token
+    );
 
-    const newDonor = {
-      id: donors.length > 0 ? Math.max(...donors.map((d) => d.id)) + 1 : 1,
-      name: newDonorName.trim(),
-    };
-
-    setDonors([...donors, newDonor]);
-    setNewDonorName("");
-    onClose();
-    setSelectedDonorId(newDonor.id); // Auto-select the new donor
+    if (result.success) {
+      setExpenseDesc("");
+      setExpenseAmount("");
+      setExpenseDate(new Date().toISOString().split("T")[0]);
+    } else {
+      alert(result.message || "Failed to add expense.");
+    }
   };
 
-  // Add new donation
-  const addDonation = () => {
-    if (!selectedDonorId || !donationAmount) return;
-
-    const amount = parseFloat(donationAmount);
-    if (isNaN(amount)) return;
-
-    const newDonation = {
-      id:
-        donations.length > 0 ? Math.max(...donations.map((d) => d.id)) + 1 : 1,
-      donorId: parseInt(selectedDonorId),
-      amount,
-      date: donationDate,
-    };
-
-    setDonations([...donations, newDonation]);
-    setDonationAmount("");
-    setDonationDate(new Date().toISOString().split("T")[0]);
-  };
-
-  // Responsive layout
+  const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+  const balance = totalDonations - totalExpenses;
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <Box p="5">
-      <Heading mb="8" textAlign="center" color="teal.600">
+    <Box p={5}>
+      <Heading textAlign="center" color="teal.600" mb={6}>
         School Financial Records
       </Heading>
 
@@ -173,12 +165,19 @@ const SchoolPage = () => {
           </FormControl>
 
           <FormControl>
-            <FormLabel>Amount ($)</FormLabel>
+            <FormLabel>Amount</FormLabel>
             <Input
               type="number"
               value={donationAmount}
               onChange={(e) => setDonationAmount(e.target.value)}
-              placeholder="Enter amount"
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Medium</FormLabel>
+            <Input
+              type="string"
+              value={DonorMedium}
+              onChange={(e) => setDonorMedium(e.target.value)}
             />
           </FormControl>
 
@@ -201,20 +200,53 @@ const SchoolPage = () => {
           </Button>
         </Box>
       </Box>
+      <Box mb="10" p="4" bg="gray.50" borderRadius="md">
+        <Heading size="md" mb="4">
+          Add New Expense
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
+          <FormControl>
+            <FormLabel>Description</FormLabel>
+            <Input
+              value={expenseDesc}
+              onChange={(e) => setExpenseDesc(e.target.value)}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Amount</FormLabel>
+            <Input
+              type="number"
+              value={expenseAmount}
+              onChange={(e) => setExpenseAmount(e.target.value)}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Date</FormLabel>
+            <Input
+              type="date"
+              value={expenseDate}
+              onChange={(e) => setExpenseDate(e.target.value)}
+            />
+          </FormControl>
+        </SimpleGrid>
+        <Button colorScheme="red" onClick={addExpense}>
+          Add Expense
+        </Button>
+      </Box>
 
-      {/* Tables Container */}
+      {/* Tables */}
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb="10">
-        {/* Donors Table */}
         <Box>
           <Heading size="md" mb="4" color="green.600">
             Donations by Donor
           </Heading>
-          <Table variant="striped" colorScheme="green" size="sm">
+          <Table size="sm" variant="striped" colorScheme="green">
             <Thead>
               <Tr>
                 <Th>Donor</Th>
                 <Th isNumeric>Total</Th>
-                <Th>Donations</Th>
+                <Th>Details</Th>
+                <Th>Medium</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -229,21 +261,27 @@ const SchoolPage = () => {
                       </Text>
                     ))}
                   </Td>
+                  <Td>
+                    {donations.map((d) => (
+                      <Text key={d.id} fontSize="sm">
+                        {d.medium}
+                      </Text>
+                    ))}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
-          <Text mt="3" fontWeight="bold" textAlign="right">
+          <Text mt="2" textAlign="right" fontWeight="bold">
             Total Donations: ${totalDonations.toLocaleString()}
           </Text>
         </Box>
 
-        {/* Expenses Table */}
         <Box>
           <Heading size="md" mb="4" color="red.600">
-            Expenses List
+            Expenses
           </Heading>
-          <Table variant="striped" colorScheme="red" size="sm">
+          <Table size="sm" variant="striped" colorScheme="red">
             <Thead>
               <Tr>
                 <Th>Description</Th>
@@ -252,24 +290,24 @@ const SchoolPage = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {expenses.map((expense) => (
-                <Tr key={expense.id}>
-                  <Td>{expense.description}</Td>
-                  <Td isNumeric>${expense.amount.toLocaleString()}</Td>
-                  <Td>{expense.date}</Td>
+              {expenses.map((e) => (
+                <Tr key={e.id}>
+                  <Td>{e.description}</Td>
+                  <Td isNumeric>${e.amount.toLocaleString()}</Td>
+                  <Td>{e.date}</Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
-          <Text mt="3" fontWeight="bold" textAlign="right">
+          <Text mt="2" textAlign="right" fontWeight="bold">
             Total Expenses: ${totalExpenses.toLocaleString()}
           </Text>
         </Box>
       </SimpleGrid>
 
-      {/* Balance Summary */}
+      {/* Summary */}
       <Box p="4" bg="gray.100" borderRadius="md" maxW="container.md" mx="auto">
-        <Heading size="md" mb="2" textAlign="center">
+        <Heading size="md" mb="3" textAlign="center">
           Financial Summary
         </Heading>
         <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} textAlign="center">
@@ -303,7 +341,7 @@ const SchoolPage = () => {
         </SimpleGrid>
       </Box>
 
-      {/* Add New Donor Modal */}
+      {/* Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -320,8 +358,8 @@ const SchoolPage = () => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={addNewDonor}>
-              Save Donor
+            <Button colorScheme="blue" onClick={addNewDonor} mr={3}>
+              Save
             </Button>
             <Button variant="ghost" onClick={onClose}>
               Cancel
