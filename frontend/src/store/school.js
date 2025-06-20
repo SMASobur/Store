@@ -125,9 +125,13 @@ export const useSchoolStore = create((set) => ({
       });
 
       const data = await res.json();
+
       if (!res.ok) return { success: false, message: data.message };
 
-      const newExpense = { ...data.data, id: data.data._id || data.data.id };
+      const newExpense = {
+        ...data.data,
+        id: data.data._id || data.data.id,
+      };
 
       set((state) => ({
         expenses: [...state.expenses, newExpense],

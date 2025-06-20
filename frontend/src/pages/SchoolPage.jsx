@@ -25,10 +25,22 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  useColorMode,
+  useColorModeValue,
+  Stack,
+  Card,
+  CardBody,
+  Flex,
 } from "@chakra-ui/react";
 import { useAuth } from "../context/AuthContext";
 
 const SchoolPage = () => {
+  const { colorMode } = useColorMode();
+  const bgColor = useColorModeValue("gray.50", "gray.700");
+  const cardBg = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+
   const {
     donors,
     donations,
@@ -36,6 +48,7 @@ const SchoolPage = () => {
     fetchAllSchoolData,
     createDonor,
     createDonation,
+    createExpense,
   } = useSchoolStore();
 
   const { user, token } = useAuth();
@@ -53,6 +66,7 @@ const SchoolPage = () => {
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
     fetchAllSchoolData();
@@ -62,16 +76,17 @@ const SchoolPage = () => {
     if (!newDonorName.trim()) return;
 
     const result = await createDonor(newDonorName, token);
-    console.log("Create Donor Result:", result); // Add this
+    console.log("Create Donor Result:", result);
 
     if (result.success) {
-      setSelectedDonorId(result.data.id); // Use the returned ID
+      setSelectedDonorId(result.data.id);
       setNewDonorName("");
       onClose();
     } else {
       alert(result.message || "Failed to create donor.");
     }
   };
+
   const addDonation = async () => {
     if (!selectedDonorId || !donationAmount) return;
 
@@ -86,13 +101,10 @@ const SchoolPage = () => {
         token
       );
 
-      console.log("Donation result:", result); // Debugging
-
       if (result.success) {
         setDonationAmount("");
         setDonorMedium("");
         setDonationDate(new Date().toISOString().split("T")[0]);
-        // Optional: Refetch data to ensure consistency
         await fetchAllSchoolData();
       } else {
         alert(result.message || "Failed to add donation.");
@@ -110,250 +122,345 @@ const SchoolPage = () => {
       return { donor, donations: donorDonations, total };
     });
   };
+
   const addExpense = async () => {
     if (!expenseDesc || !expenseAmount) return;
 
-    const result = await createExpense(
-      {
-        description: expenseDesc,
-        amount: parseFloat(expenseAmount),
-        date: expenseDate,
-      },
-      token
-    );
+    try {
+      const result = await createExpense(
+        {
+          description: expenseDesc,
+          amount: parseFloat(expenseAmount),
+          date: expenseDate,
+        },
+        token
+      );
 
-    if (result.success) {
-      setExpenseDesc("");
-      setExpenseAmount("");
-      setExpenseDate(new Date().toISOString().split("T")[0]);
-    } else {
-      alert(result.message || "Failed to add expense.");
+      if (result.success) {
+        setExpenseDesc("");
+        setExpenseAmount("");
+        setExpenseDate(new Date().toISOString().split("T")[0]);
+        await fetchAllSchoolData();
+      } else {
+        alert(result.message || "Failed to add expense.");
+      }
+    } catch (error) {
+      console.error("Expense error:", error);
+      alert("An unexpected error occurred while adding expense");
     }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    // Option 1: dd-mm-yy format
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}-${month}-${year}`;
+
+    // Option 2: Day Month Year format (e.g., "15 Jan 2023")
+    // return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
   const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
   const balance = totalDonations - totalExpenses;
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <Box p={5}>
-      <Heading textAlign="center" color="teal.600" mb={6}>
+    <Box p={isMobile ? 3 : 5} bg={bgColor} minH="100vh">
+      <Heading
+        textAlign="center"
+        color={useColorModeValue("teal.600", "teal.300")}
+        mb={6}
+        size={isMobile ? "lg" : "xl"}
+      >
         School Financial Records
       </Heading>
 
-      {/* Add Donation Form */}
-      <Box mb="10" p="4" bg="gray.50" borderRadius="md">
-        <Heading size="md" mb="4">
-          Add New Donation
-        </Heading>
-
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
-          <FormControl>
-            <FormLabel>Select Donor</FormLabel>
-            <Select
-              placeholder="Select donor"
-              value={selectedDonorId}
-              onChange={(e) => setSelectedDonorId(e.target.value)}
-            >
-              {donors.map((donor) => (
-                <option key={donor.id} value={donor.id}>
-                  {donor.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Amount</FormLabel>
-            <Input
-              type="number"
-              value={donationAmount}
-              onChange={(e) => setDonationAmount(e.target.value)}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Medium</FormLabel>
-            <Input
-              type="string"
-              value={DonorMedium}
-              onChange={(e) => setDonorMedium(e.target.value)}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Date</FormLabel>
-            <Input
-              type="date"
-              value={donationDate}
-              onChange={(e) => setDonationDate(e.target.value)}
-            />
-          </FormControl>
-        </SimpleGrid>
-
-        <Box display="flex" justifyContent="space-between">
-          <Button colorScheme="blue" onClick={addDonation}>
-            Add Donation
-          </Button>
-          <Button variant="outline" onClick={onOpen}>
-            + Add New Donor
-          </Button>
-        </Box>
-      </Box>
-      <Box mb="10" p="4" bg="gray.50" borderRadius="md">
-        <Heading size="md" mb="4">
-          Add New Expense
-        </Heading>
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
-          <FormControl>
-            <FormLabel>Description</FormLabel>
-            <Input
-              value={expenseDesc}
-              onChange={(e) => setExpenseDesc(e.target.value)}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Amount</FormLabel>
-            <Input
-              type="number"
-              value={expenseAmount}
-              onChange={(e) => setExpenseAmount(e.target.value)}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Date</FormLabel>
-            <Input
-              type="date"
-              value={expenseDate}
-              onChange={(e) => setExpenseDate(e.target.value)}
-            />
-          </FormControl>
-        </SimpleGrid>
-        <Button colorScheme="red" onClick={addExpense}>
-          Add Expense
-        </Button>
-      </Box>
-
-      {/* Tables */}
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb="10">
-        <Box>
-          <Heading size="md" mb="4" color="green.600">
-            Donations by Donor
-          </Heading>
-          <Table size="sm" variant="striped" colorScheme="green">
-            <Thead>
-              <Tr>
-                <Th>Donor</Th>
-                <Th isNumeric>Total</Th>
-                <Th>Details</Th>
-                <Th>Medium</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {getDonationsByDonor().map(({ donor, total, donations }) => (
-                <Tr key={donor.id}>
-                  <Td>{donor.name}</Td>
-                  <Td isNumeric>${total.toLocaleString()}</Td>
-                  <Td>
-                    {donations.map((d) => (
-                      <Text key={d.id} fontSize="sm">
-                        ${d.amount} on {d.date}
-                      </Text>
-                    ))}
-                  </Td>
-                  <Td>
-                    {donations.map((d) => (
-                      <Text key={d.id} fontSize="sm">
-                        {d.medium}
-                      </Text>
-                    ))}
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Text mt="2" textAlign="right" fontWeight="bold">
-            Total Donations: ${totalDonations.toLocaleString()}
-          </Text>
-        </Box>
-
-        <Box>
-          <Heading size="md" mb="4" color="red.600">
-            Expenses
-          </Heading>
-          <Table size="sm" variant="striped" colorScheme="red">
-            <Thead>
-              <Tr>
-                <Th>Description</Th>
-                <Th isNumeric>Amount</Th>
-                <Th>Date</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {expenses.map((e) => (
-                <Tr key={e.id}>
-                  <Td>{e.description}</Td>
-                  <Td isNumeric>${e.amount.toLocaleString()}</Td>
-                  <Td>{e.date}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Text mt="2" textAlign="right" fontWeight="bold">
-            Total Expenses: ${totalExpenses.toLocaleString()}
-          </Text>
-        </Box>
-      </SimpleGrid>
-
-      {/* Summary */}
-      <Box p="4" bg="gray.100" borderRadius="md" maxW="container.md" mx="auto">
-        <Heading size="md" mb="3" textAlign="center">
-          Financial Summary
-        </Heading>
-        <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} textAlign="center">
-          <Box>
-            <Text fontSize="sm" color="gray.600">
+      {/* Summary Cards */}
+      <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} mb={6}>
+        <Card bg={cardBg} border="1px" borderColor={borderColor}>
+          <CardBody>
+            <Text fontSize="sm" color={textColor}>
               Total Donations
             </Text>
-            <Text fontWeight="bold" color="green.600">
-              ${totalDonations.toLocaleString()}
-            </Text>
-          </Box>
-          <Box>
-            <Text fontSize="sm" color="gray.600">
+            <Heading
+              size="md"
+              color={useColorModeValue("green.600", "green.300")}
+            >
+              ৳{totalDonations.toLocaleString()}
+            </Heading>
+          </CardBody>
+        </Card>
+
+        <Card bg={cardBg} border="1px" borderColor={borderColor}>
+          <CardBody>
+            <Text fontSize="sm" color={textColor}>
               Total Expenses
             </Text>
-            <Text fontWeight="bold" color="red.600">
-              ${totalExpenses.toLocaleString()}
-            </Text>
-          </Box>
-          <Box>
-            <Text fontSize="sm" color="gray.600">
+            <Heading size="md" color={useColorModeValue("red.600", "red.300")}>
+              ৳{totalExpenses.toLocaleString()}
+            </Heading>
+          </CardBody>
+        </Card>
+
+        <Card bg={cardBg} border="1px" borderColor={borderColor}>
+          <CardBody>
+            <Text fontSize="sm" color={textColor}>
               Current Balance
             </Text>
-            <Text
-              fontWeight="bold"
-              color={balance >= 0 ? "teal.600" : "red.600"}
+            <Heading
+              size="md"
+              color={
+                balance >= 0
+                  ? useColorModeValue("teal.600", "teal.300")
+                  : useColorModeValue("red.600", "red.300")
+              }
             >
-              ${balance.toLocaleString()}
-            </Text>
-          </Box>
-        </SimpleGrid>
-      </Box>
+              ৳{balance.toLocaleString()}
+            </Heading>
+          </CardBody>
+        </Card>
+      </SimpleGrid>
 
-      {/* Modal */}
+      {/* Forms Section */}
+      <Stack spacing={6} mb={8}>
+        {/* Add Donation Form */}
+        <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
+          <Heading size="md" mb={4} color={textColor}>
+            Add New Donation
+          </Heading>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
+            <FormControl>
+              <FormLabel color={textColor}>Select Donor</FormLabel>
+              <Select
+                placeholder="Select donor"
+                value={selectedDonorId}
+                onChange={(e) => setSelectedDonorId(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              >
+                {donors.map((donor) => (
+                  <option key={donor.id} value={donor.id}>
+                    {donor.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl>
+              <FormLabel color={textColor}>Amount</FormLabel>
+              <Input
+                type="number"
+                value={donationAmount}
+                onChange={(e) => setDonationAmount(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel color={textColor}>Medium</FormLabel>
+              <Input
+                type="string"
+                value={DonorMedium}
+                onChange={(e) => setDonorMedium(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+          </SimpleGrid>
+
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
+            <FormControl>
+              <FormLabel color={textColor}>Date</FormLabel>
+              <Input
+                type="date"
+                value={donationDate}
+                onChange={(e) => setDonationDate(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+          </SimpleGrid>
+
+          <Flex justifyContent="space-between">
+            <Button
+              colorScheme="blue"
+              onClick={addDonation}
+              isFullWidth={isMobile}
+              mb={isMobile ? 2 : 0}
+            >
+              Add Donation
+            </Button>
+            <Button variant="outline" onClick={onOpen} isFullWidth={isMobile}>
+              + Add New Donor
+            </Button>
+          </Flex>
+        </Box>
+
+        {/* Add Expense Form */}
+        <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
+          <Heading size="md" mb={4} color={textColor}>
+            Add New Expense
+          </Heading>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
+            <FormControl>
+              <FormLabel color={textColor}>Description</FormLabel>
+              <Input
+                value={expenseDesc}
+                onChange={(e) => setExpenseDesc(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel color={textColor}>Amount</FormLabel>
+              <Input
+                type="number"
+                value={expenseAmount}
+                onChange={(e) => setExpenseAmount(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel color={textColor}>Date</FormLabel>
+              <Input
+                type="date"
+                value={expenseDate}
+                onChange={(e) => setExpenseDate(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+          </SimpleGrid>
+          <Button colorScheme="red" onClick={addExpense} isFullWidth={isMobile}>
+            Add Expense
+          </Button>
+        </Box>
+      </Stack>
+
+      {/* Tables Section */}
+      <Stack spacing={6}>
+        {/* Donations Table */}
+        <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
+          <Heading size="md" mb={4} color={textColor}>
+            Donations by Donor
+          </Heading>
+          <Box overflowX="auto">
+            <Table
+              size="sm"
+              variant="striped"
+              colorScheme={colorMode === "light" ? "green" : "gray"}
+            >
+              <Thead>
+                <Tr>
+                  <Th color={textColor}>Donor</Th>
+                  <Th isNumeric color={textColor}>
+                    Total
+                  </Th>
+                  {!isMobile && (
+                    <>
+                      <Th color={textColor}>Details</Th>
+                      <Th color={textColor}>Medium</Th>
+                    </>
+                  )}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {getDonationsByDonor().map(({ donor, total, donations }) => (
+                  <Tr key={donor.id}>
+                    <Td color={textColor}>{donor.name}</Td>
+                    <Td isNumeric color={textColor}>
+                      ৳{total.toLocaleString()}
+                    </Td>
+                    {!isMobile && (
+                      <>
+                        <Td color={textColor}>
+                          {donations.map((d) => (
+                            <Text key={d.id} fontSize="sm">
+                              ৳{d.amount} on {formatDate(d.date)}
+                            </Text>
+                          ))}
+                        </Td>
+                        <Td color={textColor}>
+                          {donations.map((d) => (
+                            <Text key={d.id} fontSize="sm">
+                              {d.medium}
+                            </Text>
+                          ))}
+                        </Td>
+                      </>
+                    )}
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+          <Text mt="2" textAlign="right" fontWeight="bold" color={textColor}>
+            Total Donations: ৳{totalDonations.toLocaleString()}
+          </Text>
+        </Box>
+
+        {/* Expenses Table */}
+        <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
+          <Heading size="md" mb={4} color={textColor}>
+            Expenses
+          </Heading>
+          <Box overflowX="auto">
+            <Table
+              size="sm"
+              variant="striped"
+              colorScheme={colorMode === "light" ? "red" : "gray"}
+            >
+              <Thead>
+                <Tr>
+                  <Th color={textColor}>Description</Th>
+                  <Th isNumeric color={textColor}>
+                    Amount
+                  </Th>
+                  <Th color={textColor}>Date</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {expenses.map((e) => (
+                  <Tr key={e.id}>
+                    <Td color={textColor}>{e.description}</Td>
+                    <Td isNumeric color={textColor}>
+                      ৳{e.amount.toLocaleString()}
+                    </Td>
+                    <Td color={textColor}>{formatDate(e.date)}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+          <Text mt="2" textAlign="right" fontWeight="bold" color={textColor}>
+            Total Expenses: ৳{totalExpenses.toLocaleString()}
+          </Text>
+        </Box>
+      </Stack>
+
+      {/* Add Donor Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add New Donor</ModalHeader>
+        <ModalContent bg={cardBg}>
+          <ModalHeader color={textColor}>Add New Donor</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
-              <FormLabel>Donor Name</FormLabel>
+              <FormLabel color={textColor}>Donor Name</FormLabel>
               <Input
                 value={newDonorName}
                 onChange={(e) => setNewDonorName(e.target.value)}
                 placeholder="Enter donor name"
+                bg={cardBg}
+                borderColor={borderColor}
+                color={textColor}
               />
             </FormControl>
           </ModalBody>

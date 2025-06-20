@@ -67,10 +67,22 @@ export const getExpenses = async (req, res) => {
 
 // Add expense
 export const createExpense = async (req, res) => {
-  const { description, amount, date } = req.body;
-  const expense = new Expense({ description, amount, date });
-  await expense.save();
-  res.status(201).json(expense);
+  try {
+    const { description, amount, date } = req.body;
+    const expense = new Expense({ description, amount, date });
+    const savedExpense = await expense.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Expense created successfully",
+      data: savedExpense,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 export const getAllSchoolData = async (req, res) => {
