@@ -295,12 +295,6 @@ const SchoolPage = () => {
                   <Th isNumeric color={textColor}>
                     Total
                   </Th>
-                  {!isMobile && (
-                    <>
-                      <Th color={textColor}>Details</Th>
-                      <Th color={textColor}>Medium</Th>
-                    </>
-                  )}
                 </Tr>
               </Thead>
               <Tbody>
@@ -311,28 +305,9 @@ const SchoolPage = () => {
                         {donor.name}
                       </a>
                     </Td>
-
                     <Td isNumeric color={textColor}>
                       ৳{total.toLocaleString()}
                     </Td>
-                    {!isMobile && (
-                      <>
-                        <Td color={textColor}>
-                          {donations.map((d) => (
-                            <Text key={d.id} fontSize="sm">
-                              ৳{d.amount} on {formatDate(d.date)}
-                            </Text>
-                          ))}
-                        </Td>
-                        <Td color={textColor}>
-                          {donations.map((d) => (
-                            <Text key={d.id} fontSize="sm">
-                              {d.medium}
-                            </Text>
-                          ))}
-                        </Td>
-                      </>
-                    )}
                   </Tr>
                 ))}
               </Tbody>

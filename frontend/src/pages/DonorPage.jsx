@@ -38,7 +38,14 @@ const DonorPage = () => {
       </Box>
     );
   }
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
   if (!donor) return <Text>Donor not found.</Text>;
 
   return (
@@ -46,10 +53,53 @@ const DonorPage = () => {
       <Heading mb={4} color={textColor}>
         Donor: {donor.name}
       </Heading>
-      <Text mb={6} fontSize="lg" color={textColor}>
+      <Text mb={2} fontSize="lg" color={textColor}>
         Total Donations: ৳
         {donorDonations.reduce((sum, d) => sum + d.amount, 0).toLocaleString()}
       </Text>
+      <Text mb={6} fontSize="lg" color={textColor}>
+        Number of Donations:
+        {donorDonations.length}
+      </Text>
+
+      {donorDonations.length === 0 && (
+        <Card bg={cardBg}>
+          <CardBody textAlign="center">
+            <Text fontSize="lg">No donations recorded yet</Text>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* <Box mb={6}>
+        <Card bg={cardBg}>
+          <CardBody>
+            <Heading size="md" mb={2}>
+              Donation Summary
+            </Heading>
+            <Text>
+              <strong>Total Donations:</strong> ৳
+              {donorDonations
+                .reduce((sum, d) => sum + d.amount, 0)
+                .toLocaleString()}
+            </Text>
+            <Text>
+              <strong>Number of Donations:</strong> {donorDonations.length}
+            </Text>
+            <Text>
+              <strong>Average Donation:</strong> ৳
+              {donorDonations.length > 0
+                ? (
+                    donorDonations.reduce((sum, d) => sum + d.amount, 0) /
+                    donorDonations.length
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : 0}
+            </Text>
+          </CardBody>
+        </Card>
+      </Box> */}
 
       <Stack spacing={4}>
         {donorDonations.map((donation) => (
@@ -59,7 +109,7 @@ const DonorPage = () => {
                 Amount: ৳{donation.amount.toLocaleString()}
               </Text>
               <Text fontSize="sm" color={textColor}>
-                Date: {new Date(donation.date).toLocaleDateString()}
+                Date: {formatDate(donation.date)}
               </Text>
               <Text fontSize="sm" color={textColor}>
                 Medium: {donation.medium}
