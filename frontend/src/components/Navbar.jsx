@@ -39,8 +39,12 @@ const Navbar = () => {
 
   return (
     <Box
+      position="sticky"
+      top="0"
+      zIndex="sticky"
       bg={useColorModeValue("gray.300", "gray.700")}
       color={useColorModeValue("gray.700", "gray.200")}
+      boxShadow="md"
     >
       <Container maxW="fit" px={4} py={4}>
         <Flex
@@ -94,73 +98,82 @@ const Navbar = () => {
               </ChakraLink>
             </Flex>
           </Box>
-          <HStack spacing={2} alignItems={"center"}>
-            {/* Always visible links */}
-            <RouterLink to={user ? "/my-books" : "/books"}>
-              <Button
-              // leftIcon={<PiBooksDuotone fontSize={20} />}
-              >
-                📚 Books
-              </Button>
-            </RouterLink>
-            <RouterLink to="/cards">
-              <Button
-              // leftIcon={<BiCreditCardFront fontSize={20} />}
-              >
-                🗂️ Cards
-              </Button>
-            </RouterLink>
-            <RouterLink to="/notes">
-              <Button>📒 Notes</Button>
-            </RouterLink>
-            <Button
-              onClick={toggleColorMode}
-              display={{ base: "none", md: "flex" }}
-              aria-label="Toggle color mode"
-            >
-              {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
-            </Button>
-
-            {/* Authenticated user menu */}
-            {user ? (
-              <Menu>
-                <MenuButton>
-                  <Avatar name={user.name} size="sm" />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem as={RouterLink} to="/profile">
-                    👨‍🔧 Profile
-                  </MenuItem>
-                  <MenuItem as={RouterLink} to="/about">
-                    👨‍💻 Developer
-                  </MenuItem>
-                  {(user.role === "admin" || user.role === "superadmin") && (
-                    <MenuItem as={RouterLink} to="/admin">
-                      🛠 Admin Panel
-                    </MenuItem>
-                  )}
-                  <MenuItem onClick={toggleColorMode}>
-                    <Flex align="center" gap={2}>
-                      {colorMode === "light" ? <IoMoon /> : <LuSun />}
-                      <Text>
-                        {colorMode === "light" ? "Dark Mode" : "Light Mode"}
-                      </Text>
-                    </Flex>
-                  </MenuItem>
-
-                  <MenuItem onClick={handleLogout}> 🚪 Logout</MenuItem>
-                </MenuList>
-              </Menu>
-            ) : (
-              <RouterLink to="/login">
-                <Tooltip label="Login">
-                  <Button>
-                    <CiLogin />
-                  </Button>
-                </Tooltip>
+          <Box
+            position="sticky"
+            top="0"
+            zIndex="sticky"
+            bg={useColorModeValue("gray.300", "gray.700")}
+            py={2}
+          >
+            <HStack spacing={2} alignItems={"center"}>
+              {/* Always visible links */}
+              <RouterLink to={user ? "/my-books" : "/books"}>
+                <Button
+                // leftIcon={<PiBooksDuotone fontSize={20} />}
+                >
+                  📚 Books
+                </Button>
               </RouterLink>
-            )}
-          </HStack>
+              <RouterLink to="/cards">
+                <Button
+                // leftIcon={<BiCreditCardFront fontSize={20} />}
+                >
+                  🗂️ Cards
+                </Button>
+              </RouterLink>
+              <RouterLink to="/school">
+                <Button>🏫 School</Button>
+              </RouterLink>
+              <Button
+                onClick={toggleColorMode}
+                display={{ base: "none", md: "flex" }}
+                aria-label="Toggle color mode"
+              >
+                {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
+              </Button>
+
+              {/* Authenticated user menu */}
+              {user ? (
+                <Menu>
+                  <MenuButton>
+                    <Avatar name={user.name} size="sm" />
+                  </MenuButton>
+
+                  <MenuList>
+                    <MenuItem as={RouterLink} to="/profile">
+                      👨‍🔧 Profile
+                    </MenuItem>
+                    <MenuItem as={RouterLink} to="/about">
+                      👨‍💻 Developer
+                    </MenuItem>
+                    {(user.role === "admin" || user.role === "superadmin") && (
+                      <MenuItem as={RouterLink} to="/admin">
+                        🛠 Admin Panel
+                      </MenuItem>
+                    )}
+                    <MenuItem onClick={toggleColorMode}>
+                      <Flex align="center" gap={2}>
+                        {colorMode === "light" ? <IoMoon /> : <LuSun />}
+                        <Text>
+                          {colorMode === "light" ? "Dark Mode" : "Light Mode"}
+                        </Text>
+                      </Flex>
+                    </MenuItem>
+
+                    <MenuItem onClick={handleLogout}> 🚪 Logout</MenuItem>
+                  </MenuList>
+                </Menu>
+              ) : (
+                <RouterLink to="/login">
+                  <Tooltip label="Login">
+                    <Button>
+                      <CiLogin />
+                    </Button>
+                  </Tooltip>
+                </RouterLink>
+              )}
+            </HStack>
+          </Box>
         </Flex>
       </Container>
     </Box>

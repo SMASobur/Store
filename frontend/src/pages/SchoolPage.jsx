@@ -36,10 +36,10 @@ import { useAuth } from "../context/AuthContext";
 
 const SchoolPage = () => {
   const { colorMode } = useColorMode();
-  const bgColor = useColorModeValue("gray.50", "gray.700");
-  const cardBg = useColorModeValue("white", "gray.800");
+  const bgColor = useColorModeValue("gray.50", "gray.500");
+  const cardBg = useColorModeValue("white", "gray.600");
   const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const borderColor = useColorModeValue("gray.200", "gray.500");
 
   const {
     donors,
@@ -177,8 +177,9 @@ const SchoolPage = () => {
       >
         School Financial Records
       </Heading>
-
       {/* Summary Cards */}
+      {/* Sticky Summary Header for Better UX */}
+      {/* <Box position="sticky" top="0" zIndex="docked" bg={bgColor}> */}
       <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} mb={6}>
         <Card bg={cardBg} border="1px" borderColor={borderColor}>
           <CardBody>
@@ -223,7 +224,7 @@ const SchoolPage = () => {
           </CardBody>
         </Card>
       </SimpleGrid>
-
+      {/* </Box> */}
       {/* Forms Section */}
       <Stack spacing={6} mb={8}>
         {/* Add Donation Form */}
@@ -343,7 +344,6 @@ const SchoolPage = () => {
           </Button>
         </Box>
       </Stack>
-
       {/* Tables Section */}
       <Stack spacing={6}>
         {/* Donations Table */}
@@ -444,7 +444,6 @@ const SchoolPage = () => {
           </Text>
         </Box>
       </Stack>
-
       {/* Add Donor Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

@@ -274,9 +274,25 @@ const UserBooks = () => {
               >
                 ⏩︎
               </button>
+              <div className="w-full overflow-x-auto px-4">
+                <div className="flex justify-center md:justify-end">
+                  <Button
+                    onClick={() =>
+                      generateBooksPDF(displayUser?.name || "User", userBooks)
+                    }
+                    colorScheme="orange"
+                    variant="outline"
+                    isDisabled={userBooks.length === 0}
+                    size="sm"
+                    className="w-full md:w-auto"
+                  >
+                    📥 Download as PDF
+                  </Button>
+                </div>
+              </div>
             </div>
 
-            <div className="hidden md:flex flex-row items-center justify-between gap-4 mt-6 mb-4 px-4">
+            <div className="hidden md:flex flex-row items-center justify-between gap-4 mt-4 mb-4 px-6">
               <div className="flex items-center justify-center gap-2">
                 {totalPages > 3 && (
                   <button
@@ -315,18 +331,21 @@ const UserBooks = () => {
                 )}
               </div>
 
-              <div className="flex justify-center md:justify-end">
-                <Button
-                  onClick={() =>
-                    generateBooksPDF(displayUser?.name || "User", userBooks)
-                  }
-                  colorScheme="orange"
-                  variant="outline"
-                  isDisabled={userBooks.length === 0}
-                  size="sm"
-                >
-                  📥 Export to PDF
-                </Button>
+              <div className="w-full overflow-x-auto px-4">
+                <div className="flex justify-center md:justify-end">
+                  <Button
+                    onClick={() =>
+                      generateBooksPDF(displayUser?.name || "User", userBooks)
+                    }
+                    colorScheme="orange"
+                    variant="outline"
+                    isDisabled={userBooks.length === 0}
+                    size="sm"
+                    className="w-full md:w-auto"
+                  >
+                    📥 Download as PDF
+                  </Button>
+                </div>
               </div>
             </div>
           </>
