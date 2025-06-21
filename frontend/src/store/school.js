@@ -9,15 +9,19 @@ export const useSchoolStore = create((set) => ({
   donors: [],
   donations: [],
   expenses: [],
+  expenseCategories: [],
 
   setDonors: (donors) => set({ donors }),
+  setExpenseCategories: (expenseCategories) => set({ expenseCategories }),
   setDonations: (donations) => set({ donations }),
   setExpenses: (expenses) => set({ expenses }),
 
   fetchAllSchoolData: async () => {
     try {
       const res = await fetch("/api/school");
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
+      console.log("Fetched categories:", data.expenseCategories);
 
       set({
         donors: (data.donors || []).map((d) => ({
@@ -31,6 +35,10 @@ export const useSchoolStore = create((set) => ({
         expenses: (data.expenses || []).map((e) => ({
           ...e,
           id: e._id || e.id,
+        })),
+        expenseCategories: (data.expenseCategories || []).map((c) => ({
+          ...c,
+          id: c._id || c.id,
         })),
       });
 
@@ -121,10 +129,16 @@ export const useSchoolStore = create((set) => ({
       const res = await fetch("/api/school/expenses", {
         method: "POST",
         headers: authHeaders(token),
-        body: JSON.stringify(expense),
+        body: JSON.stringify({
+          description: expense.description,
+          amount: expense.amount,
+          date: expense.date,
+          category: expense.category,
+        }),
       });
 
       const data = await res.json();
+      console.log("Expense Response:", data);
 
       if (!res.ok) return { success: false, message: data.message };
 

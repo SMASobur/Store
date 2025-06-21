@@ -88,14 +88,21 @@ export const createExpense = async (req, res) => {
 
 export const getAllSchoolData = async (req, res) => {
   try {
-    const [donors, donations, expenses] = await Promise.all([
+    const [donors, donations, expenses, expenseCategories] = await Promise.all([
       Donor.find(),
       Donation.find(),
       Expense.find(),
+      ExpenseCategory.find(),
     ]);
 
-    res.json({ donors, donations, expenses });
+    res.json({
+      donors,
+      donations,
+      expenses,
+      expenseCategories,
+    });
   } catch (error) {
+    console.error("Error in getAllSchoolData:", error);
     res.status(500).json({ message: error.message });
   }
 };

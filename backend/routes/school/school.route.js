@@ -11,6 +11,8 @@ import {
   createExpenseCategory,
 } from "../../controllers/school/school.controller.js";
 
+import { ExpenseCategory } from "../../models/school/expenseCategory.model.js";
+
 const router = express.Router();
 router.get("/", getAllSchoolData);
 

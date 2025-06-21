@@ -54,6 +54,7 @@ const SchoolPage = () => {
     createDonation,
     createExpense,
     createCategory,
+    expenseCategories,
   } = useSchoolStore();
 
   const { user, token } = useAuth();
@@ -70,7 +71,7 @@ const SchoolPage = () => {
     new Date().toISOString().split("T")[0]
   );
   const [newCategoryName, setNewCategoryName] = useState("");
-
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   // Separate modals for donation and expense
   const {
     isOpen: isDonorModalOpen,
@@ -158,7 +159,15 @@ const SchoolPage = () => {
       return { donor, donations: donorDonations, total };
     });
   };
-
+  const getExpensesByCategory = () => {
+    return expenseCategories.map((category) => {
+      const categoryExpenses = expenses.filter(
+        (e) => e.category?._id === category._id || e.category === category._id
+      );
+      const total = categoryExpenses.reduce((sum, e) => sum + e.amount, 0);
+      return { category, expenses: categoryExpenses, total };
+    });
+  };
   const addNewCategory = async () => {
     if (!newCategoryName.trim()) return;
 
@@ -171,9 +180,11 @@ const SchoolPage = () => {
       alert(result.message || "Failed to create category.");
     }
   };
-
   const addExpense = async () => {
-    if (!expenseDesc || !expenseAmount) return;
+    if (!expenseDesc || !expenseAmount || !selectedCategoryId) {
+      alert("Please fill all fields including category");
+      return;
+    }
 
     try {
       const result = await createExpense(
@@ -181,22 +192,25 @@ const SchoolPage = () => {
           description: expenseDesc,
           amount: parseFloat(expenseAmount),
           date: expenseDate,
+          category: selectedCategoryId,
         },
         token
       );
 
       if (result.success) {
+        // Reset form
         setExpenseDesc("");
         setExpenseAmount("");
         setExpenseDate(new Date().toISOString().split("T")[0]);
+        setSelectedCategoryId("");
         onExpenseModalClose();
         await fetchAllSchoolData();
       } else {
-        alert(result.message || "Failed to add expense.");
+        alert(result.message || "Failed to add expense");
       }
     } catch (error) {
       console.error("Expense error:", error);
-      alert("An unexpected error occurred while adding expense");
+      alert("Error adding expense: " + error.message);
     }
   };
 
@@ -222,7 +236,6 @@ const SchoolPage = () => {
       >
         School Financial Records
       </Heading>
-
       {/* Summary Cards */}
       <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} mb={6}>
         <Card bg={cardBg} border="1px" borderColor={borderColor}>
@@ -268,7 +281,6 @@ const SchoolPage = () => {
           </CardBody>
         </Card>
       </SimpleGrid>
-
       {/* Action Buttons */}
       {(user?.role === "admin" || user?.role === "superadmin") && (
         <Flex justifyContent="center" gap={4} mb={8}>
@@ -303,10 +315,9 @@ const SchoolPage = () => {
           </Button>
         </Flex>
       )}
-
       {/* Tables Section */}
       <Stack spacing={6}>
-        {/* Donations Table */}
+        {/* Donations Table  */}
         <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
           <Heading size="md" mb={4} color={textColor}>
             Donations by Donor
@@ -346,10 +357,10 @@ const SchoolPage = () => {
           </Text>
         </Box>
 
-        {/* Expenses Table */}
+        {/*  Expenses Table */}
         <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
           <Heading size="md" mb={4} color={textColor}>
-            Expenses
+            Expenses by Category
           </Heading>
           <Box overflowX="auto">
             <Table
@@ -359,21 +370,26 @@ const SchoolPage = () => {
             >
               <Thead>
                 <Tr>
-                  <Th color={textColor}>Description</Th>
+                  <Th color={textColor}>Category</Th>
                   <Th isNumeric color={textColor}>
-                    Amount
+                    Total
                   </Th>
-                  <Th color={textColor}>Date</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {expenses.map((e) => (
-                  <Tr key={e.id}>
-                    <Td color={textColor}>{e.description}</Td>
-                    <Td isNumeric color={textColor}>
-                      ৳{e.amount.toLocaleString()}
+                {getExpensesByCategory().map(({ category, total }) => (
+                  <Tr key={category._id}>
+                    <Td color={textColor}>
+                      <a
+                        href={`/categories/${category._id}`}
+                        style={{ color: "teal" }}
+                      >
+                        {category.name}
+                      </a>
                     </Td>
-                    <Td color={textColor}>{formatDate(e.date)}</Td>
+                    <Td isNumeric color={textColor}>
+                      ৳{total.toLocaleString()}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -384,7 +400,6 @@ const SchoolPage = () => {
           </Text>
         </Box>
       </Stack>
-
       {/* Add Donor Modal */}
       <Modal isOpen={isDonorModalOpen} onClose={onDonorModalClose}>
         <ModalOverlay />
@@ -414,7 +429,6 @@ const SchoolPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       {/* Add Donation Modal */}
       <Modal isOpen={isDonationModalOpen} onClose={onDonationModalClose}>
         <ModalOverlay />
@@ -501,9 +515,7 @@ const SchoolPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       {/* Add ExpenseCategory Modal */}
-
       <Modal isOpen={isCategoryModalOpen} onClose={onCategoryModalClose}>
         <ModalOverlay />
         <ModalContent bg={cardBg}>
@@ -532,8 +544,8 @@ const SchoolPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       {/* Add Expense Modal */}
+
       <Modal isOpen={isExpenseModalOpen} onClose={onExpenseModalClose}>
         <ModalOverlay />
         <ModalContent bg={cardBg}>
@@ -541,6 +553,46 @@ const SchoolPage = () => {
           <ModalCloseButton />
           <ModalBody>
             <SimpleGrid columns={1} spacing={4}>
+              <FormControl>
+                <FormLabel color={textColor}>Category</FormLabel>
+                <Select
+                  options={expenseCategories.map((cat) => ({
+                    value: cat.id,
+                    label: cat.name,
+                  }))}
+                  placeholder="Select category"
+                  value={
+                    expenseCategories.find((c) => c.id === selectedCategoryId)
+                      ? {
+                          value: selectedCategoryId,
+                          label: expenseCategories.find(
+                            (c) => c.id === selectedCategoryId
+                          ).name,
+                        }
+                      : null
+                  }
+                  onChange={(selected) =>
+                    setSelectedCategoryId(selected?.value)
+                  }
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: cardBg,
+                      borderColor: borderColor,
+                      color: textColor,
+                    }),
+                    singleValue: (base) => ({
+                      ...base,
+                      color: textColor,
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 9999,
+                    }),
+                  }}
+                />
+              </FormControl>
+              {/* Other expense fields */}
               <FormControl>
                 <FormLabel color={textColor}>Description</FormLabel>
                 <Input
