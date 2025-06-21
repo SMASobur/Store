@@ -15,7 +15,6 @@ import {
   Td,
   Input,
   Button,
-  Select,
   FormControl,
   FormLabel,
   SimpleGrid,
@@ -35,6 +34,8 @@ import {
   CardBody,
   Flex,
 } from "@chakra-ui/react";
+import Select from "react-select";
+
 import { useAuth } from "../context/AuthContext";
 
 const SchoolPage = () => {
@@ -138,6 +139,10 @@ const SchoolPage = () => {
     setSelectedDonorId("");
     onDonationModalOpen();
   };
+  const donorOptions = donors.map((donor) => ({
+    value: donor.id,
+    label: donor.name,
+  }));
 
   const getDonationsByDonor = () => {
     return donors.map((donor) => {
@@ -179,7 +184,7 @@ const SchoolPage = () => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear().toString().slice(-2);
+    const year = date.getFullYear().toString();
     return `${day}-${month}-${year}`;
   };
 
@@ -301,7 +306,12 @@ const SchoolPage = () => {
               <Tbody>
                 {getDonationsByDonor().map(({ donor, total, donations }) => (
                   <Tr key={donor.id}>
-                    <Td color={textColor}>{donor.name}</Td>
+                    <Td color={textColor}>
+                      <a href={`/donors/${donor.id}`} style={{ color: "teal" }}>
+                        {donor.name}
+                      </a>
+                    </Td>
+
                     <Td isNumeric color={textColor}>
                       ৳{total.toLocaleString()}
                     </Td>
@@ -413,18 +423,35 @@ const SchoolPage = () => {
               <FormControl>
                 <FormLabel color={textColor}>Select Donor</FormLabel>
                 <Select
+                  options={donorOptions}
                   placeholder="Select donor"
-                  value={selectedDonorId}
-                  onChange={(e) => setSelectedDonorId(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                >
-                  {donors.map((donor) => (
-                    <option key={donor.id} value={donor.id}>
-                      {donor.name}
-                    </option>
-                  ))}
-                </Select>
+                  value={
+                    donorOptions.find(
+                      (option) => option.value === selectedDonorId
+                    ) || null
+                  }
+                  onChange={(selectedOption) =>
+                    setSelectedDonorId(
+                      selectedOption ? selectedOption.value : null
+                    )
+                  }
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: cardBg,
+                      borderColor: borderColor,
+                      color: textColor,
+                    }),
+                    singleValue: (base) => ({
+                      ...base,
+                      color: textColor,
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 9999, // ensures dropdown displays above modal
+                    }),
+                  }}
+                />
               </FormControl>
 
               <FormControl>

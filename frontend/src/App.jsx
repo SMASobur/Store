@@ -16,6 +16,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePage from "./pages/ProfilePage";
 import NotesPage from "./pages/NotesPage";
 import SchoolPage from "./pages/SchoolPage";
+import DonorPage from "./pages/DonorPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/notes" element={<NotesPage />} />
           <Route path="/school" element={<SchoolPage />} />
+          <Route path="/donors/:id" element={<DonorPage />} />
 
           {/* Private Routes */}
           <Route
