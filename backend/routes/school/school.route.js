@@ -7,6 +7,8 @@ import {
   getExpenses,
   createExpense,
   getAllSchoolData,
+  getExpenseCategories,
+  createExpenseCategory,
 } from "../../controllers/school/school.controller.js";
 
 const router = express.Router();
@@ -17,6 +19,9 @@ router.post("/donors", createDonor);
 
 router.get("/donations", getDonations);
 router.post("/donations", createDonation);
+
+router.get("/expense-categories", getExpenseCategories);
+router.post("/expense-categories", createExpenseCategory);
 
 router.get("/expenses", getExpenses);
 router.post("/expenses", createExpense);

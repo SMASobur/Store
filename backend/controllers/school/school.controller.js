@@ -1,6 +1,7 @@
 import { Donor } from "../../models/school/donor.model.js";
 import { Donation } from "../../models/school/donation.model.js";
 import { Expense } from "../../models/school/expense.model.js";
+import { ExpenseCategory } from "../../models/school/expenseCategory.model.js";
 
 // Get all donors
 export const getDonors = async (req, res) => {
@@ -61,15 +62,15 @@ export const createDonation = async (req, res) => {
 
 // Get all expenses
 export const getExpenses = async (req, res) => {
-  const expenses = await Expense.find();
+  const expenses = await Expense.find().populate("category", "name");
   res.json(expenses);
 };
 
 // Add expense
 export const createExpense = async (req, res) => {
   try {
-    const { description, amount, date } = req.body;
-    const expense = new Expense({ description, amount, date });
+    const { description, amount, date, category } = req.body;
+    const expense = new Expense({ description, amount, date, category });
     const savedExpense = await expense.save();
 
     res.status(201).json({
@@ -96,5 +97,34 @@ export const getAllSchoolData = async (req, res) => {
     res.json({ donors, donations, expenses });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+// Get all expense categories
+export const getExpenseCategories = async (req, res) => {
+  try {
+    const categories = await ExpenseCategory.find();
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Create new expense category
+export const createExpenseCategory = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const category = new ExpenseCategory({ name });
+    const savedCategory = await category.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Expense category created successfully",
+      data: savedCategory,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

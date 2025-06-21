@@ -143,4 +143,34 @@ export const useSchoolStore = create((set) => ({
       return { success: false, message: "Error creating expense" };
     }
   },
+
+  createCategory: async (name, token) => {
+    try {
+      const res = await fetch("/api/school/expense-categories", {
+        method: "POST",
+        headers: authHeaders(token),
+        body: JSON.stringify({ name }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return {
+          success: false,
+          message: data.message || "Error creating category",
+        };
+      }
+
+      return {
+        success: true,
+        data: {
+          ...data.data,
+          id: data.data._id || data.data.id,
+        },
+      };
+    } catch (error) {
+      console.error("Error creating category:", error);
+      return { success: false, message: "Network error creating category" };
+    }
+  },
 }));

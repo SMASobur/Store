@@ -53,6 +53,7 @@ const SchoolPage = () => {
     createDonor,
     createDonation,
     createExpense,
+    createCategory,
   } = useSchoolStore();
 
   const { user, token } = useAuth();
@@ -68,6 +69,7 @@ const SchoolPage = () => {
   const [expenseDate, setExpenseDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   // Separate modals for donation and expense
   const {
@@ -84,6 +86,11 @@ const SchoolPage = () => {
     isOpen: isExpenseModalOpen,
     onOpen: onExpenseModalOpen,
     onClose: onExpenseModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isCategoryModalOpen,
+    onOpen: onCategoryModalOpen,
+    onClose: onCategoryModalClose,
   } = useDisclosure();
 
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -150,6 +157,19 @@ const SchoolPage = () => {
       const total = donorDonations.reduce((sum, d) => sum + d.amount, 0);
       return { donor, donations: donorDonations, total };
     });
+  };
+
+  const addNewCategory = async () => {
+    if (!newCategoryName.trim()) return;
+
+    const result = await createCategory(newCategoryName, token);
+    if (result.success) {
+      setNewCategoryName("");
+      onCategoryModalClose();
+      await fetchAllSchoolData(); // refresh to update category list if used
+    } else {
+      alert(result.message || "Failed to create category.");
+    }
   };
 
   const addExpense = async () => {
@@ -272,6 +292,14 @@ const SchoolPage = () => {
             leftIcon={<span>+</span>}
           >
             <FcDonate />
+          </Button>
+          <Button
+            variant="outline"
+            colorScheme="purple"
+            onClick={onCategoryModalOpen}
+            leftIcon={<span>+</span>}
+          >
+            Add Category
           </Button>
         </Flex>
       )}
@@ -468,6 +496,37 @@ const SchoolPage = () => {
               Save
             </Button>
             <Button variant="ghost" onClick={onDonationModalClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Add ExpenseCategory Modal */}
+
+      <Modal isOpen={isCategoryModalOpen} onClose={onCategoryModalClose}>
+        <ModalOverlay />
+        <ModalContent bg={cardBg}>
+          <ModalHeader color={textColor}>Add New Category</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel color={textColor}>Category Name</FormLabel>
+              <Input
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                placeholder="Enter category name"
+                bg={cardBg}
+                borderColor={borderColor}
+                color={textColor}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="purple" onClick={addNewCategory} mr={3}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={onCategoryModalClose}>
               Cancel
             </Button>
           </ModalFooter>
