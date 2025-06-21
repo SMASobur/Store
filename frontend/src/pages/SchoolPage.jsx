@@ -134,6 +134,10 @@ const SchoolPage = () => {
       alert("An unexpected error occurred");
     }
   };
+  const openDonationModal = () => {
+    setSelectedDonorId("");
+    onDonationModalOpen();
+  };
 
   const getDonationsByDonor = () => {
     return donors.map((donor) => {
@@ -241,26 +245,26 @@ const SchoolPage = () => {
       </SimpleGrid>
 
       {/* Action Buttons */}
-      {user.role === "superadmin" && (
+      {(user?.role === "admin" || user?.role === "superadmin") && (
         <Flex justifyContent="center" gap={4} mb={8}>
           <Button
             colorScheme="blue"
-            onClick={onDonationModalOpen}
-            leftIcon={<span>➕</span>}
+            onClick={openDonationModal}
+            leftIcon={<span>+</span>}
           >
             <FaDonate />
           </Button>
           <Button
             colorScheme="red"
             onClick={onExpenseModalOpen}
-            leftIcon={<span>➕</span>}
+            leftIcon={<span>+</span>}
           >
             <GiExpense />
           </Button>
           <Button
             variant="outline"
             onClick={onDonorModalOpen}
-            leftIcon={<span>➕</span>}
+            leftIcon={<span>+</span>}
           >
             <FcDonate />
           </Button>
