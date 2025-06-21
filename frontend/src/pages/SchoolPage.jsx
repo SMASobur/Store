@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSchoolStore } from "../store/school";
+import { FcDonate } from "react-icons/fc";
+import { FaDonate } from "react-icons/fa";
+import { GiExpense } from "react-icons/gi";
 import {
   Box,
   Heading,
@@ -65,7 +68,23 @@ const SchoolPage = () => {
     new Date().toISOString().split("T")[0]
   );
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // Separate modals for donation and expense
+  const {
+    isOpen: isDonorModalOpen,
+    onOpen: onDonorModalOpen,
+    onClose: onDonorModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDonationModalOpen,
+    onOpen: onDonationModalOpen,
+    onClose: onDonationModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isExpenseModalOpen,
+    onOpen: onExpenseModalOpen,
+    onClose: onExpenseModalClose,
+  } = useDisclosure();
+
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
@@ -81,7 +100,7 @@ const SchoolPage = () => {
     if (result.success) {
       setSelectedDonorId(result.data.id);
       setNewDonorName("");
-      onClose();
+      onDonorModalClose();
     } else {
       alert(result.message || "Failed to create donor.");
     }
@@ -105,6 +124,7 @@ const SchoolPage = () => {
         setDonationAmount("");
         setDonorMedium("");
         setDonationDate(new Date().toISOString().split("T")[0]);
+        onDonationModalClose();
         await fetchAllSchoolData();
       } else {
         alert(result.message || "Failed to add donation.");
@@ -140,6 +160,7 @@ const SchoolPage = () => {
         setExpenseDesc("");
         setExpenseAmount("");
         setExpenseDate(new Date().toISOString().split("T")[0]);
+        onExpenseModalClose();
         await fetchAllSchoolData();
       } else {
         alert(result.message || "Failed to add expense.");
@@ -152,15 +173,10 @@ const SchoolPage = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-
-    // Option 1: dd-mm-yy format
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear().toString().slice(-2);
     return `${day}-${month}-${year}`;
-
-    // Option 2: Day Month Year format (e.g., "15 Jan 2023")
-    // return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
   const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
@@ -177,9 +193,8 @@ const SchoolPage = () => {
       >
         School Financial Records
       </Heading>
+
       {/* Summary Cards */}
-      {/* Sticky Summary Header for Better UX */}
-      {/* <Box position="sticky" top="0" zIndex="docked" bg={bgColor}> */}
       <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} mb={6}>
         <Card bg={cardBg} border="1px" borderColor={borderColor}>
           <CardBody>
@@ -224,126 +239,34 @@ const SchoolPage = () => {
           </CardBody>
         </Card>
       </SimpleGrid>
-      {/* </Box> */}
-      {/* Forms Section */}
-      <Stack spacing={6} mb={8}>
-        {/* Add Donation Form */}
-        <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
-          <Heading size="md" mb={4} color={textColor}>
-            Add New Donation
-          </Heading>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
-            <FormControl>
-              <FormLabel color={textColor}>Select Donor</FormLabel>
-              <Select
-                placeholder="Select donor"
-                value={selectedDonorId}
-                onChange={(e) => setSelectedDonorId(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              >
-                {donors.map((donor) => (
-                  <option key={donor.id} value={donor.id}>
-                    {donor.name}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
 
-            <FormControl>
-              <FormLabel color={textColor}>Amount</FormLabel>
-              <Input
-                type="number"
-                value={donationAmount}
-                onChange={(e) => setDonationAmount(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel color={textColor}>Medium</FormLabel>
-              <Input
-                type="string"
-                value={DonorMedium}
-                onChange={(e) => setDonorMedium(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-          </SimpleGrid>
-
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
-            <FormControl>
-              <FormLabel color={textColor}>Date</FormLabel>
-              <Input
-                type="date"
-                value={donationDate}
-                onChange={(e) => setDonationDate(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-          </SimpleGrid>
-
-          <Flex justifyContent="space-between">
-            <Button
-              colorScheme="blue"
-              onClick={addDonation}
-              isFullWidth={isMobile}
-              mb={isMobile ? 2 : 0}
-            >
-              Add Donation
-            </Button>
-            <Button variant="outline" onClick={onOpen} isFullWidth={isMobile}>
-              + Add New Donor
-            </Button>
-          </Flex>
-        </Box>
-
-        {/* Add Expense Form */}
-        <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
-          <Heading size="md" mb={4} color={textColor}>
-            Add New Expense
-          </Heading>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4} mb={4}>
-            <FormControl>
-              <FormLabel color={textColor}>Description</FormLabel>
-              <Input
-                value={expenseDesc}
-                onChange={(e) => setExpenseDesc(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel color={textColor}>Amount</FormLabel>
-              <Input
-                type="number"
-                value={expenseAmount}
-                onChange={(e) => setExpenseAmount(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel color={textColor}>Date</FormLabel>
-              <Input
-                type="date"
-                value={expenseDate}
-                onChange={(e) => setExpenseDate(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-          </SimpleGrid>
-          <Button colorScheme="red" onClick={addExpense} isFullWidth={isMobile}>
-            Add Expense
+      {/* Action Buttons */}
+      {user.role === "superadmin" && (
+        <Flex justifyContent="center" gap={4} mb={8}>
+          <Button
+            colorScheme="blue"
+            onClick={onDonationModalOpen}
+            leftIcon={<span>➕</span>}
+          >
+            <FaDonate />
           </Button>
-        </Box>
-      </Stack>
+          <Button
+            colorScheme="red"
+            onClick={onExpenseModalOpen}
+            leftIcon={<span>➕</span>}
+          >
+            <GiExpense />
+          </Button>
+          <Button
+            variant="outline"
+            onClick={onDonorModalOpen}
+            leftIcon={<span>➕</span>}
+          >
+            <FcDonate />
+          </Button>
+        </Flex>
+      )}
+
       {/* Tables Section */}
       <Stack spacing={6}>
         {/* Donations Table */}
@@ -444,8 +367,9 @@ const SchoolPage = () => {
           </Text>
         </Box>
       </Stack>
+
       {/* Add Donor Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isDonorModalOpen} onClose={onDonorModalClose}>
         <ModalOverlay />
         <ModalContent bg={cardBg}>
           <ModalHeader color={textColor}>Add New Donor</ModalHeader>
@@ -467,7 +391,129 @@ const SchoolPage = () => {
             <Button colorScheme="blue" onClick={addNewDonor} mr={3}>
               Save
             </Button>
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="ghost" onClick={onDonorModalClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Add Donation Modal */}
+      <Modal isOpen={isDonationModalOpen} onClose={onDonationModalClose}>
+        <ModalOverlay />
+        <ModalContent bg={cardBg}>
+          <ModalHeader color={textColor}>Add New Donation</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <SimpleGrid columns={1} spacing={4}>
+              <FormControl>
+                <FormLabel color={textColor}>Select Donor</FormLabel>
+                <Select
+                  placeholder="Select donor"
+                  value={selectedDonorId}
+                  onChange={(e) => setSelectedDonorId(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                >
+                  {donors.map((donor) => (
+                    <option key={donor.id} value={donor.id}>
+                      {donor.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel color={textColor}>Amount</FormLabel>
+                <Input
+                  type="number"
+                  value={donationAmount}
+                  onChange={(e) => setDonationAmount(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel color={textColor}>Medium</FormLabel>
+                <Input
+                  type="string"
+                  value={DonorMedium}
+                  onChange={(e) => setDonorMedium(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel color={textColor}>Date</FormLabel>
+                <Input
+                  type="date"
+                  value={donationDate}
+                  onChange={(e) => setDonationDate(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
+            </SimpleGrid>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={addDonation} mr={3}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={onDonationModalClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Add Expense Modal */}
+      <Modal isOpen={isExpenseModalOpen} onClose={onExpenseModalClose}>
+        <ModalOverlay />
+        <ModalContent bg={cardBg}>
+          <ModalHeader color={textColor}>Add New Expense</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <SimpleGrid columns={1} spacing={4}>
+              <FormControl>
+                <FormLabel color={textColor}>Description</FormLabel>
+                <Input
+                  value={expenseDesc}
+                  onChange={(e) => setExpenseDesc(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel color={textColor}>Amount</FormLabel>
+                <Input
+                  type="number"
+                  value={expenseAmount}
+                  onChange={(e) => setExpenseAmount(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel color={textColor}>Date</FormLabel>
+                <Input
+                  type="date"
+                  value={expenseDate}
+                  onChange={(e) => setExpenseDate(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
+            </SimpleGrid>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="red" onClick={addExpense} mr={3}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={onExpenseModalClose}>
               Cancel
             </Button>
           </ModalFooter>
