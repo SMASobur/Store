@@ -54,7 +54,7 @@ const BookPage = () => {
             bgClip={"text"}
             textAlign={"left"}
           >
-            All books list
+            Book list from All users
           </Text>
 
           <div className="flex items-center gap-2">

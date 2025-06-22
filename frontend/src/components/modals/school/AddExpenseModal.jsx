@@ -12,8 +12,10 @@ import {
   Button,
   SimpleGrid,
   useColorModeValue,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import Select from "react-select";
+import { useState } from "react";
 
 export const AddExpenseModal = ({
   isOpen,
@@ -32,6 +34,40 @@ export const AddExpenseModal = ({
   const cardBg = useColorModeValue("white", "gray.600");
   const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
   const borderColor = useColorModeValue("gray.200", "gray.500");
+  const [amountError, setAmountError] = useState("");
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    setExpenseAmount(value);
+
+    // Validate amount
+    if (value === "") {
+      setAmountError("Amount is required");
+      return;
+    }
+
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+      setAmountError("Please enter a valid number");
+    } else if (numValue < 1) {
+      setAmountError("Amount must be at least 1");
+    } else if (numValue > 5000000) {
+      setAmountError("Amount cannot exceed 5,000,000");
+    } else {
+      setAmountError("");
+    }
+  };
+
+  const handleSubmit = () => {
+    if (
+      !amountError &&
+      expenseAmount &&
+      parseFloat(expenseAmount) >= 1 &&
+      parseFloat(expenseAmount) <= 5000000
+    ) {
+      addExpense();
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -42,6 +78,16 @@ export const AddExpenseModal = ({
         <ModalBody>
           <SimpleGrid columns={1} spacing={4}>
             <FormControl>
+              <FormControl>
+                <FormLabel color={textColor}>Date</FormLabel>
+                <Input
+                  type="date"
+                  value={expenseDate}
+                  onChange={(e) => setExpenseDate(e.target.value)}
+                  bg={cardBg}
+                  borderColor={borderColor}
+                />
+              </FormControl>
               <FormLabel color={textColor}>Category</FormLabel>
               <Select
                 options={expenseCategories.map((cat) => ({
@@ -78,15 +124,20 @@ export const AddExpenseModal = ({
                 }}
               />
             </FormControl>
-            <FormControl>
-              <FormLabel color={textColor}>Amount</FormLabel>
+
+            <FormControl isInvalid={!!amountError}>
+              <FormLabel color={textColor}>Amount (৳)</FormLabel>
               <Input
                 type="number"
                 value={expenseAmount}
-                onChange={(e) => setExpenseAmount(e.target.value)}
+                onChange={handleAmountChange}
                 bg={cardBg}
                 borderColor={borderColor}
+                min="1"
+                max="5000000"
+                step="0.01"
               />
+              <FormErrorMessage>{amountError}</FormErrorMessage>
             </FormControl>
 
             <FormControl>
@@ -98,22 +149,16 @@ export const AddExpenseModal = ({
                 borderColor={borderColor}
               />
             </FormControl>
-
-            <FormControl>
-              <FormLabel color={textColor}>Date</FormLabel>
-              <Input
-                type="date"
-                value={expenseDate}
-                onChange={(e) => setExpenseDate(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
           </SimpleGrid>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="red" onClick={addExpense} mr={3}>
-            Add Expanse
+          <Button
+            colorScheme="red"
+            onClick={handleSubmit}
+            mr={3}
+            isDisabled={!!amountError || !expenseAmount}
+          >
+            Add Expense
           </Button>
           <Button variant="ghost" onClick={onClose}>
             Cancel

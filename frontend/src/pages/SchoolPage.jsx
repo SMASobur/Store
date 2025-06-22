@@ -538,7 +538,7 @@ const SchoolPage = () => {
               <Button
                 colorScheme="blue"
                 onClick={openDonationModal}
-                rightIcon={<span> Donation</span>}
+                rightIcon={<span>Add Donation</span>}
               >
                 <FaDonate />
               </Button>
@@ -547,7 +547,7 @@ const SchoolPage = () => {
                 variant="outline"
                 colorScheme="orange"
                 onClick={onDonorModalOpen}
-                rightIcon={<span>Donor</span>}
+                rightIcon={<span>Add Donor</span>}
               >
                 <FcDonate />
               </Button>
@@ -615,7 +615,7 @@ const SchoolPage = () => {
                 colorScheme="red"
                 variant="solid"
                 onClick={onExpenseModalOpen}
-                rightIcon={<span> Expanses</span>}
+                rightIcon={<span>Add Expanses</span>}
               >
                 <GiExpense />
               </Button>
@@ -624,7 +624,7 @@ const SchoolPage = () => {
                 variant="outline"
                 colorScheme="orange"
                 onClick={onCategoryModalOpen}
-                rightIcon={<span> Category</span>}
+                rightIcon={<span>Add Category</span>}
               >
                 <MdCategory />
               </Button>
