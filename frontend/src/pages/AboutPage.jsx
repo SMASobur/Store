@@ -2,6 +2,7 @@ import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
 import {
   AbsoluteCenter,
   Box,
+  Button,
   Container,
   Divider,
   Heading,
@@ -32,31 +33,34 @@ const AboutPage = () => {
       </Text>
 
       <Tooltip label="Developer" fontSize={{ base: "15", sm: "18" }}>
-        <IconButton textAlign={"right"} mr={3} icon={<FaUser />} /> Md Abdus
-        Sobur Sikdar
+        <Button textAlign={"right"} mr={3} fontSize="2xl">
+          👨‍💻
+        </Button>{" "}
+        Md Abdus Sobur Sikdar
       </Tooltip>
 
       <Divider orientation="horizontal" />
 
       <Container p={2} px={0}>
         <Tooltip fontSize={{ base: "15", sm: "18" }}>
-          <IconButton
-            aria-label="Call Sage"
-            textAlign={"right"}
-            icon={<PhoneIcon />}
-            mr={3}
-          />{" "}
+          <Button textAlign={"right"} mr={3} fontSize="2l">
+            ☎️
+          </Button>{" "}
           +46 738 752 094
         </Tooltip>
         <Divider orientation="horizontal" />
         <Tooltip fontSize={{ base: "15", sm: "18" }}>
-          <IconButton
-            aria-label="Call Sage"
-            textAlign={"right"}
-            mr={3}
-            icon={<EmailIcon />}
-          />{" "}
+          <Button textAlign={"right"} mr={3} fontSize="2l">
+            📧
+          </Button>{" "}
           mdabdussobursikdar@gmail.com
+        </Tooltip>
+        <Divider orientation="horizontal" />
+        <Tooltip fontSize={{ base: "15", sm: "18" }}>
+          <Button textAlign={"right"} mr={3} fontSize="2l">
+            📬
+          </Button>{" "}
+          Norrköping, Sweden.
         </Tooltip>
       </Container>
     </Container>

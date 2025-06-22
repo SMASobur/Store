@@ -78,23 +78,22 @@ export const AddExpenseModal = ({
                 }}
               />
             </FormControl>
-
-            <FormControl>
-              <FormLabel color={textColor}>Description</FormLabel>
-              <Input
-                value={expenseDesc}
-                onChange={(e) => setExpenseDesc(e.target.value)}
-                bg={cardBg}
-                borderColor={borderColor}
-              />
-            </FormControl>
-
             <FormControl>
               <FormLabel color={textColor}>Amount</FormLabel>
               <Input
                 type="number"
                 value={expenseAmount}
                 onChange={(e) => setExpenseAmount(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel color={textColor}>Description</FormLabel>
+              <Input
+                value={expenseDesc}
+                onChange={(e) => setExpenseDesc(e.target.value)}
                 bg={cardBg}
                 borderColor={borderColor}
               />
@@ -114,7 +113,7 @@ export const AddExpenseModal = ({
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="red" onClick={addExpense} mr={3}>
-            Save
+            Add Expanse
           </Button>
           <Button variant="ghost" onClick={onClose}>
             Cancel

@@ -19,12 +19,11 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { PiBooksDuotone } from "react-icons/pi";
+import { ColorModeToggle } from "./ColorModeToggle";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
 import { CiLogout, CiLogin } from "react-icons/ci";
-import { BiCreditCardFront } from "react-icons/bi";
-import { MdOutlineDeveloperMode } from "react-icons/md";
+
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -114,23 +113,14 @@ const Navbar = () => {
                   📚 Books
                 </Button>
               </RouterLink>
-              <RouterLink to="/cards">
-                <Button
-                // leftIcon={<BiCreditCardFront fontSize={20} />}
-                >
-                  🗂️ Cards
-                </Button>
-              </RouterLink>
+
               <RouterLink to="/school">
                 <Button>🏫 School</Button>
               </RouterLink>
-              <Button
-                onClick={toggleColorMode}
-                display={{ base: "none", md: "flex" }}
-                aria-label="Toggle color mode"
-              >
-                {colorMode === "light" ? <IoMoon /> : <LuSun size="20" />}
-              </Button>
+
+              <Box ml="auto">
+                <ColorModeToggle />
+              </Box>
 
               {/* Authenticated user menu */}
               {user ? (
