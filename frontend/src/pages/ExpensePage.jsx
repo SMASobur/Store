@@ -171,27 +171,29 @@ const ExpensePage = () => {
         {categoryExpenses.map((expense) => (
           <Card key={expense.id} bg={cardBg}>
             <CardBody>
-              <Text fontSize="md" color={textColor}>
-                Description: {expense.description}
-              </Text>
+              <Flex justifyContent="space-between" alignItems="center" mb={4}>
+                <Text fontSize="md" color={textColor}>
+                  Description: {expense.description}
+                </Text>
+                {(user?.role === "admin" || user?.role === "superadmin") && (
+                  <Button
+                    mt={2}
+                    size="sm"
+                    colorScheme="red"
+                    leftIcon={<DeleteIcon />}
+                    onClick={() => openDeleteDialog(expense.id)}
+                  >
+                    Delete Expense
+                  </Button>
+                )}
+              </Flex>
+
               <Text fontSize="md" color={textColor}>
                 Amount: ৳{expense.amount.toLocaleString()}
               </Text>
               <Text fontSize="sm" color={textColor}>
                 Date: {formatDate(expense.date)}
               </Text>
-
-              {(user?.role === "admin" || user?.role === "superadmin") && (
-                <Button
-                  mt={2}
-                  size="sm"
-                  colorScheme="red"
-                  leftIcon={<DeleteIcon />}
-                  onClick={() => openDeleteDialog(expense.id)}
-                >
-                  Delete Expense
-                </Button>
-              )}
             </CardBody>
           </Card>
         ))}
