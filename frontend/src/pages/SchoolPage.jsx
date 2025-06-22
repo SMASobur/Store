@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Bar, Pie, Line } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 ChartJS.register(...registerables);
 
@@ -31,6 +31,7 @@ import {
   Flex,
   useToast,
   Icon,
+  Link,
 } from "@chakra-ui/react";
 import { AddDonorModal } from "../components/modals/school/AddDonorModal";
 import { AddDonationModal } from "../components/modals/school/AddDonationModal";
@@ -45,6 +46,8 @@ const SchoolPage = () => {
   const cardBg = useColorModeValue("white", "gray.600");
   const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
   const borderColor = useColorModeValue("gray.200", "gray.500");
+  const linkColor = useColorModeValue("teal.600", "teal.300");
+  const linkHoverColor = useColorModeValue("teal.800", "teal.200");
 
   const {
     donors,
@@ -306,32 +309,11 @@ const SchoolPage = () => {
   const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
   const balance = totalDonations - totalExpenses;
-  const groupByMonth = (items) => {
-    const monthlyData = {};
-
-    items.forEach((item) => {
-      const date = new Date(item.date);
-      const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
-
-      if (!monthlyData[monthYear]) {
-        monthlyData[monthYear] = 0;
-      }
-      monthlyData[monthYear] += item.amount;
-    });
-
-    return Object.entries(monthlyData)
-      .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-      .map(([month, amount]) => ({
-        month,
-        amount,
-      }));
-  };
-
-  // Add this to your component
-  const monthlyDonations = groupByMonth(donations);
-  const monthlyExpenses = groupByMonth(expenses);
 
   const topDonors = getDonationsByDonor()
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+  const mostExpanse = getExpensesByCategory()
     .sort((a, b) => b.total - a.total)
     .slice(0, 5);
   const chartHeight = useBreakpointValue({ base: 250, md: 300 });
@@ -405,11 +387,17 @@ const SchoolPage = () => {
           </CardBody>
         </Card>
       </SimpleGrid>
-      {/* Summary Chart */}
+
+      {/* Summary Chart,Graph */}
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
         {/* Donations vs Expenses Comparison */}
+
         <Card bg={cardBg} p={4}>
-          <Heading size="sm" mb={4}>
+          <Heading
+            size="sm"
+            mb={4}
+            color={useColorModeValue("gray.800", "whiteAlpha.900")}
+          >
             Donations vs Expenses
           </Heading>
           <Bar
@@ -428,17 +416,52 @@ const SchoolPage = () => {
                 },
               ],
             }}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: useColorModeValue("#000", "#FFF"), // Legend text color
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: useColorModeValue("#000", "#FFF"), // X-axis labels color
+                  },
+                  grid: {
+                    color: useColorModeValue(
+                      "rgba(0,0,0,0.1)",
+                      "rgba(255,255,255,0.1)"
+                    ), // Grid lines
+                  },
+                },
+                y: {
+                  ticks: {
+                    color: useColorModeValue("#000", "#FFF"), // Y-axis labels color
+                  },
+                  grid: {
+                    color: useColorModeValue(
+                      "rgba(0,0,0,0.1)",
+                      "rgba(255,255,255,0.1)"
+                    ), // Grid lines
+                  },
+                },
+              },
+            }}
           />
         </Card>
 
-        {/* Expense Breakdown */}
         <Card bg={cardBg} p={4}>
-          <Heading size="sm" mb={4}>
+          <Heading
+            size="sm"
+            mb={4}
+            color={useColorModeValue("gray.800", "whiteAlpha.900")} // Added color prop
+          >
             Expense Categories
           </Heading>
           <Box height="250px" position="relative">
-            {" "}
-            {/* Container with fixed height */}
             <Pie
               data={{
                 labels: getExpensesByCategory().map(
@@ -459,50 +482,26 @@ const SchoolPage = () => {
               }}
               options={{
                 responsive: true,
-                maintainAspectRatio: false, // This allows custom sizing
+                maintainAspectRatio: false,
                 plugins: {
                   legend: {
-                    position: "right", // Moves legend to the right to save vertical space
+                    position: "right",
+                    labels: {
+                      color: useColorModeValue("#000", "#FFF"),
+                    },
                   },
                 },
               }}
             />
           </Box>
         </Card>
-        <Card bg={cardBg} p={4} mb={6}>
-          <Heading size="sm" mb={4}>
-            Monthly Financial Trends
-          </Heading>
-          <Line
-            data={{
-              labels: monthlyDonations.map((item) => item.month),
-              datasets: [
-                {
-                  label: "Donations",
-                  data: monthlyDonations.map((item) => item.amount),
-                  borderColor: "#38A169",
-                  tension: 0.1,
-                },
-                {
-                  label: "Expenses",
-                  data: monthlyExpenses.map((item) => item.amount),
-                  borderColor: "#E53E3E",
-                  tension: 0.1,
-                },
-              ],
-            }}
-            options={{
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            }}
-          />
-        </Card>
 
         <Card bg={cardBg} p={4} mb={6}>
-          <Heading size="sm" mb={4}>
+          <Heading
+            size="sm"
+            mb={4}
+            color={useColorModeValue("gray.800", "whiteAlpha.900")}
+          >
             Top 5 Donors
           </Heading>
           <Bar
@@ -522,6 +521,60 @@ const SchoolPage = () => {
               plugins: {
                 legend: {
                   display: false,
+                },
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: useColorModeValue("#000", "#FFF"),
+                  },
+                },
+                y: {
+                  ticks: {
+                    color: useColorModeValue("#000", "#FFF"),
+                  },
+                },
+              },
+            }}
+          />
+        </Card>
+        <Card bg={cardBg} p={4} mb={6}>
+          <Heading
+            size="sm"
+            mb={4}
+            color={useColorModeValue("gray.800", "whiteAlpha.900")}
+          >
+            Most 5 Expanse
+          </Heading>
+          <Bar
+            data={{
+              labels: mostExpanse.map((item) => item.category.name),
+              datasets: [
+                {
+                  label: "Amount",
+                  data: mostExpanse.map((item) => item.total),
+                  backgroundColor: "#FA8072",
+                },
+              ],
+            }}
+            options={{
+              indexAxis: "y",
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: useColorModeValue("#000", "#FFF"),
+                  },
+                },
+                y: {
+                  ticks: {
+                    color: useColorModeValue("#000", "#FFF"),
+                  },
                 },
               },
             }}
@@ -589,9 +642,13 @@ const SchoolPage = () => {
                 {getDonationsByDonor().map(({ donor, total, donations }) => (
                   <Tr key={donor.id}>
                     <Td color={textColor}>
-                      <a href={`/donors/${donor.id}`} style={{ color: "teal" }}>
+                      <Link
+                        href={`/donors/${donor.id}`}
+                        color={linkColor}
+                        _hover={{ color: linkHoverColor }}
+                      >
                         {donor.name}
-                      </a>
+                      </Link>
                     </Td>
                     <Td isNumeric color={textColor}>
                       ৳{total.toLocaleString()}
@@ -666,12 +723,13 @@ const SchoolPage = () => {
                 {getExpensesByCategory().map(({ category, total }) => (
                   <Tr key={category._id}>
                     <Td color={textColor}>
-                      <a
+                      <Link
                         href={`/categories/${category._id}`}
-                        style={{ color: "teal" }}
+                        color={linkColor}
+                        _hover={{ color: linkHoverColor }}
                       >
                         {category.name}
-                      </a>
+                      </Link>
                     </Td>
                     <Td isNumeric color={textColor}>
                       ৳{total.toLocaleString()}
@@ -686,6 +744,7 @@ const SchoolPage = () => {
           </Text>
         </Box>
       </Stack>
+
       <AddDonorModal
         isOpen={isDonorModalOpen}
         onClose={onDonorModalClose}
