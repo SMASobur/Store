@@ -3,6 +3,7 @@ import { useSchoolStore } from "../store/school";
 import { FcDonate } from "react-icons/fc";
 import { FaDonate } from "react-icons/fa";
 import { GiExpense } from "react-icons/gi";
+import { MdCategory } from "react-icons/md";
 import {
   Box,
   Heading,
@@ -13,19 +14,9 @@ import {
   Tr,
   Th,
   Td,
-  Input,
   Button,
-  FormControl,
-  FormLabel,
   SimpleGrid,
   useBreakpointValue,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
   useColorMode,
   useColorModeValue,
@@ -34,7 +25,10 @@ import {
   CardBody,
   Flex,
 } from "@chakra-ui/react";
-import Select from "react-select";
+import { AddDonorModal } from "../components/modals/school/AddDonorModal";
+import { AddDonationModal } from "../components/modals/school/AddDonationModal";
+import { AddExpenseModal } from "../components/modals/school/AddExpenseModal";
+import { AddCategoryModal } from "../components/modals/school/AddCategoryModal";
 
 import { useAuth } from "../context/AuthContext";
 
@@ -281,44 +275,32 @@ const SchoolPage = () => {
           </CardBody>
         </Card>
       </SimpleGrid>
-      {/* Action Buttons */}
-      {(user?.role === "admin" || user?.role === "superadmin") && (
-        <Flex justifyContent="center" gap={4} mb={8}>
-          <Button
-            colorScheme="blue"
-            onClick={openDonationModal}
-            leftIcon={<span>+</span>}
-          >
-            <FaDonate />
-          </Button>
-          <Button
-            colorScheme="red"
-            onClick={onExpenseModalOpen}
-            leftIcon={<span>+</span>}
-          >
-            <GiExpense />
-          </Button>
-          <Button
-            variant="outline"
-            onClick={onDonorModalOpen}
-            leftIcon={<span>+</span>}
-          >
-            <FcDonate />
-          </Button>
-          <Button
-            variant="outline"
-            colorScheme="purple"
-            onClick={onCategoryModalOpen}
-            leftIcon={<span>+</span>}
-          >
-            Add Category
-          </Button>
-        </Flex>
-      )}
+
       {/* Tables Section */}
       <Stack spacing={6}>
         {/* Donations Table  */}
         <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
+          {/* Action Buttons */}
+          {(user?.role === "admin" || user?.role === "superadmin") && (
+            <Flex justifyContent="center" gap={4} mb={8}>
+              <Button
+                colorScheme="blue"
+                onClick={openDonationModal}
+                rightIcon={<span> Donation</span>}
+              >
+                <FaDonate />
+              </Button>
+
+              <Button
+                variant="outline"
+                colorScheme="orange"
+                onClick={onDonorModalOpen}
+                rightIcon={<span>Donor</span>}
+              >
+                <FcDonate />
+              </Button>
+            </Flex>
+          )}
           <Heading size="md" mb={4} color={textColor}>
             Donations by Donor
           </Heading>
@@ -359,6 +341,28 @@ const SchoolPage = () => {
 
         {/*  Expenses Table */}
         <Box p="4" bg={cardBg} borderRadius="md" boxShadow="md">
+          {/* Action Buttons */}
+          {(user?.role === "admin" || user?.role === "superadmin") && (
+            <Flex justifyContent="center" gap={4} mb={8}>
+              <Button
+                colorScheme="red"
+                variant="solid"
+                onClick={onExpenseModalOpen}
+                rightIcon={<span> Expanses</span>}
+              >
+                <GiExpense />
+              </Button>
+
+              <Button
+                variant="outline"
+                colorScheme="orange"
+                onClick={onCategoryModalOpen}
+                rightIcon={<span> Category</span>}
+              >
+                <MdCategory />
+              </Button>
+            </Flex>
+          )}
           <Heading size="md" mb={4} color={textColor}>
             Expenses by Category
           </Heading>
@@ -400,242 +404,51 @@ const SchoolPage = () => {
           </Text>
         </Box>
       </Stack>
-      {/* Add Donor Modal */}
-      <Modal isOpen={isDonorModalOpen} onClose={onDonorModalClose}>
-        <ModalOverlay />
-        <ModalContent bg={cardBg}>
-          <ModalHeader color={textColor}>Add New Donor</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel color={textColor}>Donor Name</FormLabel>
-              <Input
-                value={newDonorName}
-                onChange={(e) => setNewDonorName(e.target.value)}
-                placeholder="Enter donor name"
-                bg={cardBg}
-                borderColor={borderColor}
-                color={textColor}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" onClick={addNewDonor} mr={3}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onDonorModalClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      {/* Add Donation Modal */}
-      <Modal isOpen={isDonationModalOpen} onClose={onDonationModalClose}>
-        <ModalOverlay />
-        <ModalContent bg={cardBg}>
-          <ModalHeader color={textColor}>Add New Donation</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <SimpleGrid columns={1} spacing={4}>
-              <FormControl>
-                <FormLabel color={textColor}>Select Donor</FormLabel>
-                <Select
-                  options={donorOptions}
-                  placeholder="Select donor"
-                  value={
-                    donorOptions.find(
-                      (option) => option.value === selectedDonorId
-                    ) || null
-                  }
-                  onChange={(selectedOption) =>
-                    setSelectedDonorId(
-                      selectedOption ? selectedOption.value : null
-                    )
-                  }
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      backgroundColor: cardBg,
-                      borderColor: borderColor,
-                      color: textColor,
-                    }),
-                    singleValue: (base) => ({
-                      ...base,
-                      color: textColor,
-                    }),
-                    menu: (base) => ({
-                      ...base,
-                      zIndex: 9999, // ensures dropdown displays above modal
-                    }),
-                  }}
-                />
-              </FormControl>
+      <AddDonorModal
+        isOpen={isDonorModalOpen}
+        onClose={onDonorModalClose}
+        newDonorName={newDonorName}
+        setNewDonorName={setNewDonorName}
+        addNewDonor={addNewDonor}
+      />
 
-              <FormControl>
-                <FormLabel color={textColor}>Amount</FormLabel>
-                <Input
-                  type="number"
-                  value={donationAmount}
-                  onChange={(e) => setDonationAmount(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
+      <AddDonationModal
+        isOpen={isDonationModalOpen}
+        onClose={onDonationModalClose}
+        donorOptions={donorOptions}
+        selectedDonorId={selectedDonorId}
+        setSelectedDonorId={setSelectedDonorId}
+        donationAmount={donationAmount}
+        setDonationAmount={setDonationAmount}
+        DonorMedium={DonorMedium}
+        setDonorMedium={setDonorMedium}
+        donationDate={donationDate}
+        setDonationDate={setDonationDate}
+        addDonation={addDonation}
+      />
 
-              <FormControl>
-                <FormLabel color={textColor}>Medium</FormLabel>
-                <Input
-                  type="string"
-                  value={DonorMedium}
-                  onChange={(e) => setDonorMedium(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
+      <AddExpenseModal
+        isOpen={isExpenseModalOpen}
+        onClose={onExpenseModalClose}
+        expenseCategories={expenseCategories}
+        selectedCategoryId={selectedCategoryId}
+        setSelectedCategoryId={setSelectedCategoryId}
+        expenseDesc={expenseDesc}
+        setExpenseDesc={setExpenseDesc}
+        expenseAmount={expenseAmount}
+        setExpenseAmount={setExpenseAmount}
+        expenseDate={expenseDate}
+        setExpenseDate={setExpenseDate}
+        addExpense={addExpense}
+      />
 
-              <FormControl>
-                <FormLabel color={textColor}>Date</FormLabel>
-                <Input
-                  type="date"
-                  value={donationDate}
-                  onChange={(e) => setDonationDate(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
-            </SimpleGrid>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" onClick={addDonation} mr={3}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onDonationModalClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      {/* Add ExpenseCategory Modal */}
-      <Modal isOpen={isCategoryModalOpen} onClose={onCategoryModalClose}>
-        <ModalOverlay />
-        <ModalContent bg={cardBg}>
-          <ModalHeader color={textColor}>Add New Category</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel color={textColor}>Category Name</FormLabel>
-              <Input
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
-                placeholder="Enter category name"
-                bg={cardBg}
-                borderColor={borderColor}
-                color={textColor}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="purple" onClick={addNewCategory} mr={3}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onCategoryModalClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      {/* Add Expense Modal */}
-
-      <Modal isOpen={isExpenseModalOpen} onClose={onExpenseModalClose}>
-        <ModalOverlay />
-        <ModalContent bg={cardBg}>
-          <ModalHeader color={textColor}>Add New Expense</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <SimpleGrid columns={1} spacing={4}>
-              <FormControl>
-                <FormLabel color={textColor}>Category</FormLabel>
-                <Select
-                  options={expenseCategories.map((cat) => ({
-                    value: cat.id,
-                    label: cat.name,
-                  }))}
-                  placeholder="Select category"
-                  value={
-                    expenseCategories.find((c) => c.id === selectedCategoryId)
-                      ? {
-                          value: selectedCategoryId,
-                          label: expenseCategories.find(
-                            (c) => c.id === selectedCategoryId
-                          ).name,
-                        }
-                      : null
-                  }
-                  onChange={(selected) =>
-                    setSelectedCategoryId(selected?.value)
-                  }
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      backgroundColor: cardBg,
-                      borderColor: borderColor,
-                      color: textColor,
-                    }),
-                    singleValue: (base) => ({
-                      ...base,
-                      color: textColor,
-                    }),
-                    menu: (base) => ({
-                      ...base,
-                      zIndex: 9999,
-                    }),
-                  }}
-                />
-              </FormControl>
-              {/* Other expense fields */}
-              <FormControl>
-                <FormLabel color={textColor}>Description</FormLabel>
-                <Input
-                  value={expenseDesc}
-                  onChange={(e) => setExpenseDesc(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
-
-              <FormControl>
-                <FormLabel color={textColor}>Amount</FormLabel>
-                <Input
-                  type="number"
-                  value={expenseAmount}
-                  onChange={(e) => setExpenseAmount(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
-
-              <FormControl>
-                <FormLabel color={textColor}>Date</FormLabel>
-                <Input
-                  type="date"
-                  value={expenseDate}
-                  onChange={(e) => setExpenseDate(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
-            </SimpleGrid>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" onClick={addExpense} mr={3}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onExpenseModalClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <AddCategoryModal
+        isOpen={isCategoryModalOpen}
+        onClose={onCategoryModalClose}
+        newCategoryName={newCategoryName}
+        setNewCategoryName={setNewCategoryName}
+        addNewCategory={addNewCategory}
+      />
     </Box>
   );
 };

@@ -17,6 +17,7 @@ import ProfilePage from "./pages/ProfilePage";
 import NotesPage from "./pages/NotesPage";
 import SchoolPage from "./pages/SchoolPage";
 import DonorPage from "./pages/DonorPage";
+import ExpensePage from "./pages/ExpensePage";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/notes" element={<NotesPage />} />
           <Route path="/school" element={<SchoolPage />} />
           <Route path="/donors/:id" element={<DonorPage />} />
+          <Route path="/categories/:id" element={<ExpensePage />} />
 
           {/* Private Routes */}
           <Route
