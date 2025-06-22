@@ -19,6 +19,9 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Flex,
+  Input,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 
@@ -38,8 +41,8 @@ const DonorPage = () => {
   const [loading, setLoading] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDonorDelete, setIsDonorDelete] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [confirmationName, setConfirmationName] = useState("");
+  const [confirmationError, setConfirmationError] = useState("");
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -71,11 +74,18 @@ const DonorPage = () => {
   const handleDelete = async () => {
     if (!itemToDelete) return;
 
+    if (isDonorDelete && confirmationName !== donor?.name) {
+      setConfirmationError("The name doesn't match the donor's name");
+      return;
+    }
+
     const result = isDonorDelete
       ? await deleteDonor(itemToDelete, token)
       : await deleteDonation(itemToDelete, token);
 
     onClose();
+    setConfirmationName("");
+    setConfirmationError("");
 
     if (result.success) {
       showToast(
@@ -92,6 +102,8 @@ const DonorPage = () => {
   const openDeleteDialog = (deleteId, isDonor = false) => {
     setItemToDelete(deleteId);
     setIsDonorDelete(isDonor);
+    setConfirmationName("");
+    setConfirmationError("");
     onOpen();
   };
 
@@ -203,8 +215,25 @@ const DonorPage = () => {
             <AlertDialogBody>
               {isDonorDelete ? (
                 <>
-                  Are you sure you want to delete this donor and all their
-                  donations? This action cannot be undone.
+                  <Text mb={4}>
+                    Are you sure you want to delete this donor and all their
+                    donations? This action cannot be undone.
+                  </Text>
+                  <FormControl>
+                    <FormLabel>
+                      Type the donor's name "{donor?.name}" to confirm:
+                    </FormLabel>
+                    <Input
+                      value={confirmationName}
+                      onChange={(e) => setConfirmationName(e.target.value)}
+                      placeholder={`Type "${donor.name}" to confirm`}
+                    />
+                    {confirmationError && (
+                      <Text color="red.500" mt={2}>
+                        {confirmationError}
+                      </Text>
+                    )}
+                  </FormControl>
                 </>
               ) : (
                 "Are you sure you want to delete this donation? This action cannot be undone."
@@ -215,7 +244,12 @@ const DonorPage = () => {
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+              <Button
+                colorScheme="red"
+                onClick={handleDelete}
+                ml={3}
+                isDisabled={isDonorDelete && confirmationName !== donor?.name}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>

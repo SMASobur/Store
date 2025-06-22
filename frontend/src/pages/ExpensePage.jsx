@@ -19,6 +19,9 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Flex,
+  Input,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useSchoolStore } from "../store/school";
@@ -43,20 +46,20 @@ const ExpensePage = () => {
   const [loading, setLoading] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isCategoryDelete, setIsCategoryDelete] = useState(false);
+  const [confirmationText, setConfirmationText] = useState("");
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cardBg = useColorModeValue("white", "gray.700");
   const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
 
-  // Find the selected category and filter expenses by it
   const category = expenseCategories.find((c) => c.id === id);
   const categoryExpenses = expenses.filter(
     (e) => e.category === id || e.category?._id === id
   );
 
   useEffect(() => {
-    // Fetch data if not already loaded
     if (!expenses.length || !expenseCategories.length) {
       setLoading(true);
       fetchAllSchoolData().finally(() => setLoading(false));
@@ -74,12 +77,15 @@ const ExpensePage = () => {
 
   const handleDelete = async () => {
     if (!itemToDelete) return;
+    setIsConfirming(true);
 
     const result = isCategoryDelete
       ? await deleteCategory(itemToDelete, token)
       : await deleteExpense(itemToDelete, token);
 
+    setIsConfirming(false);
     onClose();
+    setConfirmationText("");
 
     if (result.success) {
       toast({
@@ -90,7 +96,7 @@ const ExpensePage = () => {
       });
 
       if (isCategoryDelete) {
-        navigate("/expenses");
+        navigate("/school");
       }
     } else {
       toast({
@@ -106,10 +112,14 @@ const ExpensePage = () => {
   const openDeleteDialog = (id, isCategory = false) => {
     setItemToDelete(id);
     setIsCategoryDelete(isCategory);
+    setConfirmationText("");
     onOpen();
   };
 
-  // Loading state
+  const isDeleteDisabled = isCategoryDelete
+    ? confirmationText !== category?.name
+    : false;
+
   if (loading || !expenseCategories.length) {
     return (
       <Box p={6}>
@@ -119,7 +129,6 @@ const ExpensePage = () => {
     );
   }
 
-  // Category not found
   if (!category) {
     return (
       <Box p={6}>
@@ -132,7 +141,6 @@ const ExpensePage = () => {
 
   return (
     <Box p={6}>
-      {/* Header */}
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <Heading color={textColor}>Category: {category.name}</Heading>
         {(user?.role === "admin" || user?.role === "superadmin") && (
@@ -146,7 +154,6 @@ const ExpensePage = () => {
         )}
       </Flex>
 
-      {/* Summary */}
       <Text mb={2} fontSize="lg" color={textColor}>
         Total Expenses: ৳
         {categoryExpenses
@@ -157,7 +164,6 @@ const ExpensePage = () => {
         Number of Expenses: {categoryExpenses.length}
       </Text>
 
-      {/* No Expenses */}
       {categoryExpenses.length === 0 && (
         <Card bg={cardBg}>
           <CardBody textAlign="center">
@@ -166,7 +172,6 @@ const ExpensePage = () => {
         </Card>
       )}
 
-      {/* Expenses List */}
       <Stack spacing={4}>
         {categoryExpenses.map((expense) => (
           <Card key={expense.id} bg={cardBg}>
@@ -199,7 +204,6 @@ const ExpensePage = () => {
         ))}
       </Stack>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
@@ -212,16 +216,40 @@ const ExpensePage = () => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              {isCategoryDelete
-                ? "Are you sure you want to delete this category and all its expenses? This action cannot be undone."
-                : "Are you sure you want to delete this expense? This action cannot be undone."}
+              {isCategoryDelete ? (
+                <>
+                  <Text mb={4}>
+                    Are you sure you want to delete the category "
+                    {category.name}" and all its expenses? This action cannot be
+                    undone.
+                  </Text>
+                  <FormControl>
+                    <FormLabel>
+                      Type the category name to confirm deletion:
+                    </FormLabel>
+                    <Input
+                      value={confirmationText}
+                      onChange={(e) => setConfirmationText(e.target.value)}
+                      placeholder={`Type "${category.name}" to confirm`}
+                    />
+                  </FormControl>
+                </>
+              ) : (
+                "Are you sure you want to delete this expense? This action cannot be undone."
+              )}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+              <Button
+                colorScheme="red"
+                onClick={handleDelete}
+                ml={3}
+                isLoading={isConfirming}
+                isDisabled={isDeleteDisabled}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>
