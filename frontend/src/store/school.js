@@ -187,4 +187,96 @@ export const useSchoolStore = create((set) => ({
       return { success: false, message: "Network error creating category" };
     }
   },
+
+  deleteExpense: async (expenseId, token) => {
+    try {
+      const res = await fetch(`/api/school/expenses/${expenseId}`, {
+        method: "DELETE",
+        headers: authHeaders(token),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return { success: false, message: data.message };
+
+      set((state) => ({
+        expenses: state.expenses.filter((e) => e.id !== expenseId),
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting expense:", error);
+      return { success: false, message: "Error deleting expense" };
+    }
+  },
+  deleteDonor: async (donorId, token) => {
+    try {
+      const res = await fetch(`/api/school/donors/${donorId}`, {
+        method: "DELETE",
+        headers: authHeaders(token),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return { success: false, message: data.message };
+
+      set((state) => ({
+        donors: state.donors.filter((d) => d.id !== donorId),
+        donations: state.donations.filter((d) => d.donorId !== donorId),
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting donor:", error);
+      return { success: false, message: "Error deleting donor" };
+    }
+  },
+
+  deleteDonation: async (donationId, token) => {
+    try {
+      const res = await fetch(`/api/school/donations/${donationId}`, {
+        method: "DELETE",
+        headers: authHeaders(token),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return { success: false, message: data.message };
+
+      set((state) => ({
+        donations: state.donations.filter((d) => d.id !== donationId),
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting donation:", error);
+      return { success: false, message: "Error deleting donation" };
+    }
+  },
+  deleteCategory: async (categoryId, token) => {
+    try {
+      const res = await fetch(`/api/school/expense-categories/${categoryId}`, {
+        method: "DELETE",
+        headers: authHeaders(token),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) return { success: false, message: data.message };
+
+      set((state) => ({
+        expenseCategories: state.expenseCategories.filter(
+          (c) => c.id !== categoryId
+        ),
+        expenses: state.expenses.filter(
+          (e) => e.category !== categoryId && e.category?._id !== categoryId
+        ),
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      return { success: false, message: "Error deleting category" };
+    }
+  },
 }));

@@ -135,3 +135,67 @@ export const createExpenseCategory = async (req, res) => {
     });
   }
 };
+export const deleteExpense = async (req, res) => {
+  try {
+    const deletedExpense = await Expense.findByIdAndDelete(req.params.id);
+    if (!deletedExpense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+    res.json({ success: true, message: "Expense deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+export const deleteDonor = async (req, res) => {
+  try {
+    // Delete donor and all their donations
+    await Donation.deleteMany({ donorId: req.params.id });
+    const deletedDonor = await Donor.findByIdAndDelete(req.params.id);
+
+    if (!deletedDonor) {
+      return res.status(404).json({ message: "Donor not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "Donor and donations deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteDonation = async (req, res) => {
+  try {
+    const deletedDonation = await Donation.findByIdAndDelete(req.params.id);
+    if (!deletedDonation) {
+      return res.status(404).json({ message: "Donation not found" });
+    }
+    res.json({ success: true, message: "Donation deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteExpenseCategory = async (req, res) => {
+  try {
+    // Delete category and all associated expenses
+    await Expense.deleteMany({
+      $or: [{ category: req.params.id }, { "category._id": req.params.id }],
+    });
+    const deletedCategory = await ExpenseCategory.findByIdAndDelete(
+      req.params.id
+    );
+
+    if (!deletedCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "Category and expenses deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
