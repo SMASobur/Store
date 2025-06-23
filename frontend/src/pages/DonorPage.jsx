@@ -136,7 +136,7 @@ const DonorPage = () => {
   return (
     <Box p={6}>
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
-        <Heading mb={4} color={textColor}>
+        <Heading mb={4} color={useColorModeValue("teal.600", "teal.300")}>
           Donor: {donor.name}
         </Heading>
         {isAdmin && (

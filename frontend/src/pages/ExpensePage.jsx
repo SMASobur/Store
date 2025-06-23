@@ -52,7 +52,7 @@ const ExpensePage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cardBg = useColorModeValue("white", "gray.700");
-  const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
+  const textColor = useColorModeValue("gray.700", "whiteAlpha.900");
 
   const category = expenseCategories.find((c) => c.id === id);
   const categoryExpenses = expenses.filter(
@@ -140,10 +140,9 @@ const ExpensePage = () => {
   }
 
   return (
-    <Box p={6}>
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
-        <Heading color={textColor}>Category: {category.name}</Heading>
-        {(user?.role === "admin" || user?.role === "superadmin") && (
+    <Box p={6} position="relative">
+      {(user?.role === "admin" || user?.role === "superadmin") && (
+        <Box position="absolute" top={4} right={6}>
           <Button
             colorScheme="red"
             leftIcon={<DeleteIcon />}
@@ -151,7 +150,12 @@ const ExpensePage = () => {
           >
             Delete Category
           </Button>
-        )}
+        </Box>
+      )}
+      <Flex justifyContent="space-between" alignItems="center" mb={4} mt={8}>
+        <Heading color={useColorModeValue("teal.600", "teal.300")}>
+          Category: {category.name}
+        </Heading>
       </Flex>
 
       <Text mb={2} fontSize="lg" color={textColor}>
@@ -160,7 +164,7 @@ const ExpensePage = () => {
           .reduce((sum, e) => sum + e.amount, 0)
           .toLocaleString()}
       </Text>
-      <Text mb={6} fontSize="lg" color={textColor}>
+      <Text mb={4} fontSize="lg" color={textColor}>
         Number of Expenses: {categoryExpenses.length}
       </Text>
 
@@ -176,21 +180,29 @@ const ExpensePage = () => {
         {categoryExpenses.map((expense) => (
           <Card key={expense.id} bg={cardBg}>
             <CardBody>
-              <Flex justifyContent="space-between" alignItems="center" mb={4}>
+              {(user?.role === "admin" || user?.role === "superadmin") && (
+                <Button
+                  mt={2}
+                  size="sm"
+                  colorScheme="red"
+                  leftIcon={<DeleteIcon />}
+                  onClick={() => openDeleteDialog(expense.id)}
+                  position="absolute"
+                  top={0}
+                  right={2}
+                >
+                  Delete
+                </Button>
+              )}
+              <Flex
+                justifyContent="space-between"
+                alignItems="center"
+                mb={4}
+                mt={6}
+              >
                 <Text fontSize="md" color={textColor}>
                   Description: {expense.description}
                 </Text>
-                {(user?.role === "admin" || user?.role === "superadmin") && (
-                  <Button
-                    mt={2}
-                    size="sm"
-                    colorScheme="red"
-                    leftIcon={<DeleteIcon />}
-                    onClick={() => openDeleteDialog(expense.id)}
-                  >
-                    Delete Expense
-                  </Button>
-                )}
               </Flex>
 
               <Text fontSize="md" color={textColor}>
