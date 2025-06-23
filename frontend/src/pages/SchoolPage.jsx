@@ -20,6 +20,12 @@ import {
   CardBody,
   Icon,
   Link,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
 } from "@chakra-ui/react";
 import { useAuth } from "../context/AuthContext";
 
@@ -337,48 +343,94 @@ const SchoolPage = () => {
             }}
           />
         </Card>
-        {/* Most 5 Expenses */}
-        <Card bg={cardBg} p={4} mb={6}>
+        {/* Most 5 recent donor */}
+        <Card
+          bg={cardBg}
+          border="1px"
+          borderColor={borderColor}
+          shadow="md"
+          p={4}
+          mb={6}
+        >
           <Heading
             size="sm"
-            mb={4}
+            mb={6}
             color={useColorModeValue("gray.800", "whiteAlpha.900")}
           >
-            Top 5 Expense Categories
+            Recent Donations
           </Heading>
-          <Bar
-            data={{
-              labels: mostExpenses.map((item) => item.category.name),
-              datasets: [
-                {
-                  label: "Amount",
-                  data: mostExpenses.map((item) => item.total),
-                  backgroundColor: "#FA8072",
-                },
-              ],
-            }}
-            options={{
-              indexAxis: "y",
-              responsive: true,
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-              scales: {
-                x: {
-                  ticks: {
-                    color: useColorModeValue("#000", "#FFF"),
-                  },
-                },
-                y: {
-                  ticks: {
-                    color: useColorModeValue("#000", "#FFF"),
-                  },
-                },
-              },
-            }}
-          />
+          <Box
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+            borderColor={borderColor}
+          >
+            <Table variant="simple" size="sm">
+              <Thead bg={useColorModeValue("gray.100", "gray.700")}>
+                <Tr>
+                  <Th color={textColor}>Donor</Th>
+                  <Th color={textColor} isNumeric>
+                    Amount
+                  </Th>
+                  <Th color={textColor}>Date</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {donations
+                  .sort((a, b) => new Date(b.date) - new Date(a.date))
+                  .slice(0, 7)
+                  .map((donation, index) => {
+                    const donor = donors.find((d) => d.id === donation.donorId);
+                    return (
+                      <Tr
+                        key={donation.id}
+                        bg={
+                          index % 2 === 0
+                            ? useColorModeValue("gray.50", "gray.00")
+                            : "transparent"
+                        }
+                        _hover={{
+                          bg: useColorModeValue("gray.100", "gray.700"),
+                        }}
+                      >
+                        <Td color={textColor}>{donor?.name || "Unknown"}</Td>
+                        <Td color={textColor} isNumeric>
+                          <Box as="span" fontWeight="medium">
+                            ৳{donation.amount.toLocaleString()}
+                          </Box>
+                        </Td>
+                        <Td color={textColor}>
+                          <Box
+                            as="span"
+                            fontSize="sm"
+                            color={useColorModeValue("gray.600", "gray.400")}
+                          >
+                            {new Date(donation.date).toLocaleDateString()}
+                          </Box>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+              </Tbody>
+            </Table>
+          </Box>
+          {donations.length > 7 && (
+            <Link
+              as={RouterLink}
+              to="/donations"
+              color={useColorModeValue("teal.600", "teal.300")}
+              mt={2}
+              fontWeight="medium"
+              fontSize="sm"
+              display="block"
+              textAlign="right"
+              _hover={{
+                textDecoration: "underline",
+              }}
+            >
+              View All
+            </Link>
+          )}
         </Card>
       </SimpleGrid>
     </Box>
