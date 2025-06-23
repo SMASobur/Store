@@ -119,7 +119,7 @@ export const AddExpenseModal = ({
                     ...base,
                     backgroundColor: cardBg,
                     borderColor: borderColor,
-                    color: useColorModeValue("#FFFFFF", "#A0AEC0"),
+                    color: useColorModeValue("#000000", "#FFFFFF"),
                   }),
                   singleValue: (base) => ({
                     ...base,
@@ -139,7 +139,7 @@ export const AddExpenseModal = ({
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isFocused
-                      ? useColorModeValue("#E2E8F0", "#2C5282") // Hover color
+                      ? useColorModeValue("#E2E8F0", "#2C5282")
                       : "transparent",
                     color: useColorModeValue("#1A202C", "#FFFFFF"),
                     cursor: "pointer",

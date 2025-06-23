@@ -115,7 +115,7 @@ export const AddDonationModal = ({
                     ...base,
                     backgroundColor: cardBg,
                     borderColor: borderColor,
-                    color: useColorModeValue("#FFFFFF", "#A0AEC0"),
+                    color: useColorModeValue("#000000", "#FFFFFF"),
                   }),
                   singleValue: (base) => ({
                     ...base,
