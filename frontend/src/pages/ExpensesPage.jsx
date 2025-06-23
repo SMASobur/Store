@@ -192,14 +192,20 @@ const ExpensesPage = () => {
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4} mb={6}>
         <Card bg={cardBg} border="1px" borderColor={borderColor}>
           <CardBody textAlign="center">
-            <GiExpense size="2em" color="#E53E3E" />
+            <GiExpense
+              size="2em"
+              color={useColorModeValue("#E53E3E", "#FC8181")}
+            />
             <Text fontSize="sm" color={textColor} mt={2}>
               Total Expenses
             </Text>
-            <Heading size="md" color="red.500">
+            <Heading size="md" color={useColorModeValue("red.500", "red.300")}>
               ৳{totalExpenses.toLocaleString()}
             </Heading>
-            <Text fontSize="xs" color="gray.500">
+            <Text
+              fontSize="xs"
+              color={useColorModeValue("gray.500", "gray.400")}
+            >
               {expenses.length} transactions
             </Text>
           </CardBody>
@@ -214,7 +220,10 @@ const ExpensesPage = () => {
             <Heading size="md" color="teal.500">
               {expenseCategories.length}
             </Heading>
-            <Text fontSize="xs" color="gray.500">
+            <Text
+              fontSize="xs"
+              color={useColorModeValue("gray.500", "gray.400")}
+            >
               Expense categories
             </Text>
           </CardBody>

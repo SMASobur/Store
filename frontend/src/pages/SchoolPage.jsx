@@ -101,7 +101,7 @@ const SchoolPage = () => {
           <CardBody textAlign="center">
             <FaDonate
               size="2em"
-              color={useColorModeValue("green.600", "green.300")}
+              color={useColorModeValue("#48BB78", "#68D391")}
             />
             <Text fontSize="sm" color={textColor} mt={2}>
               Total Donations

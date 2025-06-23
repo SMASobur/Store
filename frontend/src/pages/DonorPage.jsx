@@ -22,6 +22,7 @@ import {
   Input,
   FormControl,
   FormLabel,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 
@@ -93,7 +94,7 @@ const DonorPage = () => {
         undefined,
         "success"
       );
-      if (isDonorDelete) navigate("/school");
+      if (isDonorDelete) navigate("/donations");
     } else {
       showToast("Error deleting", result.message, "error");
     }
@@ -135,11 +136,16 @@ const DonorPage = () => {
 
   return (
     <Box p={6}>
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
-        <Heading mb={4} color={useColorModeValue("teal.600", "teal.300")}>
-          Donor: {donor.name}
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        mb={4}
+        textAlign="center"
+      >
+        <Heading mb={4} color={useColorModeValue("orange.400", "orange.300")}>
+          {donor.name}
         </Heading>
-        {isAdmin && (
+        {(user?.role === "admin" || user?.role === "superadmin") && (
           <Box mb={4} textAlign="right">
             <Button
               colorScheme="red"
@@ -151,12 +157,11 @@ const DonorPage = () => {
           </Box>
         )}
       </Flex>
-
-      <Text mb={2} fontSize="lg" color={textColor}>
+      <Text mb={2} fontSize="lg" color={textColor} textAlign="center">
         Total Donations: ৳
         {donorDonations.reduce((sum, d) => sum + d.amount, 0).toLocaleString()}
       </Text>
-      <Text mb={6} fontSize="lg" color={textColor}>
+      <Text mb={6} fontSize="lg" color={textColor} textAlign="center">
         Number of Donations: {donorDonations.length}
       </Text>
 
@@ -167,12 +172,14 @@ const DonorPage = () => {
           </CardBody>
         </Card>
       ) : (
-        <Stack spacing={4}>
+        <SimpleGrid columns={[1, 2, 3]} spacing={4}>
+          {" "}
+          {/* 1 column on mobile, 2 on desktop */}
           {donorDonations.map((donation) => (
             <Card key={donation.id} bg={cardBg}>
               <CardBody>
                 <Flex justifyContent="space-between" alignItems="center" mb={4}>
-                  <Text fontSize="md" color={textColor}>
+                  <Text fontSize="md" fontWeight="bold" color={textColor}>
                     Amount: ৳{donation.amount.toLocaleString()}
                   </Text>
                   {isAdmin && (
@@ -197,9 +204,8 @@ const DonorPage = () => {
               </CardBody>
             </Card>
           ))}
-        </Stack>
+        </SimpleGrid>
       )}
-
       {/* Delete Confirmation Dialog */}
       <AlertDialog
         isOpen={isOpen}

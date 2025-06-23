@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import Select from "react-select";
 import { useState } from "react";
-
 export const AddDonationModal = ({
   isOpen,
   onClose,
@@ -35,6 +34,18 @@ export const AddDonationModal = ({
   const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
   const borderColor = useColorModeValue("gray.200", "gray.500");
   const [amountError, setAmountError] = useState("");
+
+  const isFormValid = () => {
+    return (
+      selectedDonorId &&
+      donationDate &&
+      DonorMedium &&
+      donationAmount &&
+      !amountError &&
+      parseFloat(donationAmount) >= 1 &&
+      parseFloat(donationAmount) <= 5000000
+    );
+  };
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
@@ -59,12 +70,7 @@ export const AddDonationModal = ({
   };
 
   const handleSubmit = () => {
-    if (
-      !amountError &&
-      donationAmount &&
-      parseFloat(donationAmount) >= 1 &&
-      parseFloat(donationAmount) <= 5000000
-    ) {
+    if (isFormValid()) {
       addDonation();
     }
   };
@@ -77,17 +83,19 @@ export const AddDonationModal = ({
         <ModalCloseButton />
         <ModalBody>
           <SimpleGrid columns={1} spacing={4}>
-            <FormControl>
-              <FormControl>
-                <FormLabel color={textColor}>Date</FormLabel>
-                <Input
-                  type="date"
-                  value={donationDate}
-                  onChange={(e) => setDonationDate(e.target.value)}
-                  bg={cardBg}
-                  borderColor={borderColor}
-                />
-              </FormControl>
+            <FormControl isRequired>
+              <FormLabel color={textColor}>Date</FormLabel>
+              <Input
+                type="date"
+                value={donationDate}
+                onChange={(e) => setDonationDate(e.target.value)}
+                bg={cardBg}
+                borderColor={borderColor}
+                isRequired
+              />
+            </FormControl>
+
+            <FormControl isRequired>
               <FormLabel color={textColor}>Select Donor</FormLabel>
               <Select
                 options={donorOptions}
@@ -107,21 +115,36 @@ export const AddDonationModal = ({
                     ...base,
                     backgroundColor: cardBg,
                     borderColor: borderColor,
-                    color: textColor,
+                    color: useColorModeValue("#FFFFFF", "#A0AEC0"),
                   }),
                   singleValue: (base) => ({
                     ...base,
+
                     color: textColor,
                   }),
                   menu: (base) => ({
                     ...base,
+                    backgroundColor: useColorModeValue("#FFFFFF", "#A0AEC0"),
+                    color: useColorModeValue("#000000", "#FFFFFF"),
                     zIndex: 9999,
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    color: useColorModeValue("#000000", "#FFFFFF"),
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isFocused
+                      ? useColorModeValue("#E2E8F0", "#2C5282") // Hover color
+                      : "transparent",
+                    color: useColorModeValue("#1A202C", "#FFFFFF"),
+                    cursor: "pointer",
                   }),
                 }}
               />
             </FormControl>
 
-            <FormControl isInvalid={!!amountError}>
+            <FormControl isRequired isInvalid={!!amountError}>
               <FormLabel color={textColor}>Amount (৳)</FormLabel>
               <Input
                 type="number"
@@ -132,18 +155,20 @@ export const AddDonationModal = ({
                 min="1"
                 max="5000000"
                 step="0.01"
+                isRequired
               />
               <FormErrorMessage>{amountError}</FormErrorMessage>
             </FormControl>
 
-            <FormControl>
+            <FormControl isRequired>
               <FormLabel color={textColor}>Medium</FormLabel>
               <Input
-                type="string"
+                type="text"
                 value={DonorMedium}
                 onChange={(e) => setDonorMedium(e.target.value)}
                 bg={cardBg}
                 borderColor={borderColor}
+                isRequired
               />
             </FormControl>
           </SimpleGrid>
@@ -153,7 +178,7 @@ export const AddDonationModal = ({
             colorScheme="blue"
             onClick={handleSubmit}
             mr={3}
-            isDisabled={!!amountError || !donationAmount}
+            isDisabled={!isFormValid()}
           >
             Save
           </Button>

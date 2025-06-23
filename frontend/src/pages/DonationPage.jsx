@@ -181,14 +181,23 @@ const DonationPage = () => {
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4} mb={6}>
         <Card bg={cardBg} border="1px" borderColor={borderColor}>
           <CardBody textAlign="center">
-            <FaDonate size="2em" color="#38A169" />
+            <FaDonate
+              size="2em"
+              color={useColorModeValue("#48BB78", "#68D391")}
+            />
             <Text fontSize="sm" color={textColor} mt={2}>
               Total Donations
             </Text>
-            <Heading size="md" color="green.500">
+            <Heading
+              size="md"
+              color={useColorModeValue("green.500", "green.300")}
+            >
               ৳{totalDonations.toLocaleString()}
             </Heading>
-            <Text fontSize="xs" color="gray.500">
+            <Text
+              fontSize="xs"
+              color={useColorModeValue("gray.500", "gray.400")}
+            >
               {donations.length} transactions
             </Text>
           </CardBody>
@@ -203,7 +212,10 @@ const DonationPage = () => {
             <Heading size="md" color="teal.500">
               {donors.length}
             </Heading>
-            <Text fontSize="xs" color="gray.500">
+            <Text
+              fontSize="xs"
+              color={useColorModeValue("gray.500", "gray.400")}
+            >
               Active contributors
             </Text>
           </CardBody>

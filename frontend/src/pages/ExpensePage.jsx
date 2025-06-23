@@ -4,7 +4,6 @@ import {
   Box,
   Heading,
   Text,
-  Stack,
   Card,
   CardBody,
   useColorModeValue,
@@ -22,6 +21,7 @@ import {
   Input,
   FormControl,
   FormLabel,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useSchoolStore } from "../store/school";
@@ -53,6 +53,7 @@ const ExpensePage = () => {
 
   const cardBg = useColorModeValue("white", "gray.700");
   const textColor = useColorModeValue("gray.700", "whiteAlpha.900");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
 
   const category = expenseCategories.find((c) => c.id === id);
   const categoryExpenses = expenses.filter(
@@ -96,7 +97,7 @@ const ExpensePage = () => {
       });
 
       if (isCategoryDelete) {
-        navigate("/school");
+        navigate("/expenses");
       }
     } else {
       toast({
@@ -140,81 +141,77 @@ const ExpensePage = () => {
   }
 
   return (
-    <Box p={6} position="relative">
-      {(user?.role === "admin" || user?.role === "superadmin") && (
-        <Box position="absolute" top={4} right={6}>
-          <Button
-            colorScheme="red"
-            leftIcon={<DeleteIcon />}
-            onClick={() => openDeleteDialog(category.id, true)}
-          >
-            Delete Category
-          </Button>
-        </Box>
-      )}
-      <Flex justifyContent="space-between" alignItems="center" mb={4} mt={8}>
-        <Heading color={useColorModeValue("teal.600", "teal.300")}>
-          Category: {category.name}
+    <Box p={6}>
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        mb={4}
+        textAlign="center"
+      >
+        <Heading mb={4} color={useColorModeValue("orange.400", "orange.300")}>
+          {category.name}
         </Heading>
+        {(user?.role === "admin" || user?.role === "superadmin") && (
+          <Box mb={4} textAlign="right">
+            <Button
+              colorScheme="red"
+              leftIcon={<DeleteIcon />}
+              onClick={() => openDeleteDialog(category.id, true)}
+            >
+              Delete Category
+            </Button>
+          </Box>
+        )}
       </Flex>
 
-      <Text mb={2} fontSize="lg" color={textColor}>
+      <Text mb={2} fontSize="lg" textAlign="center" color={textColor}>
         Total Expenses: ৳
         {categoryExpenses
           .reduce((sum, e) => sum + e.amount, 0)
           .toLocaleString()}
       </Text>
-      <Text mb={4} fontSize="lg" color={textColor}>
+      <Text mb={6} fontSize="lg" textAlign="center" color={textColor}>
         Number of Expenses: {categoryExpenses.length}
       </Text>
 
-      {categoryExpenses.length === 0 && (
+      {categoryExpenses.length === 0 ? (
         <Card bg={cardBg}>
           <CardBody textAlign="center">
             <Text fontSize="lg">No expenses recorded yet</Text>
           </CardBody>
         </Card>
-      )}
+      ) : (
+        <SimpleGrid columns={[1, 2, 3]} spacing={4}>
+          {categoryExpenses.map((expense) => (
+            <Card key={expense.id} bg={cardBg}>
+              <CardBody position="relative">
+                <Flex justifyContent="space-between" alignItems="center" mb={4}>
+                  <Text fontSize="md" fontWeight="bold" color={textColor}>
+                    Amount: ৳{expense.amount.toLocaleString()}
+                  </Text>
+                  {(user?.role === "admin" || user?.role === "superadmin") && (
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      leftIcon={<DeleteIcon />}
+                      onClick={() => openDeleteDialog(expense.id)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </Flex>
 
-      <Stack spacing={4}>
-        {categoryExpenses.map((expense) => (
-          <Card key={expense.id} bg={cardBg}>
-            <CardBody>
-              {(user?.role === "admin" || user?.role === "superadmin") && (
-                <Button
-                  mt={2}
-                  size="sm"
-                  colorScheme="red"
-                  leftIcon={<DeleteIcon />}
-                  onClick={() => openDeleteDialog(expense.id)}
-                  position="absolute"
-                  top={0}
-                  right={2}
-                >
-                  Delete
-                </Button>
-              )}
-              <Flex
-                justifyContent="space-between"
-                alignItems="center"
-                mb={4}
-                mt={6}
-              >
-                <Text fontSize="md" color={textColor}>
-                  Description: {expense.description}
+                <Text fontSize="sm" color={textColor}>
+                  Date: {formatDate(expense.date)}
                 </Text>
-              </Flex>
-
-              <Text fontSize="md" color={textColor}>
-                Amount: ৳{expense.amount.toLocaleString()}
-              </Text>
-              <Text fontSize="sm" color={textColor}>
-                Date: {formatDate(expense.date)}
-              </Text>
-            </CardBody>
-          </Card>
-        ))}
-      </Stack>
+                <Text fontSize="md" color={textColor} mb={2}>
+                  {expense.description}
+                </Text>
+              </CardBody>
+            </Card>
+          ))}
+        </SimpleGrid>
+      )}
 
       <AlertDialog
         isOpen={isOpen}
